@@ -7,10 +7,11 @@
 
 #include "LPC17xx.h"
 #include "lpc_types.h"
-#include "../MolniaLib/Config.h"
 #include "FaultsTest.h"
 #include "Inverter.h"
-#include "PowerManager.h"
+
+#include "../MolniaLib/Config.h"
+#include "../MolniaLib/PowerManager.h"
 
 #include "TrimFunc.h"
 #include "Sim100.h"
@@ -89,6 +90,9 @@ typedef struct
 	DrainOn						:	1,
 	ManualDrainSwitch			:	1;
 	
+	uint8_t
+	PowerOn						:	1,
+	dummy1						:	7;	
 } StateBits_t;
 
 typedef union

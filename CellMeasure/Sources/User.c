@@ -19,8 +19,6 @@
 #include "../MolniaLib/MF_Tools.h"
 #include "../Libs/CurrentSens.h"
 
-
-
 void HardwareInit(void);
 void PortInit(void);
 void LedBlink(void);
@@ -28,8 +26,7 @@ void LedBlink(void);
 void AppInit(ObjectDictionary_t *dictionary)
 {
     HardwareInit();
-    ecuInit(dictionary);       
-    
+    ecuInit(dictionary);
 }
 
 void HardwareInit(void)

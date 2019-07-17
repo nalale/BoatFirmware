@@ -6,6 +6,7 @@
 #include "../Libs/LTC6803.h"
 #include "../Libs/Btn8982.h"
 #include "../Libs/TLE_6368g2.h"
+#include "../Libs/filter.h"
 
 #include "mVCU_ECU.h"
 #include "EcuConfig.h"
@@ -15,7 +16,10 @@
 #define DIAG_ITEM(val)		ARRAY_LEN(val),  (void*)&val
 
 
+FILTER_STRUCT fltVoltage;
 
+// ECU Variables
+static uint16_t _ecuPowerSupply = 0;
 
 
 // ************************************************************************************************
@@ -321,8 +325,19 @@ void ecuInit(ObjectDictionary_t *dictionary)
 	btnInit(1, A_OUT2_CSENS, cfgEcu.SteeringMaxCurrent_0p1A);
 	btnInit(2, A_OUT3_CSENS, 0xffff);
 	btnInit(3, 0xff, 0xffff);
+	// Фильтр питания ECU
+	Filter_init(50, 1, &fltVoltage);
 }
 
+void ecuProc()
+{
+	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY) << 3) * 7 / 10 , &fltVoltage);
+	 _ecuPowerSupply = voltage_mV / 100;
+}
 
+uint16_t EcuGetVoltage()
+{
+	return _ecuPowerSupply;
+}
 
 

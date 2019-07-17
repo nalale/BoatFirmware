@@ -64,7 +64,9 @@ extern dtcItem_t* dtcList[];
 
 
 void ecuInit(ObjectDictionary_t *dictionary);
+void ecuProc(void);
 
+uint16_t EcuGetVoltage(void);
 
 
 

@@ -6,14 +6,14 @@
 #include "lpc_types.h"
 
 #include "ObjectsIndex.h"
-#include "PowerManager.h"
+
 
 #include "../BoardDefinitions/BmsCombi_Board.h"
 #include "../MolniaLib/Config.h"
 #include "../Libs/CurrentSens.h"
 
 #include "../MolniaLib/MF_Tools.h"
-
+#include "../MolniaLib/PowerManager.h"
 
 #define MASTER
 //#define MODULE

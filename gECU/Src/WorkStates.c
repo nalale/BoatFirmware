@@ -2,9 +2,10 @@
 #include "User.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
 #include "../MolniaLib/Config.h"
-#include "PowerManager.h"
-#include "FaultTools.h"
+#include "../MolniaLib/PowerManager.h"
 
+#include "FaultTools.h"
+#include "gVCU_ECU.h"
 #include "Protocol.h"
 
 #include "TimerFunc.h"
@@ -17,6 +18,7 @@
 #include "../Libs/TLE_6368g2.h"
 
 #include "WorkStates.h"
+#include "gVCU_ECU.h"
 
 uint32_t timeStamp;
 
@@ -112,6 +114,8 @@ void ChargingState(uint8_t *SubState)
 
 void CommonState(void)
 {    
+	EcuConfig_t ecuConfig = GetConfigInstance();
+
     Protocol();
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1ms) >= OD.DelayValues.Time1_ms)
@@ -119,7 +123,13 @@ void CommonState(void)
         OD.LogicTimers.Timer_1ms = GetTimeStamp();
 		
         // Code   
-        PM_Proc();
+        ecuProc();
+
+		OD.ecuPowerSupply_0p1 = EcuGetVoltage();
+
+
+		// Power Manager thread
+		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);
 
 		OD.IO = GetDiscretIO();    
 		Max11612_GetResult(OD.A_CH_Voltage_0p1, V_AN);

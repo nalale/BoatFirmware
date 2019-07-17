@@ -10,7 +10,7 @@
 #include "FaultTools.h"
 #include "BMS_Combi_ECU.h"
 #include "EcuConfig.h"
-#include "PowerManager.h"
+#include "../MolniaLib/PowerManager.h"
 
 #include "../MolniaLib/Config.h"
 #include "../MolniaLib/DateTime.h"
@@ -319,6 +319,7 @@ void CommonState(void)
 	
     Protocol();
 	
+
 	// Измеряем ток
 	if(OD.SB.CurrentSensorReady)
 	{
@@ -332,7 +333,6 @@ void CommonState(void)
 		OD.MasterData.SoC = 0;
 	}
 	
-	
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1ms) >= OD.DelayValues.Time1_ms)
     {        
@@ -340,8 +340,13 @@ void CommonState(void)
 		
         // Code      
         vs_thread(OD.CellVoltageArray_mV, OD.CellTemperatureArray);
+        ecuProc();
+
+        OD.ecuPowerSupply_0p1 = EcuGetVoltage();
+
+
 		// Power Manager thread
-		PM_Proc();
+		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);
 		
 		OD.A_IN[0] = GetVoltageValue(4);
 		OD.A_IN[1] = GetVoltageValue(5);		

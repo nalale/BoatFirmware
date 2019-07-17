@@ -429,7 +429,7 @@
             <File>
               <FileName>PowerManager.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Src\PowerManager.c</FilePath>
+              <FilePath>..\MolniaLib\PowerManager.c</FilePath>
             </File>
           </Files>
         </Group>

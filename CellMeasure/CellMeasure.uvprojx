@@ -434,7 +434,7 @@
             <File>
               <FileName>PowerManager.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Sources\PowerManager.c</FilePath>
+              <FilePath>..\MolniaLib\PowerManager.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -7,13 +7,16 @@
 
 #include "LPC17xx.h"
 #include "lpc_types.h"
-#include "../MolniaLib/Config.h"
+
 #include "FaultTools.h"
-#include "../MolniaLib/MF_CAN_1v1.h"
-#include "protocol.h"
-#include "../BoardDefinitions/MarineEcu_Board.h"
 #include "ObjectsIndex.h"
-#include "PowerManager.h"
+#include "protocol.h"
+
+#include "../BoardDefinitions/MarineEcu_Board.h"
+
+#include "../MolniaLib/Config.h"
+#include "../MolniaLib/MF_CAN_1v1.h"
+#include "../MolniaLib/PowerManager.h"
 
 #pragma anon_unions
 

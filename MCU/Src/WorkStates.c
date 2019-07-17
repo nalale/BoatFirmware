@@ -33,6 +33,8 @@ Trim Drive Cmd		- to MCU DOUT[4]
 #include "../Libs/TLE_6368g2.h"
 #include "../MolniaLib/MF_Tools.h"
 
+#include "mVCU_ECU.h"
+
 uint32_t timeStamp;
 
 // Массив указателей на функции-режимы
@@ -174,6 +176,8 @@ void ChargingState(uint8_t *SubState)
 
 void CommonState(void)
 {    
+	EcuConfig_t ecuConfig = GetConfigInstance();
+
     Protocol();
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1ms) >= OD.DelayValues.Time1_ms)
@@ -181,7 +185,14 @@ void CommonState(void)
         OD.LogicTimers.Timer_1ms = GetTimeStamp();
 
         // Code      	
-        PM_Proc();
+        ecuProc();
+
+		OD.ecuPowerSupply_0p1 = EcuGetVoltage();
+
+
+		// Power Manager thread
+		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);
+
 		OD.IO = GetDiscretIO();    
 		
 		Max11612_GetResult(OD.A_CH_Voltage_0p1, V_AN);	
