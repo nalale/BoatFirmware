@@ -59,15 +59,21 @@ void InitializationState(uint8_t *SubState)
     {
 		case 0:	
 			OD.SB.CheckFaults = 0;
+			OD.TractionData.Direction = 0;
+
+			// Инициализация параметров ручки акселератора
 			AccPedalInit(_cfgEcu.AccPedalFstCh_MaxV, _cfgEcu.AccPedalFstCh_0V);
-			steerInit(_cfgEcu.SteeringMinVal_0p1V, _cfgEcu.SteeringMaxVal_0p1V);
-			OD.TractionData.Direction = 0;//(OD.TractionData.InverterEnable == 1)? 1 : OD.TractionData.Direction;
+			// Инициализация параметров трим
+			TrimInit(&OD.TrimDataRx, &OD.A_CH_Voltage_0p1[0], _cfgEcu.TrimMaxVal_0p1V, _cfgEcu.TrimMinVal_0p1V);
+			// Инициализация параметров рулевой рейки
+			SteeringInit(&OD.SteeringData, &OD.A_CH_Voltage_0p1[1], _cfgEcu.SteeringMinVal_0p1V, _cfgEcu.SteeringMaxVal_0p1V, &OD.PwmLoadCurrent[0], &OD.PwmLoadCurrent[1], _cfgEcu.SteeringMaxCurrent_0p1A);
 
 			if(ReadFaults())
 				FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
 
 			*SubState = 1;
             break;
+		// Waiting power supply
         case 1:
         	if(OD.SB.PowerOn == 1)
 			{
@@ -77,7 +83,7 @@ void InitializationState(uint8_t *SubState)
 
             break;		
 		
-		// Steering control channel Init
+		// Steering control channels Init
         case 2:
             if(btnCalibrate(0) && btnCalibrate(1) && btnCalibrate(2))
             {                
@@ -87,28 +93,23 @@ void InitializationState(uint8_t *SubState)
                 *SubState = 3;
             }
             break;
-            
+        // Waiting battery init
 		case 3:
 			if(OD.SB.BatteryIsOperate)
 			{
-				InverterPower(1);
+				OD.SB.cmdInverterPowerSupply = 1;
+				OD.SB.cmdSteeringPump = 1;
 				OD.SB.CheckFaults = 1;
 				*SubState = 4;
 			}
 		break;
-		// Запись параметров рулевого управления
-		case 4:			
-			if(SendSteeringStartupMsg())
-			{				
-				SteeringPumpPower(1);
-				*SubState = 5;			
-			}
-		break;
             
-        // Ожидание инициализации инвертора
-        case 5:
+        // Waiting inverter init
+        case 4:
             if(OD.SB.InverterIsOperate)
+            {
 				SetWorkState(&OD.StateMachine, WORKSTATE_OPERATE);
+            }
             break;
     }
     
@@ -118,10 +119,7 @@ void InitializationState(uint8_t *SubState)
 void OperatingState(uint8_t *SubState)
 {    
     OD.TractionData.TargetTorque = GetTargetTorque(OD.MovControlDataRx.AccPosition, OD.MovControlDataRx.Gear);
-	
-	if(GetTimeFrom(OD.LogicTimers.AcceleratorTimer_ms) > 3000)
-		OD.TractionData.TargetTorque = 0;
-	
+
 	//GetTargetSpeed(OD.MovControlDataRx.AccPosition, OD.MovControlDataRx.Gear);
 }
 
@@ -140,8 +138,8 @@ void ShutdownState(uint8_t *SubState)
 		
 		// Idle
 		case 1:
-			InverterPower(0);
-			SteeringPumpPower(0);
+			OD.SB.cmdInverterPowerSupply = 0;
+			OD.SB.cmdSteeringPump = 0;
 		break;
 		
 		case 2:	
@@ -158,6 +156,13 @@ void FaultState(uint8_t *SubState)
 {
 	// faults handle
 	
+	if(OD.FaultsBits.Accelerator)
+	{
+		// 1. Обнуляем запрашиваемый момент
+		// 2. Переводим инвертор в нерабочий режим
+		OD.TractionData.TargetTorque = 0;
+	}
+
 	if(OD.FaultsBits.SteeringTimeout)
 	{
 		
@@ -188,17 +193,14 @@ void CommonState(void)
         ecuProc();
 
 		OD.ecuPowerSupply_0p1 = EcuGetVoltage();
-
-
 		// Power Manager thread
-		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);
-
-		OD.IO = GetDiscretIO();    
+		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);		
 		
 		Max11612_GetResult(OD.A_CH_Voltage_0p1, V_AN);	
 		
-		OD.TrimDataRx.FeedBack_mV = OD.A_CH_Voltage_0p1[0];
-		OD.SteeringDataRx.Feedback_V = OD.A_CH_Voltage_0p1[1];	
+		OD.PwmLoadCurrent[0] = btnGetCurrent(0);
+		OD.PwmLoadCurrent[1] = btnGetCurrent(1);
+		OD.PwmLoadCurrent[2] = btnGetCurrent(2);
 
 		if(FaultsTest(OD.SB.CheckFaults))
 			SetWorkState(&OD.StateMachine, WORKSTATE_FAULT);
@@ -218,22 +220,14 @@ void CommonState(void)
 		else if(OD.PowerMaganerState == PM_ShutDown)
 			SetWorkState(&OD.StateMachine, WORKSTATE_SHUTDOWN);
 		
+		SystemThreat();
+
+		Max11612_StartConversion();
 		btnProc();
 		TLE_Proc();
-		TrimProc(&OD.TrimDataRx);
-		steerThread(&OD.SteeringDataRx);
-		SystemThreat();
-		
-		
-		OD.PwmLoadCurrent[0] = btnGetCurrent(0);
-		OD.PwmLoadCurrent[1] = btnGetCurrent(1);
-		OD.PwmLoadCurrent[2] = btnGetCurrent(2);		
 		
 		OD.MovControlDataRx.Gear = GetDriveDirection(OD.AccPedalChannels[0], OD.AccPedalChannels[1]);
 		OD.MovControlDataRx.AccPosition = GetAccelerationPosition(OD.AccPedalChannels[0], OD.AccPedalChannels[1]);
-		
-        
-		OD.SB.InverterIsOperate = OD.InvertorDataRx.InverterIsEnable;
 	}
 	
 	
@@ -243,18 +237,17 @@ void CommonState(void)
 		
 		EcuConfig_t cfgEcu = GetConfigInstance();
 		
-		// Code      			
-		Max11612_StartConversion();
-		
+		// Code
 		OD.PwmTargetLevel[0] = btnGetOutputLevel(0);
 		OD.PwmTargetLevel[1] = btnGetOutputLevel(1);
 		OD.PwmTargetLevel[2] = btnGetOutputLevel(2);
 		OD.PwmTargetLevel[3] = btnGetOutputLevel(3);
 		
-		OD.SteeringData.TargetSteeringBrake = interpol(cfgEcu.SteeringBrakeSpeedTable, 6, OD.MovControlDataRx.ActualSpeed);
-		OD.steeringFeedbackAngle = steerGetFeedBackAngle();
+//		OD.SteeringData.TargetSteeringBrake = interpol(cfgEcu.SteeringBrakeSpeedTable, 6, OD.MovControlDataRx.ActualSpeed);
+		OD.steeringFeedbackAngle = SteeringGetFeedBackAngle(&OD.SteeringData);
 		
 		OD.SB.BatteryIsOperate = (OD.BatteryDataRx.MainState == 2) && (OD.BatteryDataRx.SubState == 3);		
+		OD.SB.InverterIsOperate = OD.InvertorDataRx.InverterIsEnable;
     }
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1s) >= OD.DelayValues.Time1_s)
@@ -262,13 +255,7 @@ void CommonState(void)
         OD.LogicTimers.Timer_1s = GetTimeStamp();
 		
 		OD.TargetChargingCurrent_A = CheckChargingCond(1/*OD.SB.ChargingTerminalConnected*/, OD.SB.BatteryIsOperate);
-        
-		OD.DebugData.CanMod = (uint8_t)LPC_CAN1->MOD;
-		OD.DebugData.CanGlobalStatus = (uint8_t)LPC_CAN1->GSR;
-		OD.DebugData.CanInt = LPC_CAN1->ICR;
-		OD.DebugData.StartSign = 's' | ('t' << 8) | ('o' << 16) | ('p' << 24);
 		
-		Uart_SendData(0, (uint8_t*)&OD.DebugData, sizeof(OD.DebugData));
     }
 }
 

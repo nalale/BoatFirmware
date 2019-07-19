@@ -55,7 +55,8 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;
-		if(!OD.SB.ExtCanMsgReceived)
+		// Фиксируем ошибку в случае если настроена таблица пересылки
+		if(!OD.SB.ExtCanMsgReceived && OD.RepItemCount != 0)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -186,10 +187,10 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;
-		uint8_t RequestSend = GetMax11612State();
-		if(RequestSend)
+		uint8_t _receiveMsg = GetMax11612State();
+		if(!_receiveMsg)
 		{
-			// Если запрос на измерение отправлен, то данные не получены
+			// Если запрос на измерение отправлен, но данные не получены
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
 			{

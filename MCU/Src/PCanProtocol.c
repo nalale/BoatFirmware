@@ -34,22 +34,50 @@ uint8_t PCanRx(CanMsg *msg)
 		
         OD.AccPedalChannels[0] = d->AnalogInput[0];
 		OD.AccPedalChannels[1] = d->AnalogInput[1];
-		OD.SB.ChargingTerminalConnected = (d->LogicInputsOutputs >> 1) & 0x01;
-		OD.SB.ManualDrainSwitch = (d->LogicInputsOutputs >> 2) & 0x01;
-		OD.SB.WaterSwitch1 = !(d->LogicInputsOutputs >> 3) & 0x01; 
+
+		OD.SB.stChargingTerminal = GET_IN_STATE(d->LogicInputsOutputs, D_IN_KL15_CHARGE);//(d->LogicInputsOutputs >> 1) & 0x01;
+		OD.SB.stManualDrainSwitch = GET_IN_STATE(d->LogicInputsOutputs, D_IN_MANUAL_DRAIN);//(d->LogicInputsOutputs >> 2) & 0x01;
+		OD.SB.stWaterSwitch1 = GET_IN_STATE(d->LogicInputsOutputs, D_IN_WATER_SWITCH_1);//(d->LogicInputsOutputs >> 3) & 0x01;
 		return 0;	
     }
-	else if(msg->ID == General_ECU_CAN_ID + 1)
+    else if(msg->ID == General_ECU_CAN_ID + 1)
+    {
+    	smEcuStatus2* d = (smEcuStatus2*)msg->data;
+
+    	gECU_Fauls_t f;
+		f.Faults = d->Faults;
+    	OD.SB.Ecu1MeasDataActual = !f.MeasuringCircuit;
+    }
+	else if(msg->ID == General_ECU_CAN_ID + (1 * General_ECUx_CAN_ID_LEN))
     {
 		smEcuStatus1* d = (smEcuStatus1*)msg->data;
-		OD.TrimDataRx.MovCmd = d->LogicInputsOutputs & 3;	
+
+		OD.SB.cmdTrimUp = GET_IN_STATE(d->LogicInputsOutputs, D_IN_TRIM_JOY_1);//d->LogicInputsOutputs & 3;
+		OD.SB.cmdTrimUp = (GET_IN_STATE(d->LogicInputsOutputs, D_IN_TRIM_JOY_2));
 		
 		return 0;	
     }
-	else if(msg->ID == General_ECU_CAN_ID + 3)
+	else if(msg->ID == General_ECU_CAN_ID + (1 * General_ECUx_CAN_ID_LEN) + 1)
+	{
+		smEcuStatus2* d = (smEcuStatus2*)msg->data;
+
+		gECU_Fauls_t f;
+		f.Faults = d->Faults;
+		OD.SB.Ecu2MeasDataActual = !f.MeasuringCircuit;
+	}
+	else if(msg->ID == General_ECU_CAN_ID + (3 * General_ECUx_CAN_ID_LEN))
 	{
 		smEcuStatus1* d = (smEcuStatus1*)msg->data;
-		OD.SB.WaterSwitch2 = !(d->LogicInputsOutputs >> 0) & 0x01;
+
+		OD.SB.stWaterSwitch2 = GET_IN_STATE(d->LogicInputsOutputs, D_IN_WATER_SWITCH_2);//(d->LogicInputsOutputs >> 0) & 0x01;
+	}
+	else if(msg->ID == General_ECU_CAN_ID + (3 * General_ECUx_CAN_ID_LEN) + 1)
+	{
+		smEcuStatus2* d = (smEcuStatus2*)msg->data;
+
+		gECU_Fauls_t f;
+		f.Faults = d->Faults;
+		OD.SB.Ecu4MeasDataActual = !f.MeasuringCircuit;
 	}
 	else if(msg->ID == Bmu_ECU_CAN_ID)
 	{
@@ -173,8 +201,10 @@ void PCanMesGenerate(void)
 				
 				cmGeneralControl1 *d = (cmGeneralControl1*)msg->data;
 				
-				d->LogicOutput = (OD.SB.InvPumpCooling) | (OD.SB.MotorPumpCooling << 1) | (OD.SB.HeatsinkPump << 2) | (OD.SB.DrainOn << 3);
-				
+				d->LogicOutput = SET_OUT_STATE(OD.SB.cmdHeatsinkPump, D_OUT_CPUMP_0) |
+								SET_OUT_STATE(OD.SB.cmdMotorPumpCooling, D_OUT_CPUMP_1) |
+								SET_OUT_STATE(OD.SB.cmdDrainPumpOn, D_OUT_DRAIN_1);
+				//(OD.SB.InvPumpCooling) | (OD.SB.MotorPumpCooling << 1) | (OD.SB.HeatsinkPump << 2) | (OD.SB.DrainOn << 3);
 			}
 			break;
 			
@@ -236,7 +266,7 @@ void PCanMesGenerate(void)
 				d->InverterTemperature = OD.InvertorDataRx.InverterTemperature + 40;
 				d->TargetTorque = OD.MovControlDataRx.AccPosition;
 				d->ActualTorque = OD.MovControlDataRx.ActualTorque * 100 / config.MaxMotorTorque;
-				d->SteeringAngle = (((uint32_t)OD.SteeringDataRx.TargetAngle << 7) - 1) >> 11;	// angle_value * 255 / 4095
+				d->SteeringAngle = (((uint32_t)OD.HelmData.TargetAngle << 7) - 1) >> 11;	// angle_value * 255 / 4095
 				d->FeedbackAngle = (((uint32_t)OD.steeringFeedbackAngle << 7) - 1) >> 11;			// angle_value * 255 / 4095
 				
 			}

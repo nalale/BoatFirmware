@@ -18,7 +18,6 @@
 #include "../Libs/TLE_6368g2.h"
 
 #include "WorkStates.h"
-#include "gVCU_ECU.h"
 
 uint32_t timeStamp;
 
@@ -43,7 +42,8 @@ void InitializationState(uint8_t *SubState)
 	EcuConfig_t _config = GetConfigInstance();
     switch(*SubState)
     {
-        case 0:			
+        case 0:		
+			TLE_Init();			
 			OD.SB.CheckFaults = 0;
 			if(ReadFaults())
 				FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
@@ -53,6 +53,8 @@ void InitializationState(uint8_t *SubState)
 		case 1:
 			if(OD.SB.PowerOn == 1)
 			{
+				TLE_GoToPowerSupply();
+				
 				*SubState = 2;
 				timeStamp = GetTimeStamp();
 			}
@@ -140,16 +142,19 @@ void CommonState(void)
 		FaultsTest(OD.SB.CheckFaults);
     }
     if(GetTimeFrom(OD.LogicTimers.Timer_10ms) >= OD.DelayValues.Time10_ms)
-	{
+	{    	
 		btnProc();
 		TLE_Proc();
+		Max11612_StartConversion();
 
 		OD.PowerMaganerState = PM_GetPowerState();
 
 		if(OD.PowerMaganerState == PM_PowerOn1 || OD.PowerMaganerState == PM_PowerOn2)
 		{
-			TLE_GoToPowerSupply();
 			OD.SB.PowerOn = 1;
+			
+			if(ecuConfig.IsPowerManager)
+				btnSetOutputLevel(1, 255);	
 		}
 		else if(OD.PowerMaganerState == PM_ShutDown)
 			SetWorkState(&OD.StateMachine, WORKSTATE_SHUTDOWN);
@@ -159,7 +164,6 @@ void CommonState(void)
     {       
         OD.LogicTimers.Timer_100ms = GetTimeStamp();
 		
-		Max11612_StartConversion();
 		OD.A_Out[0] = btnGetOutputLevel(0);
 		OD.A_Out[1] = btnGetOutputLevel(1);
 		OD.A_Out[2] = btnGetOutputLevel(2);

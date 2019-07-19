@@ -1,4 +1,6 @@
 #include "User.h"
+#include "TrimFunc.h"
+#include "SteeringFunc.h"
 #include "mVcu_Ecu.h"
 
 #include "TimerFunc.h"
@@ -25,6 +27,7 @@ void ecuInit(ObjectDictionary_t *dictionary);
 void HardwareInit(void);
 void PortInit(void);
 uint8_t DrainSupply(void);
+uint8_t TemperatureControl(void);
 
 void AppInit(ObjectDictionary_t *dictionary)
 {
@@ -131,7 +134,7 @@ void PortInit(void)
 
 void InverterPower(uint8_t Cmd)
 {
-	SetDOutput(6, Cmd);    
+	SetDOutput(6, Cmd);
 }
 
 void SteeringPumpPower(uint8_t Cmd)
@@ -153,14 +156,14 @@ void AccPedalInit(uint8_t MaxV, uint8_t NeuV)
 	pedalData.SecondChannel[2] = 0;
 	pedalData.SecondChannel[3] = 0;
 	
-	Filter_init(50, 100, &fltAcc);
+	Filter_init(150, 10, &fltAcc);
 }
 
 uint8_t GetAccelerationPosition(uint8_t sensor_voltage_0p1, uint8_t sensor2_voltage_0p1)
 {
     int16_t result = 0;    
 	
-	uint8_t ch_1 = Filter(sensor_voltage_0p1, &fltAcc);    
+	uint8_t ch_1 = Filter(sensor_voltage_0p1, &fltAcc);
     result = interpol(pedalData.FirstChannel, 2, ch_1);
     return result;
 }
@@ -169,13 +172,6 @@ int8_t GetDriveDirection(uint8_t sensor_voltage_0p1, uint8_t sensor2_voltage_0p1
 {
 	EcuConfig_t cfgEcu = GetConfigInstance();
     return ((sensor_voltage_0p1 > cfgEcu.AccPedalFstCh_0V - 1) && (sensor_voltage_0p1 < cfgEcu.AccPedalFstCh_0V + 1))? 0 : 1;
-}
-
-int16_t GetTargetSpeed(uint8_t AccPosition, int8_t DriveDir)
-{
-    uint16_t result = DriveDir * OD.MaxMotorSpeed * AccPosition / 100;
-    
-    return result;
 }
 
 int16_t GetTargetTorque(uint8_t AccPosition, int8_t GearSelected)
@@ -201,38 +197,7 @@ uint8_t BatteryControl(uint8_t Timeout)
 	return 1;
 }
 
-uint8_t TrimProc(TrimData_t *trim)
-{
-	if(trim->MovCmd)
-	{
-		EcuConfig_t cfgEcu = GetConfigInstance();
-		
-		uint8_t fb_correct = (trim->FeedBack_mV > cfgEcu.TrimMinVal_0p1V) && (trim->FeedBack_mV < cfgEcu.TrimMaxVal_0p1V);
-		
-		if((trim->MovCmd == 1) && fb_correct)
-		{
-			SET_C_OUT6(1);
-			SET_C_OUT5(1);
-		}
-		else if((trim->MovCmd == 2) && fb_correct)
-		{
-			SET_C_OUT6(0);
-			SET_C_OUT5(1);
-		}
-		else
-		{
-			SET_C_OUT6(0);
-			SET_C_OUT5(0);
-		}
-	}
-	else
-	{
-		SET_C_OUT6(0);
-		SET_C_OUT5(0);
-	}
-	
-	return 0;
-}
+
 
 uint8_t ChargersCircuitOn(uint8_t Cmd)
 {
@@ -285,68 +250,79 @@ uint8_t CheckChargingCond(uint8_t TerminalState, uint8_t BatteryState)
 
 uint8_t SystemThreat()
 {	
-	static uint32_t _coolingOffDelay = 0; 
-	
 	uint8_t _inverterEnabled = 0;
+
+	if(OD.MovControlDataRx.AccPosition > 1 && OD.InvertorDataRx.InverterState != VSM_FaultState)
+		_inverterEnabled = 1;
+	else
+		_inverterEnabled = 0;
 	
-	EcuConfig_t cfgEcu = GetConfigInstance();
+	// Управление состоянием инвертора
+	OD.TractionData.InverterEnable = InverterControl(OD.InvertorDataRx.LockupIsEnable, OD.SB.BatteryIsOperate, OD.FaultsBits.SteeringTimeout, _inverterEnabled);
+	OD.BatteryReqState = BatteryControl(OD.FaultsBits.InverterFault || OD.FaultsBits.InverterTimeout);
+	OD.TargetSteeringAngle = HelmGetTargetAngle(&OD.HelmData);
+
+	InverterPower(OD.SB.cmdInverterPowerSupply);
+	SteeringPumpPower(OD.SB.cmdSteeringPump);
+
+	TrimProc(&OD.TrimDataRx, OD.SB.cmdTrimUp, OD.SB.cmdTrimDown);		// Управление тримом
+	SteeringProc(&OD.SteeringData, OD.TargetSteeringAngle);				// Управление рулевой колонкой
+
+	OD.SB.cmdDrainPumpOn = DrainSupply();								// Управление дренажными помпами
+	TemperatureControl();
 	
+	return 0;
+}
+
+uint8_t TemperatureControl()
+{
+	static uint32_t _coolingOffDelay = 0;
+
 	if(OD.InvertorDataRx.InverterIsEnable)
 	{
-		OD.SB.InvPumpCooling = 1;
-		OD.SB.MotorPumpCooling = 1;
-		
+		EcuConfig_t cfgEcu = GetConfigInstance();
+
+		OD.SB.cmdMotorPumpCooling = 1;
+
 		if((OD.InvertorDataRx.InverterTemperature > cfgEcu.InvCoolingOn) || (OD.InvertorDataRx.MotorTemperature > cfgEcu.MotorCoolingOn))
-			OD.SB.HeatsinkPump = 1;
+			OD.SB.cmdHeatsinkPump = 1;
 		else if((OD.InvertorDataRx.InverterTemperature < cfgEcu.InvCoolingOn - 15) || (OD.InvertorDataRx.MotorTemperature < cfgEcu.MotorCoolingOn - 15))
-			OD.SB.HeatsinkPump = 0;
-		
+			OD.SB.cmdHeatsinkPump = 0;
+
 		_coolingOffDelay = GetTimeStamp();
+
 	}
 	else
 	{
 		if(GetTimeFrom(_coolingOffDelay) > 15000)
 		{
-			OD.SB.InvPumpCooling = 0;
-			OD.SB.HeatsinkPump = 0;
-			OD.SB.MotorPumpCooling = 0;
+			OD.SB.cmdMotorPumpCooling = 0;
+			OD.SB.cmdHeatsinkPump = 0;
+
+			return 1;
 		}
 	}
-	
-	DrainSupply();
-	
-	if(OD.MovControlDataRx.AccPosition > 1 && OD.InvertorDataRx.InverterState != VSM_FaultState)
-		_inverterEnabled = 1;	
-	else
-		_inverterEnabled = 0;
-	
-	
-	// Управление состоянием инвертора
-	OD.TractionData.InverterEnable = InverterControl(OD.InvertorDataRx.LockupIsEnable, OD.SB.BatteryIsOperate, OD.FaultsBits.SteeringTimeout, _inverterEnabled);
-	OD.BatteryReqState = BatteryControl(OD.FaultsBits.InverterFault || OD.FaultsBits.InverterTimeout);
-	
+
 	return 0;
 }
-
 
 uint8_t DrainSupply()
 {
 	static uint32_t _waterSwitch1OnDelay = 0; 
 	
-	if(OD.SB.WaterSwitch1 || OD.SB.WaterSwitch2 || OD.SB.ManualDrainSwitch)
+	if(OD.SB.stWaterSwitch1 || OD.SB.stWaterSwitch2 || OD.SB.stManualDrainSwitch)
 	{
-		if(GetTimeFrom(_waterSwitch1OnDelay) > 3000)
+		if(GetTimeFrom(_waterSwitch1OnDelay) > 2000)
 		{
-			OD.SB.DrainOn = 1;
-			
 			return 1;
 		}
 	}
 	else
 	{
 		_waterSwitch1OnDelay = GetTimeStamp();
-		OD.SB.DrainOn = 0;
+		return 0;
 	}
 	
 	return 0;
 }
+

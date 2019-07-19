@@ -83,6 +83,7 @@ static uint32_t I2C_MasterComplete[3];
 static uint32_t I2C_SlaveComplete[3];
 
 static uint32_t I2C_MonitorBufferIndex;
+static uint32_t I2C_MasterRxComplete[3];
 
 /* Private Functions ---------------------------------------------------------- */
 
@@ -756,7 +757,8 @@ void I2C_MasterHandler(LPC_I2C_TypeDef  *I2Cx)
 	uint8_t returnCode;
 	I2C_M_SETUP_Type *txrx_setup;
 	int32_t Ret = I2C_OK;
-
+	I2C_MasterRxComplete[i2cId] = FALSE;
+	
 	txrx_setup = (I2C_M_SETUP_Type *) i2cdat[i2cId].txrx_setup;
 
 	returnCode = (I2Cx->I2STAT & I2C_STAT_CODE_BITMASK);
@@ -801,6 +803,7 @@ void I2C_MasterHandler(LPC_I2C_TypeDef  *I2Cx)
 	}
 	else if (Ret & I2C_RECV_END) 
 	{
+		I2C_MasterRxComplete[i2cId] = TRUE;
 		goto s_int_end;
 	}
 	else
@@ -1329,7 +1332,12 @@ uint32_t I2C_SlaveTransferComplete(LPC_I2C_TypeDef *I2Cx)
 	return retval;
 }
 
-
+uint32_t I2C_MasterReceiveComplete(LPC_I2C_TypeDef *I2Cx)
+{
+	uint32_t tmp;
+	tmp = I2C_getNum(I2Cx);
+	return I2C_MasterRxComplete[tmp];
+}
 
 /**
  * @}

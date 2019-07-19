@@ -7,7 +7,6 @@
 #include "max11612.h"
 
 void AppInit(ObjectDictionary_t *dictionary);
-uint16_t GetOutLoadCurrent_0p1A(uint16_t Voltage_mV, uint16_t VoltageOffset_mV);
 void CalibrateOutCurrentSens(A_OUT_CSENS_t *csens);
 
 

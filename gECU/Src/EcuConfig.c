@@ -27,6 +27,7 @@ void cfgApply(void)
 		OD.Faults.ConfigCrc = 1;
 		_cfgSetDefaultParams();
 	}		
+	EcuConfig.Index = (EcuConfig.Index > 3)? 3 : EcuConfig.Index;
 	EcuConfig.DiagnosticID = GENERAL_ECU_DIAG_ID;	
 	OD.RepItemCount = 0;
 	

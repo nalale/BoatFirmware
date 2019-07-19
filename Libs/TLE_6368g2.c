@@ -1,5 +1,6 @@
 #include "TLE_6368g2.h"
 #include "SpiFunc.h"
+#include "TimerFunc.h"
 #include "lpc17xx_spi.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
 
@@ -65,23 +66,49 @@ typedef union
 static TLE6368_ControlWord_t _controlWorld;
 static TLE6368_StatusWord_t _statusWorld;
 static uint8_t _is_init = 0;
+static uint8_t _power_on = 0;
+static uint32_t _init_delay_ts = 0;
 
 uint16_t TLE6368_Protocol(uint16_t *controlword);
 
 
 void TLE_Init(void)
 {
-	
+	_controlWorld.Sleep = 0;		// 1 - Normal, 0 - Sleep
+	_controlWorld.WD_off1 = 1;		// Window watchdog func
+	_controlWorld.WD_off2 = 0;		// 101 - OFF, 010 - ON
+	_controlWorld.WD_off3 = 1;
+	_controlWorld.reset1 = 0;		// reset delay valid at warm start
+	_controlWorld.reset2 = 0;		// 00 - 64ms, 10 - 32 ms, 01 - 16ms, 00 - 8ms
+	_controlWorld.T1_control = 0;//1;
+	_controlWorld.T2_control = 0;//1;
+	_controlWorld.T3_control = 0;//1;
+	_controlWorld.T4_control = 0;//1;
+	_controlWorld.T5_control = 0;//1;
+	_controlWorld.T6_control = 0;
+	_controlWorld.WD1 = 0;
+	_controlWorld.WD2 = 0;
+	_controlWorld.WD_trig = 0;
+
+	_is_init = 1;
+	_init_delay_ts = GetTimeStamp();
 }
 
 void TLE_Proc()
 {
+	// устройство корректное запускает контроллер только через определенное время после подачи питания
+	if(!_is_init || GetTimeFrom(_init_delay_ts) < 200)
+		return;
+	
+	_controlWorld.Sleep = (_power_on)? 1 : 0;		// 1 - Normal, 0 - Sleep
+
 	_statusWorld.value = TLE6368_Protocol(&_controlWorld.value);
+
 }
 
 void TLE_GoToSleep(void)
 {
-	_controlWorld.Sleep = 0;		// 1 - Normal, 0 - Sleep
+	_power_on = 0;		// 1 - Normal, 0 - Sleep
 	
 	_is_init = 1;
 	
@@ -90,20 +117,7 @@ void TLE_GoToSleep(void)
 
 void TLE_GoToPowerSupply()
 {
-	_controlWorld.Sleep = 1;		// 1 - Normal, 0 - Sleep
-	_controlWorld.WD_off1 = 1;		// Window watchdog func
-	_controlWorld.WD_off2 = 0;		// 101 - OFF, 010 - ON
-	_controlWorld.WD_off3 = 1;
-	_controlWorld.reset1 = 0;		// reset delay valid at warm start 
-	_controlWorld.reset2 = 0;		// 00 - 64ms, 10 - 32 ms, 01 - 16ms, 00 - 8ms
-	_controlWorld.T1_control = 1;
-	_controlWorld.T2_control = 1;
-	_controlWorld.T3_control = 1;
-	_controlWorld.T4_control = 1;
-	_controlWorld.T5_control = 0;
-	_controlWorld.T6_control = 0;
-	_controlWorld.WD1 = 0;
-	_controlWorld.WD2 = 0;
+	_power_on = 1;
 	_controlWorld.WD_trig = 0;
 	
 	_is_init = 1;

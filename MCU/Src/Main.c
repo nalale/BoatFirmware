@@ -124,8 +124,8 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 		break;
 		
 		case didSteeringTargetAngle:
-			*Buf = (uint8_t*)&OD.SteeringDataRx.TargetAngle;
-			_size = (subindex > 0)? 0 : sizeof(OD.SteeringDataRx.TargetAngle);
+			*Buf = (uint8_t*)&OD.HelmData.TargetAngle;
+			_size = (subindex > 0)? 0 : sizeof(OD.HelmData.TargetAngle);
 		break;
 		
 		case didSteeringFBAngle:
@@ -135,17 +135,18 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 		break;
 		
 		case didSteeringFB:
-			*Buf = (uint8_t*)&OD.SteeringDataRx.Feedback_V;
-			_size = (subindex > 0)? 0: sizeof(OD.SteeringDataRx.Feedback_V);
+			*Buf = (uint8_t*)OD.SteeringData.FeedbackVoltage_0p1V;
+			_size = (subindex > 0)? 0: sizeof(OD.SteeringData.FeedbackVoltage_0p1V);
 		break;
 		
 		case didSteeringCurent:
-			*Buf = (uint8_t*)&OD.SteeringDataRx.SteeringTotalCurrent_0p1;
-			_size = (subindex > 0)? 0: sizeof(OD.SteeringDataRx.SteeringTotalCurrent_0p1);
+			_data = SteeringGetDriveCurrent(&OD.SteeringData);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
 		break;
 		
 		case didTrimFB:
-			*Buf = (uint8_t*)&OD.TrimDataRx.FeedBack_mV;
+			*Buf = (uint8_t*)OD.TrimDataRx.FeedBack_mV;
 			_size = (subindex > 0)? 0: sizeof(OD.TrimDataRx.FeedBack_mV);
 		break;
 		
@@ -227,7 +228,7 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 		break;
 		
 		case didWaterSwitches:
-			_data = OD.SB.WaterSwitch1 | (OD.SB.WaterSwitch2 << 1);
+			_data = OD.SB.stWaterSwitch1 | (OD.SB.stWaterSwitch2 << 1) | (OD.SB.stManualDrainSwitch << 2);
 			*Buf = (uint8_t*)&_data;	
 			_size = (subindex > 0)? 0: sizeof(uint8_t);
 		break;

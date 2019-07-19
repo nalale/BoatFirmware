@@ -431,6 +431,11 @@
               <FileType>1</FileType>
               <FilePath>..\MolniaLib\PowerManager.c</FilePath>
             </File>
+            <File>
+              <FileName>TrimFunc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\TrimFunc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

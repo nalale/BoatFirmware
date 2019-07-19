@@ -96,7 +96,7 @@ void Max11612_SetData(void)
 	max11612Result[2] = (uint16_t)(((rx_buf[4] & 0x0F) << 8) + rx_buf[5]);
 	max11612Result[3] = (uint16_t)(((rx_buf[6] & 0x0F) << 8) + rx_buf[7]);
 	
-	_max11612MsgSend = 0;
+	_max11612MsgSend = 1;
 }
 
 void Max11612_ClearData(void)
@@ -107,7 +107,7 @@ void Max11612_ClearData(void)
 
 void Max11612_StartConversion(void)
 {
-	_max11612MsgSend = 1;
+	_max11612MsgSend = 0;
 	I2CReadWrite(NULL, 0, rx_buf, 8, I2CDEV_S_ADDR);
 }
 

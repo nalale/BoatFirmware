@@ -172,7 +172,7 @@ const DiagnosticValueFRZF dVal_frzfAccelerator[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfAcceleratorPosition) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_Accelerator = { dtc_Accelerator, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 100, DIAG_ITEM(dVal_frzfAccelerator) };
+dtcProperty_t dtcProp_Accelerator = { dtc_Accelerator, DTC_BIT_WARNING_ENABLE + DTC_BIT_OPERATION_DISABLE, 0, 10, -10, 50, DIAG_ITEM(dVal_frzfAccelerator) };
 // Все о неисправности
 dtcItem_t dtcAcceleratorPosition = {&dtcProp_Accelerator};
 
@@ -288,6 +288,8 @@ dtcProperty_t dtcProp_PowerSupplyCircuit = { dtc_PowerSupplyCircuit, DTC_BIT_WAR
 // Все о неисправности
 dtcItem_t dtcPowerSupplyCircuit = {&dtcProp_MeasuringCircuit};
 
+
+
 // Итоговый список неисправностей
 dtcItem_t* dtcList[] =
 {
@@ -321,9 +323,9 @@ void ecuInit(ObjectDictionary_t *dictionary)
     
     Max11612_Init();
 	
-	btnInit(0, A_OUT1_CSENS, cfgEcu.SteeringMaxCurrent_0p1A);
-	btnInit(1, A_OUT2_CSENS, cfgEcu.SteeringMaxCurrent_0p1A);
-	btnInit(2, A_OUT3_CSENS, 0xffff);
+	btnInit(0, A_OUT1_CSENS, 400);
+	btnInit(1, A_OUT2_CSENS, 400);
+	btnInit(2, A_OUT3_CSENS, 400);
 	btnInit(3, 0xff, 0xffff);
 	// Фильтр питания ECU
 	Filter_init(50, 1, &fltVoltage);
@@ -332,7 +334,9 @@ void ecuInit(ObjectDictionary_t *dictionary)
 void ecuProc()
 {
 	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY) << 3) * 7 / 10 , &fltVoltage);
-	 _ecuPowerSupply = voltage_mV / 100;
+	_ecuPowerSupply = voltage_mV / 100;
+	
+	OD.IO = GetDiscretIO();    
 }
 
 uint16_t EcuGetVoltage()

@@ -19,11 +19,6 @@ void I2C2_IRQHandler(void)
 		cnt = 0;
 		Max11612_SetData();
 	}
-	else
-	{		
-		if(++cnt >= 4)
-			Max11612_ClearData();
-	}
 }
 
 

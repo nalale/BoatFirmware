@@ -103,8 +103,8 @@
 
 #define D_IN1            ((PU_D_IN1_STATE)? (GPIO_ReadValue(0) & P0_29) == 0 : (GPIO_ReadValue(0) & P0_29) != 0)
 #define D_IN2            ((PU_D_IN2_STATE)? (GPIO_ReadValue(0) & P0_30) == 0 : (GPIO_ReadValue(0) & P0_30) != 0)
-#define D_IN3            ((PU_D_IN3_STATE)? (GPIO_ReadValue(1) & P1_14) == 0 : (GPIO_ReadValue(0) & P1_14) != 0)
-#define D_IN4            ((PU_D_IN4_STATE)? (GPIO_ReadValue(1) & P1_15) == 0 : (GPIO_ReadValue(0) & P1_15) != 0)
+#define D_IN3            ((PU_D_IN3_STATE)? (GPIO_ReadValue(1) & P1_14) == 0 : (GPIO_ReadValue(1) & P1_14) != 0)
+#define D_IN4            ((PU_D_IN4_STATE)? (GPIO_ReadValue(1) & P1_15) == 0 : (GPIO_ReadValue(1) & P1_15) != 0)
 #define D_IN5            ((GPIO_ReadValue(1) & P1_9) == 0)
 #define D_IN6            ((GPIO_ReadValue(1) & P1_10) == 0)
 #define D_IN7            ((GPIO_ReadValue(1) & P1_4) == 0)

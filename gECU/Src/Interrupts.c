@@ -14,16 +14,16 @@ void I2C2_IRQHandler(void)
 	
 	I2C_MasterHandler(LPC_I2C2);
 	
-	if (I2C_MasterTransferComplete(LPC_I2C2))
+	if (I2C_MasterReceiveComplete(LPC_I2C2))
 	{
 		cnt = 0;
 		Max11612_SetData();
 	}
-	else
-	{		
-		if(++cnt >= 10)
-			Max11612_ClearData();
-	}
+//	else
+//	{
+//		if(++cnt >= 10)
+//			Max11612_ClearData();
+//	}
 }
 
 

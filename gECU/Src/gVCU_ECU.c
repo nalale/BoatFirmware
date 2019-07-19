@@ -208,7 +208,7 @@ void ecuInit(ObjectDictionary_t *dictionary)
 
 void ecuProc()
 {
-	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY) << 3) * 7 / 10 , &fltVoltage);
+	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY)) * 57 / 10 , &fltVoltage);
 	 _ecuPowerSupply = voltage_mV / 100;
 }
 

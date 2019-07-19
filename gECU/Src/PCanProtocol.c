@@ -16,7 +16,7 @@ static uint32_t extSendTime[EXTERNAL_SEND_MSG_AMOUNT];
 // Периоды отправки сообщений
 static uint16_t extPeriod[EXTERNAL_SEND_MSG_AMOUNT] = {
 								50,	
-                                250,
+                                100,
 								10,				// значение меняется в зависимости от текущего передаваемого сообщения из таблицы
 								100,
 								 };
@@ -166,7 +166,7 @@ void PCanMesGenerate(void)
                 msg->ID = General_ECU_CAN_ID + config.Index * General_ECUx_CAN_ID_LEN;
                 msg->DLC = 8;
 				
-				d->LogicInputsOutputs = (OD.IO & 0xff);
+				d->LogicInputsOutputs = (OD.IO & 0x3ff);
 				
 				for(int i = 4, j = 0; j < A_IN_NUM; i++, j++)				
 					d->AnalogInput[j] = OD.A_CH_Voltage_0p1[j];

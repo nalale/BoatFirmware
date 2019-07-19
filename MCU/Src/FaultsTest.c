@@ -188,18 +188,34 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;
-		Btn8982FaultList_e f = btnGetCircuitState(0);
-		f = (f != dctCat_CircuitCurrentAboveThreshold)? btnGetCircuitState(1) : f;
+
+		int16_t f = SteeringGetState(&OD.SteeringData);
 		
-		if(f == dctCat_CircuitCurrentAboveThreshold)
+		if(f)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
 			{
 				if(!TestFailedThisOperationCycle)
 				{
+					switch(f)
+					{
+						case STEERING_F_CURRENT1:
+							it->Category = dctCat_CircuitCurrentAboveThreshold;
+							break;
+						case STEERING_F_CURRENT2:
+							it->Category = dctCat_CircuitCurrentAboveThreshold;
+							break;
+						case STEERING_F_FEEDBACK:
+							it->Category = dctCat_SignalInvalid;
+							break;
+						case STEERING_F_POSITION:
+							it->Category = dctCat_CommandedPositionNotReachable;
+							break;
+					}
+
 					dtcSetFault(it, &env);
-					it->Category = dctCat_CircuitCurrentAboveThreshold;
+
 					SetGeneralFRZR(&frzfSteeringPosition);							
 				}
 				OD.FaultsBits.SteeringPosition = 1;
@@ -239,20 +255,7 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 				OD.FaultsBits.Accelerator = 1;
 			}
 		}
-		else if(dtcFaultDetection(it, &env, 0) == DTC_TEST_RESULT_PASSED)
-		{
-			OD.FaultsBits.Accelerator = 0;
-		}
-	}
-	
-	// Ошибка обратной связи рулевой рейки
-	it = &dtcSteeringFeedBack;
-	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
-	{
-		EcuConfig_t cfgEcu = GetConfigInstance();
-		it->SamplePeriodCounter = 0;
-		
-		if(OD.SteeringDataRx.Feedback_V > cfgEcu.SteeringMaxVal_0p1V || OD.SteeringDataRx.Feedback_V < cfgEcu.SteeringMinVal_0p1V)
+		if(!OD.SB.Ecu1MeasDataActual)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -260,34 +263,69 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 				if(!TestFailedThisOperationCycle)
 				{
 					dtcSetFault(it, &env);
-					it->Category = dctCat_SignalInvalid;
-					SetGeneralFRZR(&frzfSteeringFeedBack);							
+					it->Category = dctCat_SignalPlausibilityFailure;
+					SetGeneralFRZR(&frzfAcceleratorPosition);
 				}
-				OD.FaultsBits.SteeringFeedback = 1;
+				OD.FaultsBits.Accelerator = 1;
 			}
 		}
-		else if(dtcFaultDetection(it, &env, 0) == DTC_TEST_RESULT_PASSED)
-		{
-			OD.FaultsBits.SteeringFeedback = 0;
-		}
 	}
+	
+	// Ошибка обратной связи рулевой рейки
+//	it = &dtcSteeringFeedBack;
+//	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
+//	{
+//		EcuConfig_t cfgEcu = GetConfigInstance();
+//		it->SamplePeriodCounter = 0;
+//
+//		int16_t fb = SteeringGetFeed
+//
+//		if(OD.SteeringData.Feedback_0p1V > cfgEcu.SteeringMaxVal_0p1V || OD.SteeringData.Feedback_V < cfgEcu.SteeringMinVal_0p1V)
+//		{
+//			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
+//			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
+//			{
+//				if(!TestFailedThisOperationCycle)
+//				{
+//					dtcSetFault(it, &env);
+//					it->Category = dctCat_SignalInvalid;
+//					SetGeneralFRZR(&frzfSteeringFeedBack);
+//				}
+//				OD.FaultsBits.SteeringFeedback = 1;
+//			}
+//		}
+//		else if(dtcFaultDetection(it, &env, 0) == DTC_TEST_RESULT_PASSED)
+//		{
+//			OD.FaultsBits.SteeringFeedback = 0;
+//		}
+//	}
 	
 	// Ошибка обратной связи трим
 	it = &dtcTrimFeedBack;
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
-		EcuConfig_t cfgEcu = GetConfigInstance();
+		uint8_t f = TrimGetState(&OD.TrimDataRx);
 		it->SamplePeriodCounter = 0;
 		
-		if(OD.TrimDataRx.FeedBack_mV > cfgEcu.TrimMaxVal_0p1V || OD.TrimDataRx.FeedBack_mV < cfgEcu.TrimMinVal_0p1V)
+		if(f)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
 			{
 				if(!TestFailedThisOperationCycle)
 				{
+					switch(f)
+					{
+						case TRIM_F_POSITION:
+							it->Category = dctCat_CommandedPositionNotReachable;
+							break;
+
+						case TRIM_F_FEEDBACK:
+							it->Category = dctCat_CircuitOpen;
+							break;
+					}
+
 					dtcSetFault(it, &env);
-					it->Category = dctCat_SignalInvalid;
 					SetGeneralFRZR(&frzfTrimFeedBack);							
 				}
 				OD.FaultsBits.TrimFeedback = 1;

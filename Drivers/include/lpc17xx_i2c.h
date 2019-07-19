@@ -416,7 +416,7 @@ void I2C_MasterHandler (LPC_I2C_TypeDef *I2Cx);
 //int32_t I2C_MasterHandler(LPC_I2C_TypeDef  *I2Cx);
 void I2C_SlaveHandler (LPC_I2C_TypeDef *I2Cx);
 
-
+uint32_t I2C_MasterReceiveComplete(LPC_I2C_TypeDef *I2Cx);
 /**
  * @}
  */

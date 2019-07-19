@@ -66,7 +66,6 @@ uint32_t GetDiscretIO() {
     b++;
 
     b = 16;
-
     // Выходы
     if (C_OUT5_STATE) SET_BIT(tmp, b);
     b++;

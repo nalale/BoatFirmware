@@ -74,6 +74,7 @@ void HardwareInit(void)
 	Spi_Init(DATABIT_16);
 	
 	NVIC_EnableIRQ(CAN_IRQn);
+//	NVIC_EnableIRQ(I2C2_IRQn);
 //	NVIC_EnableIRQ(ADC_IRQn);
 //	Spi_Init(DATABIT_16);
 	
@@ -88,12 +89,12 @@ void PortInit(void)
 	SET_CS_OUT(1);
 	
     FIO_SetDir(1, 0xFFFFFFFF, DIR_OUT);
-	SET_C_OUT5(1);
-	SET_C_OUT6(1);
-	SET_C_OUT7(1);
-	SET_C_OUT8(1);
-	SET_C_OUT9(1);
-	SET_C_OUT10(1);
+	SET_C_OUT5(0);
+	SET_C_OUT6(0);
+	SET_C_OUT7(0);
+	SET_C_OUT8(0);
+	SET_C_OUT9(0);
+	SET_C_OUT10(0);
 	
 	SET_PU_D_IN1(0);
 	SET_PU_D_IN2(0);

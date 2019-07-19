@@ -9,7 +9,7 @@ typedef enum {
 	TLE_F_GENERAL_ERROR = dctCat_GeneralElectricalFailure, 
 	TLE_F_OVER_TEMP = dctCat_OverTemperature, 		
 	TLE_F_WD_ERROR = dctCat_WatchdogOrSafetyFailure,
-	TLE_F_OUT_SHORTED = dctCat_CircuitShortToGround, 
+	TLE_F_OUT_SHORTED = dctCat_CircuitShortToGroundOrOpen, 
 	TLE_F_COLD_START = dctCat_CircuitVoltageBelowThreshold,
 } Tle6368FaultList_e;
 

@@ -27,9 +27,9 @@ uint8_t ExternalRx(CanMsg *msg)
 			
 			if(d->C_NUM_STEERING_REV == 0)
 			{           
-				OD.SteeringDataRx.TargetAngle = d->C_ANGLE;
-				OD.SteeringDataRx.NumSteeringRev = d->C_NUM_STEERING_REV;
-				OD.SteeringDataRx.SteeringSpeed_rads = (d->C_STEERING_SPEED_HIG << 8) | d->C_STEERING_SPEED_LOW;
+				OD.HelmData.TargetAngle = d->C_ANGLE;
+				OD.HelmData.NumSteeringRev = d->C_NUM_STEERING_REV;
+				OD.HelmData.SteeringSpeed_rads = (d->C_STEERING_SPEED_HIG << 8) | d->C_STEERING_SPEED_LOW;
 				
 				if(d->C_HEART_COUNTER != heart_cntr_prev)
 					OD.LogicTimers.SteeringTimer_ms = GetTimeStamp();
@@ -43,15 +43,15 @@ uint8_t ExternalRx(CanMsg *msg)
 			switch(msg->data[0])
 			{
 				case 0xe5:
-					OD.SteeringDataRx.SetZeroRegBrake_Ack = 1;
+					OD.HelmData.SetZeroRegBrake_Ack = 1;
 					break;
 				
 				case 0xea:
-					OD.SteeringDataRx.EndStopLeft_Ack = 1;
+					OD.HelmData.EndStopLeft_Ack = 1;
 					break;
 				
 				case 0xe9:
-					OD.SteeringDataRx.EndStopRight_Ack = 1;
+					OD.HelmData.EndStopRight_Ack = 1;
 					break;
 			}
 			return 0;
@@ -149,7 +149,7 @@ void ExternalMesGenerate(void)
                 msg->Ext = 1;
                 
                 MSG_SET_REGULATED_BRAKE_FRICTION* d = (MSG_SET_REGULATED_BRAKE_FRICTION*) msg->data;
-                d->C_PERC_MAX_BRAKE_FRICTION = OD.SteeringData.TargetSteeringBrake;
+                d->C_PERC_MAX_BRAKE_FRICTION = 0;//OD.SteeringData.TargetSteeringBrake;
             }
                 break;
 			
@@ -195,7 +195,7 @@ uint8_t SendSteeringStartupMsg(void)
     
     if(GetTimeFrom(send_timestamp) >= 250)
     {           
-		if(!OD.SteeringDataRx.EndStopRight_Ack || !OD.SteeringDataRx.EndStopLeft_Ack)
+		if(!OD.HelmData.EndStopRight_Ack || !OD.HelmData.EndStopLeft_Ack)
 		{
 			msg = ecanGetEmptyTxMsg(D_CAN_CH);
     
@@ -205,29 +205,29 @@ uint8_t SendSteeringStartupMsg(void)
 			send_timestamp = GetTimeStamp();    
 		}
   
-        if(!OD.SteeringDataRx.EndStopRight_Ack)
+        if(!OD.HelmData.EndStopRight_Ack)
         {
             MSG_SET_STEERING_ENDSTOP *d = (MSG_SET_STEERING_ENDSTOP *)msg->data;
             msg->ID = 0xe9;
             
             msg->DLC = 3;
             msg->Ext = 1;
-            d->C_NUM_REV = OD.SteeringDataRx.NumSteeringRev;
+            d->C_NUM_REV = OD.HelmData.NumSteeringRev;
             d->C_ABS_ANGLE_HIGH = 0x0f;
             d->C_ABS_ANGLE_LOW = 0xff;
         }
-        else if (!OD.SteeringDataRx.EndStopLeft_Ack)
+        else if (!OD.HelmData.EndStopLeft_Ack)
         {
             MSG_SET_STEERING_ENDSTOP *d = (MSG_SET_STEERING_ENDSTOP *)msg->data;
             msg->ID = 0xea;
             
             msg->DLC = 3;
             msg->Ext = 1;
-            d->C_NUM_REV = OD.SteeringDataRx.NumSteeringRev;
+            d->C_NUM_REV = OD.HelmData.NumSteeringRev;
             d->C_ABS_ANGLE_HIGH = 0x00;
             d->C_ABS_ANGLE_LOW = 0x00;
         }       	
-		else if(!OD.SteeringDataRx.SetZeroRegBrake_Ack)
+		else if(!OD.HelmData.SetZeroRegBrake_Ack)
 		{
 			MSG_SET_ZERO_REGULATED_BRAKE_FRICTION *d = (MSG_SET_ZERO_REGULATED_BRAKE_FRICTION *)msg->data;
 			msg->ID = 0xe5;

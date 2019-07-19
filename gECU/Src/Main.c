@@ -36,6 +36,7 @@ int main(void)
 uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 {
 	uint8_t _size = 0;
+	static uint32_t _data = 0;
 	_config = GetConfigInstance();
 	
 	switch(Index)
@@ -122,7 +123,8 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 		break;
 		
 		case didInOutState:
-			*Buf = (uint8_t*)&OD.IO;
+			_data = (OD.IO);
+			*Buf = (uint8_t*)&_data;
 			_size = (subindex > 0)? 0 : sizeof(OD.IO);
 		break;
 		

@@ -9,7 +9,7 @@
 #include "../Libs/Btn8982.h"
 #include "../Libs/filter.h"
 
-static PowerStates_e _powerOff = PM_PowerOff;
+static PowerStates_e _pm_state = PM_PowerOff;
 
 
 void PM_Proc(uint16_t voltageEcu, uint8_t IsPowerManager)
@@ -25,34 +25,34 @@ void PM_Proc(uint16_t voltageEcu, uint8_t IsPowerManager)
 	if(OD.ecuPowerSupply_0p1 > 100)
 	{
 		if(GetTimeFrom(_start_timestamp) > _config.KeyOffTime_ms)
-			_powerOff = PM_PowerOn1;
+			_pm_state = PM_PowerOn1;
 		
 		OD.LogicTimers.KeyOffTimer_ms = GetTimeStamp();
 	}
 	else
-		_start_timestamp = GetTimeStamp();
-	
-	if(_powerOff == PM_PowerOn1 || _powerOff == PM_PowerOn2)
 	{
-		if((OD.ecuPowerSupply_0p1 < 80) && (GetTimeFrom(OD.LogicTimers.KeyOffTimer_ms) >= _config.KeyOffTime_ms))
-			_powerOff = PM_ShutDown;		
-		
-		if(GetTimeFrom(_start_timestamp) > 2000 && (_config.IsPowerManager))		
-			_powerOff = PM_PowerOn2;
-		
-	}
-	else if(_powerOff == PM_PowerOff)
-	{
-		if((OD.ecuPowerSupply_0p1 < 80) && (GetTimeFrom(OD.LogicTimers.KeyOffTimer_ms) > _config.KeyOffTime_ms + 100))
+		if(OD.ecuPowerSupply_0p1 < 80)
 		{
-			_powerOff = PM_ShutDown;
+			if(GetTimeFrom(OD.LogicTimers.KeyOffTimer_ms) >= _config.KeyOffTime_ms)
+			{
+				_pm_state = (_pm_state == PM_PowerOn1)? PM_ShutDown : _pm_state;
+			}
 		}
+		_start_timestamp = GetTimeStamp();
 	}
+
+//	else if(_pm_state == PM_PowerOff)
+//	{
+//		if((OD.ecuPowerSupply_0p1 < 80) && (GetTimeFrom(OD.LogicTimers.KeyOffTimer_ms) > _config.KeyOffTime_ms + 100))
+//		{
+//			_pm_state = PM_ShutDown;
+//		}
+//	}
 }
 
 
 PowerStates_e PM_GetPowerState()
 {
-	return _powerOff;
+	return _pm_state;
 }
 
