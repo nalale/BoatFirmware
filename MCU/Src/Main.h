@@ -316,8 +316,10 @@ typedef struct
 	
 	uint16_t TargetSteeringAngle;
 	uint8_t TargetChargingCurrent_A;
-	PowerStates_e PowerMaganerState;
-		
+
+	PowerStates_e LocalPMState;
+	PowerStates_e PowerManagerCmd;
+
 	uint8_t FaultsNumber;		
 	uint16_t FaultList[MAX_FAULTS_NUM];
 	
