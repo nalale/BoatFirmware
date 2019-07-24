@@ -333,7 +333,8 @@ void ecuInit(ObjectDictionary_t *dictionary)
 
 void ecuProc()
 {
-	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY) << 3) * 7 / 10 , &fltVoltage);
+	// 5.7 - делитель напряжения.
+	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY)) * 57 / 10 , &fltVoltage);
 	_ecuPowerSupply = voltage_mV / 100;
 	
 	OD.IO = GetDiscretIO();    

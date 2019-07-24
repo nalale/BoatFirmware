@@ -27,9 +27,6 @@ void Protocol(void)
     if(isNewMsg2)		
 		isNewMsg2 = PCanRx(&PCanRxMsg);
 	
-
-		
-	
 	ExternalMesGenerate();
     PCanMesGenerate();	
 	ObdSendMes();

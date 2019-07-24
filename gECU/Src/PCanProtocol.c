@@ -26,7 +26,11 @@ uint8_t PCanRx(CanMsg *msg)
 	EcuConfig_t config = GetConfigInstance();		
 	OD.SB.PCanMsgReceived = 1;
 	
-    if(msg->ID == General_Control1_CAN_ID)
+	if(msg->ID == PM_CAN_ID)
+	{
+		OD.PowerManagerCmd = msg->data[0];
+	}
+	else if(msg->ID == General_Control1_CAN_ID)
     {
 		cmGeneralControl1* d = (cmGeneralControl1*)msg->data;
 		
@@ -203,7 +207,7 @@ void PCanMesGenerate(void)
 				msg->ID = PM_CAN_ID;
 				msg->DLC = 1;
 				
-				msg->data[0] = OD.PowerMaganerState;
+				msg->data[0] = OD.LocalPMState;
 			}
 			break;
         }

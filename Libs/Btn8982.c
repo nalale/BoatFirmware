@@ -9,7 +9,8 @@
 
 #include <stdint.h>
 
-FILTER_STRUCT csFilter;
+
+// добавить фильтр на каждый канал измерения тока и калибровки
 
 #define RES_IS  1000      // Ohm 
 #define dK      195       // *100
@@ -33,6 +34,7 @@ typedef struct {
 	uint32_t CalibrationTms;
 } btnData_t;
 
+static FILTER_STRUCT csFilter[DRIVER_NUM];
 static btnData_t btnData[DRIVER_NUM];
 
 
@@ -56,7 +58,7 @@ void btnInit(uint8_t Number, uint8_t MeasuringChannel, uint16_t CurrentTreshold_
 	btnInhibit(Number, 1);
 	btnData[Number].MeasuringChannel = MeasuringChannel;
 	
-	Filter_init(50, 1, &csFilter);
+	Filter_init(50, 1, &csFilter[Number]);
 }
 
 uint8_t btnCalibrate(uint8_t Channel) {
@@ -74,7 +76,7 @@ uint8_t btnCalibrate(uint8_t Channel) {
 	btnData[Channel].CalibProc = 1;
 	
 	uint8_t measuring_channel = btnData[Channel].MeasuringChannel;
-    btnData[Channel].CurrentOffset = Filter(GetVoltageValue(measuring_channel) * 1000 / RES_IS, &csFilter); // uA   (mV*1000[uV])/(Ohm) => uA
+    btnData[Channel].CurrentOffset = Filter(GetVoltageValue(measuring_channel) * 1000 / RES_IS, &(csFilter[Channel])); // uA   (mV*1000[uV])/(Ohm) => uA
 		
 	return 0;
 	
@@ -118,8 +120,8 @@ static void _btnMonitor(uint8_t Channel)
 
 	uint8_t measuring_channel = btnData[Channel].MeasuringChannel;
 	
-    uint16_t voltage = (measuring_channel != 0xFF)? GetVoltageValue(measuring_channel) : 0;    
-    uint16_t Current_IS_uA = voltage * 1000 / RES_IS; 
+    uint16_t voltage = (measuring_channel != 0xFF)? GetVoltageValue(measuring_channel) : 0;
+    uint16_t Current_IS_uA = Filter(voltage * 1000 / RES_IS, &(csFilter[Channel]));	//voltage * 1000 / RES_IS;
 
     if (btnData[Channel].TargetPwm < (uint8_t)30 || btnData[Channel].Current > (uint16_t)10)
         circOpenTimeStamp = GetTimeStamp();

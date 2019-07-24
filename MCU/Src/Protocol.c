@@ -21,15 +21,16 @@ void Protocol(void)
 	
 	if(isNewMsg2)
 		isNewMsg2 = ObdThread(&PCanRxMsg);	
+
 	if(isNewMsg2)
 		isNewMsg2 = PCanRx(&PCanRxMsg);	
+
 	if(isNewMsg1)
         isNewMsg1 = ExternalRx(&DCanRxMsg);
-    
-    
-	ObdSendMes();
-	PCanMesGenerate();
-    ExternalMesGenerate();    
+
+    ExternalMesGenerate();
+    PCanMesGenerate();
+    ObdSendMes();
     
     if (GetBufferAvailable(P_CAN_CH) && ecanGetTxMsg(&PCanTxMsg, P_CAN_CH))
     { 	

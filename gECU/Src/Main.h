@@ -123,7 +123,8 @@ typedef struct
 	uint8_t A_Out[4];
 	
 	// PM
-	PowerStates_e PowerMaganerState;
+	PowerStates_e LocalPMState;
+	PowerStates_e PowerManagerCmd;
 	
 	uint8_t RepItemCount;	
 	canSendItem_t msgTab[REPEATER_TABLE_SIZE];

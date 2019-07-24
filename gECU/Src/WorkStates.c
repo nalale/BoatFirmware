@@ -42,9 +42,11 @@ void InitializationState(uint8_t *SubState)
 	EcuConfig_t _config = GetConfigInstance();
     switch(*SubState)
     {
-        case 0:		
-			TLE_Init();			
+        case 0:
 			OD.SB.CheckFaults = 0;
+			// Инициализация устройства питания
+			TLE_GoToPowerSupply();
+		
 			if(ReadFaults())
 				FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
 
@@ -53,8 +55,6 @@ void InitializationState(uint8_t *SubState)
 		case 1:
 			if(OD.SB.PowerOn == 1)
 			{
-				TLE_GoToPowerSupply();
-				
 				*SubState = 2;
 				timeStamp = GetTimeStamp();
 			}
@@ -92,17 +92,19 @@ void ShutdownState(uint8_t *SubState)
 		break;
 		
 		case 1:
-			if(GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= _config.PowerOffDelay_ms)
-				*SubState = 2;
+
 		break;
 		
 		case 2:
 			if(_config.IsPowerManager)
-				btnSetOutputLevel(1, 0);	
-			
+				btnSetOutputLevel(1, 0);
+
 			TLE_GoToSleep();
 			break;
 	}
+
+	if((GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= _config.PowerOffDelay_ms) && (OD.LocalPMState == PM_ShutDown))
+		*SubState = 2;
 }
 
 void FaultState(uint8_t *SubState)
@@ -126,14 +128,11 @@ void CommonState(void)
 		
         // Code   
         ecuProc();
-
 		OD.ecuPowerSupply_0p1 = EcuGetVoltage();
-
-
 		// Power Manager thread
 		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);
 
-		OD.IO = GetDiscretIO();    
+
 		Max11612_GetResult(OD.A_CH_Voltage_0p1, V_AN);
 		OD.Out_CSens[0].Out_CSens_Current = btnGetCurrent(0);
 		OD.Out_CSens[1].Out_CSens_Current = btnGetCurrent(1);
@@ -143,22 +142,42 @@ void CommonState(void)
     }
     if(GetTimeFrom(OD.LogicTimers.Timer_10ms) >= OD.DelayValues.Time10_ms)
 	{    	
+    	OD.LogicTimers.Timer_10ms = GetTimeStamp();
+
 		btnProc();
 		TLE_Proc();
 		Max11612_StartConversion();
 
-		OD.PowerMaganerState = PM_GetPowerState();
+		OD.LocalPMState = PM_GetPowerState();
 
-		if(OD.PowerMaganerState == PM_PowerOn1 || OD.PowerMaganerState == PM_PowerOn2)
+		if(OD.LocalPMState == PM_PowerOn1)
 		{
 			OD.SB.PowerOn = 1;
-			
-			if(ecuConfig.IsPowerManager)
-				btnSetOutputLevel(1, 255);	
 		}
-		else if(OD.PowerMaganerState == PM_ShutDown)
+		if(OD.LocalPMState == PM_ShutDown || OD.PowerManagerCmd == PM_ShutDown)
 			SetWorkState(&OD.StateMachine, WORKSTATE_SHUTDOWN);
 		
+		// Если устройство управляет питание, то
+		// 1. Контролируем состояние зажигания через дискретный вход
+		// 2. Управляем поддержанием питания 12V всей системы
+		if(ecuConfig.IsPowerManager)
+		{
+			static uint8_t cnt = 0;
+			if(D_IN1)
+			{
+				cnt = 0;
+				OD.PowerManagerCmd = OD.LocalPMState;
+			}
+			else
+			{
+				if(++cnt > 5)
+					OD.PowerManagerCmd = PM_ShutDown;
+			}
+
+			if(OD.SB.PowerOn == 1)
+				btnSetOutputLevel(1, 255);
+		}
+
 	}
     if(GetTimeFrom(OD.LogicTimers.Timer_100ms) >= OD.DelayValues.Time100_ms)
     {       

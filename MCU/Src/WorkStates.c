@@ -60,7 +60,9 @@ void InitializationState(uint8_t *SubState)
 		case 0:	
 			OD.SB.CheckFaults = 0;
 			OD.TractionData.Direction = 0;
-
+			
+			// Инициализация устройства питания
+			TLE_GoToPowerSupply();
 			// Инициализация параметров ручки акселератора
 			AccPedalInit(_cfgEcu.AccPedalFstCh_MaxV, _cfgEcu.AccPedalFstCh_0V);
 			// Инициализация параметров трим
@@ -77,8 +79,8 @@ void InitializationState(uint8_t *SubState)
         case 1:
         	if(OD.SB.PowerOn == 1)
 			{
-        		timeStamp = GetTimeStamp();
 				*SubState = 2;
+				timeStamp = GetTimeStamp();
 			}
 
             break;		
@@ -148,7 +150,7 @@ void ShutdownState(uint8_t *SubState)
 			break;
 	}
 	
-	if(GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= _config.PowerOffDelay_ms)
+	if((GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= _config.PowerOffDelay_ms) && (OD.LocalPMState == PM_ShutDown))
 		*SubState = 2;
 }
 
@@ -191,7 +193,6 @@ void CommonState(void)
 
         // Code      	
         ecuProc();
-
 		OD.ecuPowerSupply_0p1 = EcuGetVoltage();
 		// Power Manager thread
 		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);		
@@ -210,24 +211,23 @@ void CommonState(void)
 	{
 		OD.LogicTimers.Timer_10ms = GetTimeStamp();
 		
-		OD.PowerMaganerState = PM_GetPowerState();
-
-		if(OD.PowerMaganerState == PM_PowerOn1 || OD.PowerMaganerState == PM_PowerOn2)
-		{
-			TLE_GoToPowerSupply();
-			OD.SB.PowerOn = 1;
-		}
-		else if(OD.PowerMaganerState == PM_ShutDown)
-			SetWorkState(&OD.StateMachine, WORKSTATE_SHUTDOWN);
-		
 		SystemThreat();
 
-		Max11612_StartConversion();
 		btnProc();
 		TLE_Proc();
-		
+		Max11612_StartConversion();
+
 		OD.MovControlDataRx.Gear = GetDriveDirection(OD.AccPedalChannels[0], OD.AccPedalChannels[1]);
 		OD.MovControlDataRx.AccPosition = GetAccelerationPosition(OD.AccPedalChannels[0], OD.AccPedalChannels[1]);
+
+		OD.LocalPMState = PM_GetPowerState();
+
+		if(OD.LocalPMState == PM_PowerOn1)
+		{
+			OD.SB.PowerOn = 1;
+		}
+		if(OD.LocalPMState == PM_ShutDown || OD.PowerManagerCmd == PM_ShutDown)
+			SetWorkState(&OD.StateMachine, WORKSTATE_SHUTDOWN);
 	}
 	
 	

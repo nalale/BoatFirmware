@@ -68,8 +68,8 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 		break;
 		
 		case didPowerManagmentState:
-			*Buf = (uint8_t*)&OD.PowerMaganerState;
-		_size = (subindex > 0)? 0 : sizeof(OD.PowerMaganerState);
+			*Buf = (uint8_t*)&OD.LocalPMState;
+		_size = (subindex > 0)? 0 : sizeof(OD.LocalPMState);
 		break;
 		
 		case didVoltageSensor1:

@@ -43,7 +43,7 @@ uint8_t I2CReadWrite(uint8_t *tx_buf, uint8_t tx_lenght, uint8_t *rx_buf, uint8_
   transferMCfg.tx_length = tx_lenght;
   transferMCfg.rx_data = rx_buf;
   transferMCfg.rx_length = rx_lenght;
-  transferMCfg.retransmissions_max = 6;
+  transferMCfg.retransmissions_max = 8;
   return I2C_MasterTransferData(LPC_I2C2, &transferMCfg, I2C_TRANSFER_INTERRUPT); 
 }
 

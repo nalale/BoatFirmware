@@ -26,7 +26,11 @@ uint8_t PCanRx(CanMsg *msg)
 {
 	EcuConfig_t config = GetConfigInstance();	
 	
-    if(msg->ID == General_ECU_CAN_ID)
+	if(msg->ID == PM_CAN_ID)
+	{
+		OD.PowerManagerCmd = msg->data[0];
+	}
+	else if(msg->ID == General_ECU_CAN_ID)
     {
 		smEcuStatus1* d = (smEcuStatus1*)msg->data;
 		

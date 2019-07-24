@@ -36,18 +36,16 @@ void PM_Proc(uint16_t voltageEcu, uint8_t IsPowerManager)
 			if(GetTimeFrom(OD.LogicTimers.KeyOffTimer_ms) >= _config.KeyOffTime_ms)
 			{
 				_pm_state = (_pm_state == PM_PowerOn1)? PM_ShutDown : _pm_state;
+
+				// Защита от импульсного включения/выключения если время реакции на зажигание установлено слишком короткое
+				if(GetTimeFrom(OD.LogicTimers.KeyOffTimer_ms) > _config.KeyOffTime_ms + 100)
+				{
+					_pm_state = PM_ShutDown;
+				}
 			}
 		}
 		_start_timestamp = GetTimeStamp();
 	}
-
-//	else if(_pm_state == PM_PowerOff)
-//	{
-//		if((OD.ecuPowerSupply_0p1 < 80) && (GetTimeFrom(OD.LogicTimers.KeyOffTimer_ms) > _config.KeyOffTime_ms + 100))
-//		{
-//			_pm_state = PM_ShutDown;
-//		}
-//	}
 }
 
 
