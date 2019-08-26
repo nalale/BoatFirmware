@@ -4,9 +4,13 @@
 #include <stdint.h>
 #include <lpc17xx_gpio.h>
 #include "AdcFunc.h"
+#include "../Libs/filter.h"
 
 void IO_Init(void);
 void gpio_ltc6804_cs_set(uint32_t cs_num, uint8_t state);
+
+extern FILTER_STRUCT fltVoltage;
+
 
 #define P0_6	(1 << 6)
 #define P0_15	(1 << 15)

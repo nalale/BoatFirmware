@@ -9,12 +9,6 @@
 #define DV_FRZF(val)			sizeof(val), &val
 #define DIAG_ITEM(val)		ARRAY_LEN(val),  (void*)&val
 
-FILTER_STRUCT fltVoltage;
-
-// ECU Variables
-static uint16_t _ecuPowerSupply = 0;
-
-
 // ************************************************************************************************
 // DTC: Ошибка памяти параметров
 // ************************************************************************************************
@@ -387,13 +381,3 @@ void ecuInit(ObjectDictionary_t *dictionary)
 	Filter_init(50, 1, &fltVoltage);
 }
 
-void ecuProc()
-{
-	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY) * 11) , &fltVoltage);
-	 _ecuPowerSupply = voltage_mV / 100;
-}
-
-uint16_t EcuGetVoltage()
-{
-	return _ecuPowerSupply;
-}

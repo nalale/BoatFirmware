@@ -13,9 +13,7 @@ static void Pin_Configurate(void);
 static uint16_t _channelsData[8]; 
 
 void Adc_Init()
-{
-	
-	
+{	
      Pin_Configurate();
      /* Configuration for ADC:
 	 *  ADC conversion rate = 200KHz
