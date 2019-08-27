@@ -38,7 +38,7 @@ void Pwm_Init(uint16_t Freq_Hz)
 	PWMMatchCfgDat.MatchChannel = 0;
 	PWMMatchCfgDat.ResetOnMatch = ENABLE;
 	PWMMatchCfgDat.StopOnMatch = DISABLE;
-	PWM_ConfigMatch(LPC_PWM1, &PWMMatchCfgDat);       
+	PWM_ConfigMatch(LPC_PWM1, &PWMMatchCfgDat);       	
         
         /* Reset and Start counter */
 	PWM_ResetCounter(LPC_PWM1);
@@ -64,8 +64,8 @@ void Pwm_Ch_Init(uint8_t ChNum, uint16_t Freq, uint8_t DutyCycle)
 
 void PwmUpdate(uint8_t ChNum, uint8_t DutyCycle)
 {    
-    uint16_t duty_cycle_loc = Pwm1_Period_us * DutyCycle / UINT8_MAX;
-    
+    uint16_t duty_cycle_loc = Pwm1_Period_us * DutyCycle / UINT8_MAX;   
+	
 	// Регистр Match на 1 больше соответствующего канала.
     PWM_MatchUpdate(LPC_PWM1, ChNum + 1, duty_cycle_loc, PWM_MATCH_UPDATE_NOW);
 }

@@ -174,8 +174,9 @@ void CommonState(void)
 					OD.PowerManagerCmd = PM_ShutDown;
 			}
 
-			if(OD.SB.PowerOn == 1)
+			if(OD.SB.PowerOn == 1)			
 				btnSetOutputLevel(1, 255);
+			
 		}
 
 	}
