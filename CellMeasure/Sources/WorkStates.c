@@ -49,8 +49,14 @@ void InitializationState(uint8_t *SubState)
     
     switch(*SubState)
     {
+		// Read saved faults
     	case 0:
 			OD.SB.CheckFaults = 0;          // запрещаем проверку ошибок
+			OD.SB.CurrentSensorReady = 0;	// датчик тока не откалиброван
+            OD.SB.FaultStateHandled = 1;	// все ошибки обработаны
+            
+			OD.MasterControl.CCL = 0;
+			OD.MasterControl.DCL = 0;
 		
 			if(ReadFaults())
 				FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
@@ -59,16 +65,12 @@ void InitializationState(uint8_t *SubState)
 		
     		*SubState = 1;
     	break;
+			
+		// Waiting for power on
         case 1:
             BAT_PLUS(BAT_OPEN);
             BAT_MINUS(BAT_OPEN);
-            PRECHARGE(BAT_OPEN);            
-
-            OD.SB.CurrentSensorReady = 0;	// датчик тока не откалиброван
-            OD.SB.FaultStateHandled = 1;	// все ошибки обработаны
-            
-			OD.MasterControl.CCL = 0;
-			OD.MasterControl.DCL = 0;
+            PRECHARGE(BAT_OPEN);                
             
             if(OD.SB.PowerOn == 1)
 			{				
@@ -77,13 +79,14 @@ void InitializationState(uint8_t *SubState)
 			}
             break;
         
+		// Current sensor calibration
         case 2:
 		{
         	static uint8_t cnt = 0;
 
             csCalibrateCurrentSensor();
 		
-            // Обработка залипшего контактора
+            // Welded contactor handle
             if(GetTimeFrom(timeStamp) >= 100 * cnt)
             {
             	if(!(cnt & 0x01))
@@ -112,8 +115,7 @@ void InitializationState(uint8_t *SubState)
             if(GetTimeFrom(timeStamp) >= 1000)
             {                
 				BAT_PLUS(BAT_OPEN);
-				BAT_MINUS(BAT_OPEN);
-				OD.SB.CurrentSensorReady = 1;	               
+				BAT_MINUS(BAT_OPEN);				               
                 *SubState = 3;
             }
 		}
@@ -125,8 +127,15 @@ void InitializationState(uint8_t *SubState)
 			// Модуль сразу переходит в рабочий режим и замыкает контакторы
 			if(ecuConfig.ModuleIndex > 0)
 				SetWorkState(&OD.StateMachine, WORKSTATE_OPERATE);
-			else													
+			else		
+			{		
+				OD.SB.CurrentSensorReady = 1;	
+				
+				if(ecuConfig.IsMaster)
+					OD.Energy_As = GetEnergyFromMinUcell((int16_t*)ecuConfig.OCVpoint, OD.MasterData.MinCellVoltage.Voltage_mv, ecuConfig.ModuleCapacity * ecuConfig.Sys_ModulesCountP);
+								
 				*SubState = 4;
+			}
             
             break;
             
@@ -179,7 +188,6 @@ void InitializationState(uint8_t *SubState)
 					{
 						if(GetTimeFrom(timeStamp) > 2000)
 						{
-							OD.Energy_As = GetEnergyFromMinUcell((int16_t*)ecuConfig.OCVpoint, OD.MasterData.MinCellVoltage.Voltage_mv, ecuConfig.ModuleCapacity * ecuConfig.Sys_ModulesCountP);
 							ControlBatteriesState(&OD.MasterControl.RequestState, WORKSTATE_PREOP);
 						}
 					}
@@ -331,25 +339,21 @@ void CommonState(void)
 		OD.ModuleData[ecuConfig.ModuleIndex].TotalCurrent = 0;
 		OD.BatteryData[ecuConfig.BatteryIndex].SoC = 0;
 		OD.MasterData.SoC = 0;
-	}
-	
+	}	
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1ms) >= OD.DelayValues.Time1_ms)
     {        
         OD.LogicTimers.Timer_1ms = GetTimeStamp();
 		
         // Code      
-        vs_thread(OD.CellVoltageArray_mV, OD.CellTemperatureArray);
-        ecuProc();
-
         OD.ecuPowerSupply_0p1 = EcuGetVoltage();
-
-
-		// Power Manager thread
-		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);
-		
 		OD.A_IN[0] = GetVoltageValue(4);
 		OD.A_IN[1] = GetVoltageValue(5);		
+
+		// Power Manager thread
+		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);		
+		ecuProc();
+		vs_thread(OD.CellVoltageArray_mV, OD.CellTemperatureArray);
 		
 		if(FaultsTest())
 		{
@@ -361,7 +365,6 @@ void CommonState(void)
         // Переход в требуемое состояние для батареи и мастера
 		if((ecuConfig.ModuleIndex == 0) && (OD.MasterControl.RequestState != OD.StateMachine.MainState && OD.StateMachine.MainState != WORKSTATE_FAULT))
 		{			
-			//OD.BatteryData[ecuConfig.BatteryIndex].StateMachine.MainState = OD.MasterControl.RequestState;
 			SetWorkState(&OD.StateMachine, OD.MasterControl.RequestState);
 		}
     }
@@ -409,14 +412,14 @@ void CommonState(void)
         OD.LogicTimers.Timer_1s = GetTimeStamp();
 		OD.AfterResetTime++;
 		
-		// Если новые сутки
+		// Code    
 		if (secondsToday >= SECONDS_IN_DAY) // 86400 секунд в одном дне
 		{
 			secondsToday = 0;
 			NewDay();
 		}
         
-        // Code    
+        
 		uint16_t discharge_mask1 = ltc6803_GetDischargingMask(0);
 		uint16_t discharge_mask2 = ltc6803_GetDischargingMask(1);		
         OD.ModuleData[ecuConfig.ModuleIndex].DischargingCellsFlag = discharge_mask1 + ((uint32_t)discharge_mask2 << 12);

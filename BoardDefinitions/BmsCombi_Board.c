@@ -3,7 +3,10 @@
 #include <lpc17xx_gpio.h>
 #include <lpc17xx_pinsel.h>
 
+// ECU Variables
+static uint16_t _ecuPowerSupply = 0;
 
+FILTER_STRUCT fltVoltage;
 
 void IO_Init()
 {
@@ -40,7 +43,17 @@ void gpio_ltc6804_cs_set(uint32_t cs_num, uint8_t state)
 	if(state == 0)
 		GPIO_ClearValue(1, cs_num);//CS1_OUT); //CS2_OUT
 	else
-		GPIO_SetValue(1, cs_num);
-	
+		GPIO_SetValue(1, cs_num);	
+}
+
+void ecuProc()
+{
+	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY) * 11) , &fltVoltage);
+	 _ecuPowerSupply = voltage_mV / 100;
+}
+
+uint16_t EcuGetVoltage()
+{
+	return _ecuPowerSupply;
 }
 
