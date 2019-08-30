@@ -1,0 +1,223 @@
+#include "Main.h"
+#include "PwmFunc.h"
+#include "FaultTools.h"
+
+#include "../MolniaLib/MF_Tools.h"
+#include "../Libs/max11612.h"
+#include "../Libs/LTC6803.h"
+#include "../Libs/Btn8982.h"
+#include "../Libs/TLE_6368g2.h"
+#include "../Libs/filter.h"
+
+#include "gVCU_ECU.h"
+#include "EcuConfig.h"
+
+
+#define DV_FRZF(val)			sizeof(val), &val
+#define DIAG_ITEM(val)		ARRAY_LEN(val),  (void*)&val
+
+
+FILTER_STRUCT fltVoltage;
+
+// ECU Variables
+static uint16_t _ecuPowerSupply = 0;
+
+
+// ************************************************************************************************
+// DTC: Ошибка памяти параметров
+// ************************************************************************************************
+// Стоп-кадр
+dtcFRZF_General frzfEcuConfigMemory;
+// Указатели на данные стоп-кадра (аналогично DiagnosticValue)
+const DiagnosticValueFRZF dVal_frzfEcuConfigMemory[] = 
+{
+	{ didFaults_FreezeFrame, DV_FRZF(frzfEcuConfigMemory) },
+};
+// Статические параметры неисправности
+dtcProperty_t dtcProp_EcuConfigMemory = { dtc_General_EcuConfig, DTC_BIT_WARNING_ENABLE + DTC_BIT_OPERATION_DISABLE, 0, 50, -50, 1, DIAG_ITEM(dVal_frzfEcuConfigMemory) };
+// Все о неисправности
+dtcItem_t dtcEcuConfigMemory = {&dtcProp_EcuConfigMemory};
+
+
+// ************************************************************************************************
+// DTC: Неожиданное отключение питания
+// ************************************************************************************************
+// Стоп-кадр
+dtcFRZF_General frzfUnexpectedPowerOff;
+// Указатели на данные стоп-кадра (аналогично DiagnosticValue)
+const DiagnosticValueFRZF dVal_frzfUnexpectedPowerOff[] = 
+{
+	{ didFaults_FreezeFrame, DV_FRZF(frzfUnexpectedPowerOff) },
+};
+// Статические параметры неисправности
+dtcProperty_t dtcProp_UnexpectedPowerOff = { dtc_General_UnexpectedPowerOff, DTC_BIT_NONE, 0, 50, -50, 1, DIAG_ITEM(dVal_frzfUnexpectedPowerOff) };
+// Все о неисправности
+dtcItem_t dtcUnexpectedPowerOff = {&dtcProp_UnexpectedPowerOff};
+
+
+// ************************************************************************************************
+// DTC: Нет связи внешним CAN
+// ************************************************************************************************
+// Стоп-кадр
+dtcFRZF_General frzfExtCanOffline;
+// Указатели на данные стоп-кадра (аналогично DiagnosticValue)
+const DiagnosticValueFRZF dVal_frzfExtCanOffline[] = 
+{
+	{ didFaults_FreezeFrame, DV_FRZF(frzfExtCanOffline) },
+};
+// Статические параметры неисправности
+dtcProperty_t dtcProp_ExtCanOffline = { dtc_CAN_ExtCan, DTC_BIT_WARNING_ENABLE, 0, 10, -10, 100, DIAG_ITEM(dVal_frzfExtCanOffline) };
+// Все о неисправности
+dtcItem_t dtcExtCanOffline = {&dtcProp_ExtCanOffline};
+
+// ************************************************************************************************
+// DTC: Нет связи с  PCAN
+// ************************************************************************************************
+// Стоп-кадр
+dtcFRZF_General frzfPCanOffline;
+// Указатели на данные стоп-кадра (аналогично DiagnosticValue)
+const DiagnosticValueFRZF dVal_frzfPCanOffline[] = 
+{
+	{ didFaults_FreezeFrame, DV_FRZF(frzfExtCanOffline) },
+};
+// Статические параметры неисправности
+dtcProperty_t dtcProp_PCanOffline = { dtc_CAN_PCAN, DTC_BIT_WARNING_ENABLE, 0, 10, -10, 100, DIAG_ITEM(dVal_frzfPCanOffline) };
+// Все о неисправности
+dtcItem_t dtcPCanOffline = {&dtcProp_PCanOffline};
+
+
+// ************************************************************************************************
+// DTC: PWM канал 1
+// ************************************************************************************************
+// Стоп-кадр
+dtcFRZF_General frzfPwmCircuit_1;
+// Указатели на данные стоп-кадра (аналогично DiagnosticValue)
+const DiagnosticValueFRZF dVal_frzfPwmCircuit_1[] = 
+{
+	{ didFaults_FreezeFrame, DV_FRZF(frzfPwmCircuit_1) },
+};
+// Статические параметры неисправности
+dtcProperty_t dtcProp_PwmCircuit_1 = { dtc_PwmCircuit_1, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 10, DIAG_ITEM(dVal_frzfPwmCircuit_1) };
+// Все о неисправности
+dtcItem_t dtcPwmCircuit_1 = {&dtcProp_PwmCircuit_1};
+
+
+// ************************************************************************************************
+// DTC: PWM канал 2
+// ************************************************************************************************
+// Стоп-кадр
+dtcFRZF_General frzfPwmCircuit_2;
+// Указатели на данные стоп-кадра (аналогично DiagnosticValue)
+const DiagnosticValueFRZF dVal_frzfPwmCircuit_2[] = 
+{
+	{ didFaults_FreezeFrame, DV_FRZF(frzfPwmCircuit_2) },
+};
+// Статические параметры неисправности
+dtcProperty_t dtcProp_PwmCircuit_2 = { dtc_PwmCircuit_2, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 10, DIAG_ITEM(dVal_frzfPwmCircuit_2) };
+// Все о неисправности
+dtcItem_t dtcPwmCircuit_2 = {&dtcProp_PwmCircuit_2};
+
+
+// ************************************************************************************************
+// DTC: PWM канал 3
+// ************************************************************************************************
+// Стоп-кадр
+dtcFRZF_General frzfPwmCircuit_3;
+// Указатели на данные стоп-кадра (аналогично DiagnosticValue)
+const DiagnosticValueFRZF dVal_frzfPwmCircuit_3[] = 
+{
+	{ didFaults_FreezeFrame, DV_FRZF(frzfPwmCircuit_3) },
+};
+// Статические параметры неисправности
+dtcProperty_t dtcProp_PwmCircuit_3 = { dtc_PwmCircuit_3, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 10, DIAG_ITEM(dVal_frzfPwmCircuit_3) };
+// Все о неисправности
+dtcItem_t dtcPwmCircuit_3 = {&dtcProp_PwmCircuit_3};
+
+
+// ************************************************************************************************
+// DTC: Обрыв канала измерения
+// ************************************************************************************************
+// Стоп-кадр
+dtcFRZF_General frzfMeasuringCircuit;
+// Указатели на данные стоп-кадра (аналогично DiagnosticValue)
+const DiagnosticValueFRZF dVal_frzfMeasuringCircuit[] =
+{
+	{ didFaults_FreezeFrame, DV_FRZF(frzfMeasuringCircuit) },
+};
+// Статические параметры неисправности
+dtcProperty_t dtcProp_MeasuringCircuit = { dtc_MeasuringCircuit, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 10, DIAG_ITEM(dVal_frzfMeasuringCircuit) };
+// Все о неисправности
+dtcItem_t dtcMeasuringCircuit = {&dtcProp_MeasuringCircuit};
+
+// ************************************************************************************************
+// DTC: Обрыв канала измерения
+// ************************************************************************************************
+// Стоп-кадр
+dtcFRZF_General frzfPowerSupplyCircuit;
+// Указатели на данные стоп-кадра (аналогично DiagnosticValue)
+const DiagnosticValueFRZF dVal_frzfPowerSupplyCircuit[] =
+{
+	{ didFaults_FreezeFrame, DV_FRZF(frzfPowerSupplyCircuit) },
+};
+// Статические параметры неисправности
+dtcProperty_t dtcProp_PowerSupplyCircuit = { dtc_PowerSupplyCircuit, DTC_BIT_WARNING_ENABLE, 0, 5, -1, 100, DIAG_ITEM(dVal_frzfPowerSupplyCircuit) };
+// Все о неисправности
+dtcItem_t dtcPowerSupplyCircuit = {&dtcProp_PowerSupplyCircuit};
+
+// Итоговый список неисправностей
+dtcItem_t* dtcList[] =
+{
+	&dtcEcuConfigMemory, &dtcUnexpectedPowerOff, &dtcExtCanOffline, &dtcPCanOffline, &dtcPwmCircuit_1, &dtcPwmCircuit_2, &dtcPwmCircuit_3,
+	&dtcMeasuringCircuit, &dtcPowerSupplyCircuit,
+};
+
+// Количество элементов списка неисправностей
+int dtcListSize = ARRAY_LEN(dtcList);
+
+
+
+void ecuInit(ObjectDictionary_t *dictionary)
+{
+	cfgApply();	
+	
+	EcuConfig_t _config = GetConfigInstance();
+	
+	SET_PU_D_IN1(_config.PU_IN1);
+	SET_PU_D_IN2(_config.PU_IN2);
+	SET_PU_D_IN3(_config.PU_IN3);
+	SET_PU_D_IN4(_config.PU_IN4);
+	
+    dictionary->DelayValues.Time1_ms = 1;
+    dictionary->DelayValues.Time10_ms = 10;
+    dictionary->DelayValues.Time100_ms = 100;
+    dictionary->DelayValues.Time1_s = 1000;
+    dictionary->DelayValues.MainLoopTime_ms = 10;
+	
+	dictionary->ecuIndex = _config.DiagnosticID + _config.Index;
+    
+	Max11612_Init();
+	
+	btnInit(0, A_OUT1_CSENS, _config.CurrentThreshold_A[0] * 10);
+	btnInit(1, A_OUT2_CSENS, _config.CurrentThreshold_A[1] * 10);
+	btnInit(2, A_OUT3_CSENS, _config.CurrentThreshold_A[2] * 10);
+	btnInit(3, 0xff, 0xffff);
+
+	// Фильтр питания ECU
+	Filter_init(50, 1, &fltVoltage);
+}
+
+void ecuProc()
+{
+	// 5.7 - делитель напряжения.
+	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY)) * 57 / 10 , &fltVoltage);
+	 _ecuPowerSupply = voltage_mV / 100;
+
+	 OD.IO = GetDiscretIO();
+}
+
+uint16_t EcuGetVoltage()
+{
+	return _ecuPowerSupply;
+}
+
+
