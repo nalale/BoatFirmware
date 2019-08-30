@@ -5,12 +5,13 @@
 #include "TimerFunc.h"
 #include "User.h"
 
-#define MASTER_SEND_MSG_AMOUNT	2
+#define MASTER_SEND_MSG_AMOUNT	3
 
 static uint32_t mstSendTime[MASTER_SEND_MSG_AMOUNT];
 // Периоды отправки сообщений
 const uint16_t mstPeriod[MASTER_SEND_MSG_AMOUNT] = {
 								250,
+								100,
 								100,
 								 };
 
@@ -99,6 +100,16 @@ void MasterMesGenerate(void)
 				d->TargetVoltage_mV = OD.MasterControl.TargetVoltage_mV;
                 d->DCL = OD.MasterControl.DCL;
                 d->CCL = OD.MasterControl.CCL;							
+			}
+			break;
+
+			case 2:
+			{
+				BatM_Ext3_t *d = (BatM_Ext3_t*)msg->data;
+
+				d->MaxCellVoltage_mV = OD.MasterData.MaxCellVoltage.Voltage_mv;
+				d->MinCellVoltage_mV = OD.MasterData.MinCellVoltage.Voltage_mv;
+				d->dummy1 = 0xffffffff;
 			}
 			break;
         }

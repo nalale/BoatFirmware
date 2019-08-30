@@ -45,7 +45,7 @@ typedef enum
 	General_ECU_CAN_ID_LEN = 12,
 	General_ECUx_CAN_ID_LEN = 2,
 	
-	Bmu_ECU_CAN_ID_LEN = 2,
+	Bmu_ECU_CAN_ID_LEN = 5,
 	
 	Bat_ECU_CAN_ID_LEN = 8,
 	Bat_ECUx_CAN_ID_LEN = 2,
@@ -69,8 +69,8 @@ typedef enum
 	
 	General_ECU_CAN_ID = BASE_CAN_ID + BASE_CAN_ID_LEN,				//0x100 + 0x0A = 0x10a
 	Bmu_ECU_CAN_ID = General_ECU_CAN_ID + General_ECU_CAN_ID_LEN,	//0x10A + 0x0C = 0x116
-	Bat_ECU_CAN_ID = Bmu_ECU_CAN_ID + Bmu_ECU_CAN_ID_LEN,			//0x116 + 0x02 = 0x118
-	Module_ECU_CAN_ID = Bat_ECU_CAN_ID + Bat_ECU_CAN_ID_LEN,		//0x118 + 0x08 = 0x120
+	Bat_ECU_CAN_ID = Bmu_ECU_CAN_ID + Bmu_ECU_CAN_ID_LEN,			//0x116 + 0x05 = 0x11b
+	Module_ECU_CAN_ID = Bat_ECU_CAN_ID + Bat_ECU_CAN_ID_LEN,		//0x11b + 0x08 = 0x120
 	
 	Bmu_ECU_RX_ID = Module_ECU_CAN_ID + Module_ECU_CAN_ID_LEN,		//0x120 + 0x20 = 0x140
 	
@@ -209,6 +209,13 @@ typedef struct
 	uint16_t TargetVoltage_mV;
 	
 }BatM_Ext2_t;
+
+typedef struct
+{
+	uint16_t MaxCellVoltage_mV;
+	uint16_t MinCellVoltage_mV;
+	uint32_t dummy1;
+} BatM_Ext3_t;
 
 typedef struct
 {

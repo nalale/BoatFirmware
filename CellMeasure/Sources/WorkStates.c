@@ -367,6 +367,9 @@ void CommonState(void)
 		{			
 			SetWorkState(&OD.StateMachine, OD.MasterControl.RequestState);
 		}
+
+		OD.BatteryData[ecuConfig.ModuleIndex].StateMachine.MainState = OD.StateMachine.MainState;
+		OD.BatteryData[ecuConfig.ModuleIndex].StateMachine.SubState = OD.StateMachine.SubState;
     }
     
 	if(GetTimeFrom(OD.LogicTimers.Timer_10ms) >= OD.DelayValues.Time10_ms)
@@ -405,6 +408,8 @@ void CommonState(void)
 		vs_set_min_dis_chars(OD.MasterControl.TargetVoltage_mV);
 			
 		LedStatus(FB_PLUS & FB_MINUS, OD.ModuleData[ecuConfig.ModuleIndex].DischargingCellsFlag);
+
+		OD.SB.MsgFromSystem = (ecuConfig.IsAutonomic)? 1 : 0;
     }
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1s) >= OD.DelayValues.Time1_s)

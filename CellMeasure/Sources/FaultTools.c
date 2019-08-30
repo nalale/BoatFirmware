@@ -49,6 +49,11 @@ uint8_t FaultsTest()
 	// Эту проверку выполняют все модули
 	uint8_t is_critical_fault = ModuleFaultTest(&ecuConfig);
 	
+	if(is_critical_fault)
+	{
+		int a = 5;
+	}
+	
 	if(!OD.SB.CheckFaults || OD.StateMachine.MainState == WORKSTATE_FAULT)
 	{
 		FillFaultsList(OD.FaultList, &OD.FaultsNumber, 1);
@@ -58,10 +63,20 @@ uint8_t FaultsTest()
 	// Эту проверку выполняют только крайние модули в ветке
 	if(ecuConfig.ModuleIndex == 0)
 		is_critical_fault |= BatteryFaultTest(&ecuConfig);
+	
+	if(is_critical_fault)
+	{
+		int a = 5;
+	}
 
 	// Эту проверку выполняет только мастер
 	if(ecuConfig.IsMaster)
 		is_critical_fault |= MasterFaultTest(&ecuConfig);	
+	
+	if(is_critical_fault)
+	{
+		int a = 5;
+	}
 	
 	FillFaultsList(OD.FaultList, &OD.FaultsNumber, 1);
 	
