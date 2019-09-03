@@ -38,6 +38,10 @@
 //#define Module_ECUx_CAN_ID_LEN		2								//Количество сообщений для одного ECU
 //#define Module_ECU_CAN_ID_LEN		32								//Количество сообщений для этого класса ECU
 
+
+#define MaxBatteryNum	4
+#define MaxModuleNum	6
+
 typedef enum
 {
 	BASE_CAN_ID_LEN = 10,
@@ -47,11 +51,12 @@ typedef enum
 	
 	Bmu_ECU_CAN_ID_LEN = 5,
 	
-	Bat_ECU_CAN_ID_LEN = 8,
-	Bat_ECUx_CAN_ID_LEN = 2,
-	
-	Module_ECU_CAN_ID_LEN = 32,
+	Bat_ECUx_CAN_ID_LEN = 3,
+	Bat_ECU_CAN_ID_LEN = Bat_ECUx_CAN_ID_LEN * MaxBatteryNum,
+
 	Module_ECUx_CAN_ID_LEN = 2,
+	Module_ECU_CAN_ID_LEN = (Module_ECUx_CAN_ID_LEN * MaxModuleNum) * MaxBatteryNum, //32,
+	
 	
 	Bmu_ECU_RX_ID_LEN	= 2,
 	
