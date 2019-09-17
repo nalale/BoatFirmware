@@ -93,11 +93,15 @@ void PortInit(void)
 
 void DisplaySoc(uint8_t Value)
 {
+	EcuConfig_t config = GetConfigInstance();
+	uint8_t dutycycle = (uint8_t)interpol(config.SoC, 6, Value);
 
+	btnSetOutputLevel(DISPLAY_SOC_CH, dutycycle);
 }
 
 void DisplayMotorRpm(uint8_t Value)
 {
-
+	EcuConfig_t config = GetConfigInstance();
+	uint8_t frequency = (uint8_t)interpol(config.MotorRpm, 6, Value);
 }
 

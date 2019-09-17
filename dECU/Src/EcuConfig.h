@@ -1,12 +1,7 @@
 #ifndef _ECU_CONFIG_H_
 #define _ECU_CONFIG_H_
 
-#define AN_IN_COUNT				4
-#define DIG_IN_COUNT			10
-#define AN_OUT_COUNT			4
-#define DIG_OUT_COUNT			10
-
-#define REPEATER_TABLE_SIZE				20
+#define TABLE_SIZE				12
 
 #pragma anon_unions
 
@@ -36,29 +31,15 @@ typedef struct
 {
 	// РћР±С‰РёРµ
     uint8_t DiagnosticID;					// OBD ID
-	uint8_t Index;							// РќРѕРјРµСЂ Р±Р»РѕРєР°
+	uint8_t Index;							// Порядковый номер ECU.
 		
-	uint8_t AnalogOutput[AN_OUT_COUNT];
-	uint8_t DigitalOutput[DIG_OUT_COUNT];
-	
-	uint8_t CurrentThreshold_A[AN_OUT_COUNT];
-	
-	canRepItem_t RepTable[REPEATER_TABLE_SIZE];
+	uint16_t MotorRpm[TABLE_SIZE];
+	uint16_t SoC[TABLE_SIZE];
+	uint16_t TrimPosition[TABLE_SIZE];
+	uint16_t SpecPower[TABLE_SIZE];
 	
 	uint16_t PowerOffDelay_ms;
 	uint16_t KeyOffTime_ms;
-	
-	struct
-	{
-		uint8_t 
-		IsPowerManager	: 1,
-		dummy			: 3,
-		
-		PU_IN1			: 1,
-		PU_IN2			: 1,
-		PU_IN3			: 1,
-		PU_IN4			: 1;
-	};
 	
 	uint16_t addition_1;
 	uint16_t addition_2;
@@ -69,7 +50,7 @@ typedef struct
 	uint16_t addition_7;
 	
 	
-	 // РљРѕРЅС‚СЂРѕР»СЊРЅР°СЏ СЃСѓРјРјР°
+	// Контрольная сумма
     uint16_t CRC;
 } EcuConfig_t;
 

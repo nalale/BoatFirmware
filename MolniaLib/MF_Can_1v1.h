@@ -57,7 +57,6 @@ typedef enum
 	Module_ECUx_CAN_ID_LEN = 2,
 	Module_ECU_CAN_ID_LEN = (Module_ECUx_CAN_ID_LEN * MaxModuleNum) * MaxBatteryNum, //32,
 	
-	
 	Bmu_ECU_RX_ID_LEN	= 2,
 	
 	
@@ -70,7 +69,6 @@ typedef enum
 	General_Control1_CAN_ID,
 	General_Control2_CAN_ID,
 	General_Control3_CAN_ID,
-	
 	
 	General_ECU_CAN_ID = BASE_CAN_ID + BASE_CAN_ID_LEN,				//0x100 + 0x0A = 0x10a
 	Bmu_ECU_CAN_ID = General_ECU_CAN_ID + General_ECU_CAN_ID_LEN,	//0x10A + 0x0C = 0x116
