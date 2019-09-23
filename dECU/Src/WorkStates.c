@@ -126,7 +126,7 @@ void CommonState(void)
         ecuProc();
 		OD.ecuPowerSupply_0p1 = EcuGetVoltage();
 		// Power Manager thread
-		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);
+		PM_Proc(OD.ecuPowerSupply_0p1, 0);
 
 		OD.Out_CSens[0].Out_CSens_Current = btnGetCurrent(0);
 		OD.Out_CSens[1].Out_CSens_Current = btnGetCurrent(1);
@@ -160,6 +160,8 @@ void CommonState(void)
 		OD.A_Out[2] = btnGetOutputLevel(2);
 		OD.A_Out[3] = btnGetOutputLevel(3);
 		
+		DisplaySoc(OD.BmuData1.SOC);
+		DisplayRpm(OD.MainEcuData1.MotorRpm);
     }
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1s) >= OD.DelayValues.Time1_s)

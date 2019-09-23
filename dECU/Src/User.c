@@ -99,9 +99,27 @@ void DisplaySoc(uint8_t Value)
 	btnSetOutputLevel(DISPLAY_SOC_CH, dutycycle);
 }
 
+void DisplayTrim(uint8_t Value)
+{
+	EcuConfig_t config = GetConfigInstance();
+	uint8_t dutycycle = (uint8_t)interpol(config.TrimPosition, 6, Value);
+
+	btnSetOutputLevel(DISPLAY_TRIM_CH, dutycycle);
+}
+
+void DisplayEnergy(uint8_t Value)
+{
+	EcuConfig_t config = GetConfigInstance();
+	uint8_t dutycycle = (uint8_t)interpol(config.SpecPower, 6, Value);
+
+	btnSetOutputLevel(DISPLAY_CONS_CH, dutycycle);
+}
+
 void DisplayMotorRpm(uint8_t Value)
 {
 	EcuConfig_t config = GetConfigInstance();
-	uint8_t frequency = (uint8_t)interpol(config.MotorRpm, 6, Value);
+	uint16_t frequency = (uint16_t)interpol(config.MotorRpm, 6, Value);
+
+	PwmFreqUpdate(frequency);
 }
 

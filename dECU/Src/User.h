@@ -16,6 +16,9 @@
 void AppInit(ObjectDictionary_t *dictionary);
 void CalibrateOutCurrentSens(A_OUT_CSENS_t *csens);
 
-
+void DisplaySoc(uint8_t Value);
+void DisplayTrim(uint8_t Value);
+void DisplayEnergy(uint8_t Value);
+void DisplayMotorRpm(uint8_t Value);
 
 #endif

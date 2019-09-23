@@ -69,3 +69,12 @@ void PwmUpdate(uint8_t ChNum, uint8_t DutyCycle)
 	// Регистр Match на 1 больше соответствующего канала.
     PWM_MatchUpdate(LPC_PWM1, ChNum + 1, duty_cycle_loc, PWM_MATCH_UPDATE_NOW);
 }
+
+void PwmFreqUpdate(uint16_t Freq)
+{
+	Pwm1_Period_us = 1000000 / Freq_Hz;
+
+	if(((LPC_PWM_TypeDef*)LPC_PWM1)->MR0 != Pwm1_Period_us)
+		PWM_MatchUpdate(LPC_PWM1, 0, Pwm1_Period_us, PWM_MATCH_UPDATE_NOW);
+
+}
