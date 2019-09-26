@@ -5,7 +5,6 @@
 #include "../MolniaLib/PowerManager.h"
 
 #include "FaultTools.h"
-#include "gVCU_ECU.h"
 #include "Protocol.h"
 
 #include "TimerFunc.h"
@@ -18,6 +17,7 @@
 #include "../Libs/TLE_6368g2.h"
 
 #include "WorkStates.h"
+#include "dVCU_ECU.h"
 
 uint32_t timeStamp;
 

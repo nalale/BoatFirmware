@@ -72,9 +72,33 @@ void PwmUpdate(uint8_t ChNum, uint8_t DutyCycle)
 
 void PwmFreqUpdate(uint16_t Freq)
 {
-	Pwm1_Period_us = 1000000 / Freq_Hz;
+	uint32_t _loc_pwm_period_us = 1000000 / Freq_Hz;
 
-	if(((LPC_PWM_TypeDef*)LPC_PWM1)->MR0 != Pwm1_Period_us)
-		PWM_MatchUpdate(LPC_PWM1, 0, Pwm1_Period_us, PWM_MATCH_UPDATE_NOW);
+	// Save all match registers
+	uint32_t match0 = (LPC_PWM_TypeDef*)LPC_PWM1)->MR0;
+	uint32_t match1 = (LPC_PWM_TypeDef*)LPC_PWM1)->MR1;
+	uint32_t match2 = (LPC_PWM_TypeDef*)LPC_PWM1)->MR2;
+	uint32_t match3 = (LPC_PWM_TypeDef*)LPC_PWM1)->MR3;
+	uint32_t match4 = (LPC_PWM_TypeDef*)LPC_PWM1)->MR4;
+
+	if(match0 != Pwm1_Period_us)
+	{
+		// Restore duty cycle for all channel
+		// New value of duty cycle = old value / frequency ratio
+		uint8_t _dutyCycle1 = match1 * _loc_pwm_period_us / Pwm1_Period_us;
+		uint8_t _dutyCycle2 = match2 * _loc_pwm_period_us / Pwm1_Period_us;
+		uint8_t _dutyCycle3 = match3 * _loc_pwm_period_us / Pwm1_Period_us;
+		uint8_t _dutyCycle4 = match4 * _loc_pwm_period_us / Pwm1_Period_us;
+
+		// Update frequency and restore actual duty cycle value
+		PWM_MatchUpdate(LPC_PWM1, 0, _loc_pwm_period_us, PWM_MATCH_UPDATE_NEXT_RST);
+		PWM_MatchUpdate(LPC_PWM1, 1, _dutyCycle1, PWM_MATCH_UPDATE_NEXT_RST);
+		PWM_MatchUpdate(LPC_PWM1, 2, _dutyCycle2, PWM_MATCH_UPDATE_NEXT_RST);
+		PWM_MatchUpdate(LPC_PWM1, 3, _dutyCycle3, PWM_MATCH_UPDATE_NEXT_RST);
+		PWM_MatchUpdate(LPC_PWM1, 4, _dutyCycle4, PWM_MATCH_UPDATE_NEXT_RST);
+
+		// Save new frequency value
+		Pwm1_Period_us = _loc_pwm_period_us;
+	}
 
 }

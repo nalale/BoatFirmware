@@ -29,7 +29,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/HardwareDefs_lpc17xx}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MolniaLib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Work\Code\Other\MolniaFoil\BoatFirmware\CMSIS\Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\Work\Code\Other\MolniaFoil\BoatFirmware\Drivers&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Drivers}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.591086279" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -66,5 +66,9 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/dECU"/>
+		</configuration>
+	</storageModule>
 </cproject>

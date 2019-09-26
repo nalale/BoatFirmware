@@ -1,5 +1,5 @@
-#ifndef _BMS_ECU_H_
-#define _BMS_ECU_H_
+#ifndef _DISPLAY_ECU_H_
+#define _DISPLAY_ECU_H_
 
 
 #include "FaultTools.h"
