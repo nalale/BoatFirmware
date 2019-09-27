@@ -49,32 +49,6 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 	dtcEnvironment_t env;
 	uint8_t TestFailedThisOperationCycle;
 	
-	//Таймаут внешний CAN
-	it = &dtcExtCanOffline;
-	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
-	{
-		it->SamplePeriodCounter = 0;
-		// Фиксируем ошибку в случае если настроена таблица пересылки
-		if(!OD.SB.ExtCanMsgReceived && OD.RepItemCount != 0)
-		{
-			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
-			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
-			{
-				if(!TestFailedThisOperationCycle)
-				{
-					dtcSetFault(it, &env);
-					it->Category = 0;
-					SetGeneralFRZR(&frzfExtCanOffline);							
-				}
-				OD.Faults.ExternalCanTimeout = 1;
-			}
-		}
-		else if(dtcFaultDetection(it, &env, 0) == DTC_TEST_RESULT_PASSED)
-		{
-			OD.Faults.ExternalCanTimeout = 0;
-		}
-	}
-	
 	//Таймаут PCAN
 	it = &dtcPCanOffline;
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)

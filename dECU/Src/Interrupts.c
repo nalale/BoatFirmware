@@ -9,14 +9,11 @@
 
 
 void I2C2_IRQHandler(void)
-{
-	static uint8_t cnt = 0;
-	
+{	
 	I2C_MasterHandler(LPC_I2C2);
 	
 	if (I2C_MasterReceiveComplete(LPC_I2C2))
-	{
-		cnt = 0;
+	{		
 		Max11612_SetData();
 	}
 //	else

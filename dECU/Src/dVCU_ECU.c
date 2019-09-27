@@ -183,11 +183,6 @@ void ecuInit(ObjectDictionary_t *dictionary)
 	
 	EcuConfig_t _config = GetConfigInstance();
 	
-	SET_PU_D_IN1(_config.PU_IN1);
-	SET_PU_D_IN2(_config.PU_IN2);
-	SET_PU_D_IN3(_config.PU_IN3);
-	SET_PU_D_IN4(_config.PU_IN4);
-	
     dictionary->DelayValues.Time1_ms = 1;
     dictionary->DelayValues.Time10_ms = 10;
     dictionary->DelayValues.Time100_ms = 100;
@@ -198,9 +193,9 @@ void ecuInit(ObjectDictionary_t *dictionary)
     
 	Max11612_Init();
 	
-	btnInit(0, A_OUT1_CSENS, _config.CurrentThreshold_A[0] * 10);
-	btnInit(1, A_OUT2_CSENS, _config.CurrentThreshold_A[1] * 10);
-	btnInit(2, A_OUT3_CSENS, _config.CurrentThreshold_A[2] * 10);
+	btnInit(0, A_OUT1_CSENS, 20);
+	btnInit(1, A_OUT2_CSENS, 20);
+	btnInit(2, A_OUT3_CSENS, 20);
 	btnInit(3, 0xff, 0xffff);
 
 	// Фильтр питания ECU

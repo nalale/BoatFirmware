@@ -412,11 +412,6 @@
               <FilePath>.\Src\FaultTools.c</FilePath>
             </File>
             <File>
-              <FileName>gVCU_ECU.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Src\gVCU_ECU.c</FilePath>
-            </File>
-            <File>
               <FileName>Interrupts.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Src\Interrupts.c</FilePath>
@@ -425,6 +420,11 @@
               <FileName>PowerManager.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\MolniaLib\PowerManager.c</FilePath>
+            </File>
+            <File>
+              <FileName>dVCU_ECU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\dVCU_ECU.c</FilePath>
             </File>
           </Files>
         </Group>

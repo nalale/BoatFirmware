@@ -38,10 +38,6 @@ uint8_t ExternalRx(CanMsg * msg)
 
 void ExternalMesGenerate(void)
 {
-	static uint8_t msgNumber = 0;		
-	static int8_t rep_msg_num = 0;	
-
-	CanMsg* msg;
-	
+	return;	
 }
 

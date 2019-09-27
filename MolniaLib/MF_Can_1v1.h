@@ -5,6 +5,7 @@
 #define GENERAL_ECU_DIAG_ID			1
 #define MAIN_ECU_DIAG_ID			10
 #define BMS_ECU_DIAG_ID				11
+#define DISPLAY_ECU_DIAG_ID			51
 
 // Модели контроллеров
 #define BMS_COMBI					1

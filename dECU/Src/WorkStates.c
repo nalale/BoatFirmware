@@ -161,7 +161,7 @@ void CommonState(void)
 		OD.A_Out[3] = btnGetOutputLevel(3);
 		
 		DisplaySoc(OD.BmuData1.SOC);
-		DisplayRpm(OD.MainEcuData1.MotorRpm);
+		DisplayMotorRpm(OD.MainEcuData1.MotorRpm);
     }
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1s) >= OD.DelayValues.Time1_s)

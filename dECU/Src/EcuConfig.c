@@ -7,9 +7,8 @@ EcuConfig_t EcuConfig;
 
 void _cfgSetDefaultParams(void)
 {
-	EcuConfig.DiagnosticID = GENERAL_ECU_DIAG_ID;	
+	EcuConfig.DiagnosticID = DISPLAY_ECU_DIAG_ID;	
 	EcuConfig.Index = 0;
-	EcuConfig.DigitalOutput[4] = 1;
 	EcuConfig.CRC = cfgCRC(&EcuConfig);
 	
 	
@@ -28,24 +27,7 @@ void cfgApply(void)
 		_cfgSetDefaultParams();
 	}		
 	EcuConfig.Index = (EcuConfig.Index > 3)? 3 : EcuConfig.Index;
-	EcuConfig.DiagnosticID = GENERAL_ECU_DIAG_ID;	
-	OD.RepItemCount = 0;
-	
-	for(uint8_t i = 0; i < REPEATER_TABLE_SIZE; i++)
-	{
-		if(EcuConfig.RepTable[i].IsActive)
-		{
-			OD.RepItemCount++;
-			
-			OD.msgTab[i].SendTime = 0;
-			OD.msgTab[i].RepCount = 0;
-		}
-		else
-		{
-			//ECU.msgTab[i].NextSendTime = 0xFFFFFFFF;
-			continue;
-		}
-	}	
+	EcuConfig.DiagnosticID = DISPLAY_ECU_DIAG_ID;	
 	
 }
 

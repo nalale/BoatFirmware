@@ -70,16 +70,16 @@ void PwmUpdate(uint8_t ChNum, uint8_t DutyCycle)
     PWM_MatchUpdate(LPC_PWM1, ChNum + 1, duty_cycle_loc, PWM_MATCH_UPDATE_NOW);
 }
 
-void PwmFreqUpdate(uint16_t Freq)
+void PwmFreqUpdate(uint16_t Freq_Hz)
 {
 	uint32_t _loc_pwm_period_us = 1000000 / Freq_Hz;
 
 	// Save all match registers
-	uint32_t match0 = (LPC_PWM_TypeDef*)LPC_PWM1)->MR0;
-	uint32_t match1 = (LPC_PWM_TypeDef*)LPC_PWM1)->MR1;
-	uint32_t match2 = (LPC_PWM_TypeDef*)LPC_PWM1)->MR2;
-	uint32_t match3 = (LPC_PWM_TypeDef*)LPC_PWM1)->MR3;
-	uint32_t match4 = (LPC_PWM_TypeDef*)LPC_PWM1)->MR4;
+	uint32_t match0 = ((LPC_PWM_TypeDef*)LPC_PWM1)->MR0;
+	uint32_t match1 = ((LPC_PWM_TypeDef*)LPC_PWM1)->MR1;
+	uint32_t match2 = ((LPC_PWM_TypeDef*)LPC_PWM1)->MR2;
+	uint32_t match3 = ((LPC_PWM_TypeDef*)LPC_PWM1)->MR3;
+	uint32_t match4 = ((LPC_PWM_TypeDef*)LPC_PWM1)->MR4;
 
 	if(match0 != Pwm1_Period_us)
 	{

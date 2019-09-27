@@ -25,7 +25,7 @@ uint8_t PCanRx(CanMsg *msg)
 	
 	if(msg->ID == PM_CAN_ID)
 	{
-		OD.PowerManagerCmd = msg->data[0];
+		OD.PowerManagerCmd = (PowerStates_e)msg->data[0];
 	}
 	else if(msg->ID == Main_ECU_CAN_ID)
 	{
@@ -46,44 +46,7 @@ uint8_t PCanRx(CanMsg *msg)
 
 
 void PCanMesGenerate(void)
-{
-    // Номер отправляемого сообщения
-	static uint8_t extSendMesNumber = 0;
-    static int8_t rep_msg_num = 0;		
-	
-	EcuConfig_t config = GetConfigInstance();
-	
-    CanMsg *msg;	
-    
-    // Генерация сообщений
-	if (++extSendMesNumber >= EXTERNAL_SEND_MSG_AMOUNT)
-		extSendMesNumber = 0;
-	
-	if(extSendMesNumber == PM_Msg && !config.IsPowerManager)
-		return;
-
-	if (GetTimeFrom(extSendTime[extSendMesNumber]) >= extPeriod[extSendMesNumber])
-	{
-         msg = ecanGetEmptyTxMsg(P_CAN_CH);
-        
-        if(msg == 0)
-            return;		
-        
-        extSendTime[extSendMesNumber] = GetTimeStamp();
-		msg->Ext = 0;
-
-		switch (extSendMesNumber)
-		{
-			case PM_Msg:
-			{
-				msg->ID = PM_CAN_ID;
-				msg->DLC = 1;
-				
-				msg->data[0] = OD.LocalPMState;
-			}
-			break;
-        }
-    }
+{  
     
     return;
 }

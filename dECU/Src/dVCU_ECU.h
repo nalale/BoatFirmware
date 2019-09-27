@@ -1,7 +1,7 @@
 #ifndef _DISPLAY_ECU_H_
 #define _DISPLAY_ECU_H_
 
-
+#include "main.h"
 #include "FaultTools.h"
 #include "../MolniaLib/MF_CAN_1v1.h"
 
@@ -9,8 +9,8 @@
 #define VER(major, minor)		((major << 8) + minor)
 
 
-#define CLASS_MODEL_ID			BMS_ECU_DIAG_ID		// Класс и модель устройства.
-#define HARDWARE				BMS_COMBI			// Контроллер
+#define CLASS_MODEL_ID			DISPLAY_ECU_DIAG_ID		// Класс и модель устройства.
+#define HARDWARE				MARINE_ECU			// Контроллер
 #define	FW_VERSION				VER(0, 10)			// Версия прошивки. Старший байт - major, младший - minor (0...99)
 #define	HW_VERSION				VER(1, 1)			// Версия железа. Старший байт - major, младший - minor (0...99)
 
