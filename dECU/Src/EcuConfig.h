@@ -9,26 +9,6 @@
 
 typedef struct
 {
-	uint32_t Id;
-	uint32_t Id2;
-	uint16_t SendPeriod;
-	
-	struct
-	{
-		uint8_t IsActive	: 1;
-		uint8_t Ext1		: 1;	
-		uint8_t Direction	: 1;	// 0 - РїРµСЂРµСЃС‹Р»РєР° CAN2 -> CAN1
-		uint8_t Ext2		: 1;
-	};
-	
-	uint8_t RepCount;
-	
-} canRepItem_t;
-
-
-
-typedef struct
-{
 	// РћР±С‰РёРµ
     uint8_t DiagnosticID;					// OBD ID
 	uint8_t Index;							// Порядковый номер ECU.
@@ -47,7 +27,7 @@ typedef struct
 	uint16_t addition_4;
 	uint16_t addition_5;
 	uint16_t addition_6;
-	uint16_t addition_7;
+//	uint16_t addition_7;
 	
 	
 	// Контрольная сумма

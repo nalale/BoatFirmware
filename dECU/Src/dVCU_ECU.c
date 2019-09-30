@@ -179,7 +179,7 @@ int dtcListSize = ARRAY_LEN(dtcList);
 
 void ecuInit(ObjectDictionary_t *dictionary)
 {
-	cfgApply();	
+	cfgApply();
 	
 	EcuConfig_t _config = GetConfigInstance();
 	

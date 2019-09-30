@@ -160,6 +160,8 @@ void CommonState(void)
 		OD.A_Out[2] = btnGetOutputLevel(2);
 		OD.A_Out[3] = btnGetOutputLevel(3);
 		
+		OD.MainEcuData1.MotorRpm = 1500;
+		
 		DisplaySoc(OD.BmuData1.SOC);
 		DisplayMotorRpm(OD.MainEcuData1.MotorRpm);
     }

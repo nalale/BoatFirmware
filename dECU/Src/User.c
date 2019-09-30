@@ -36,9 +36,11 @@ void HardwareInit(void)
 	
     Tmr_Init(1000);
     Can_Init(1, 1);
-    Pwm_Init(10000);
+    Pwm_Init(1000);
+    Adc_Init();
+    I2c_Init();
 	Spi_Init(DATABIT_16);
-	
+
 	NVIC_EnableIRQ(CAN_IRQn);
 }
 
@@ -91,7 +93,7 @@ void PortInit(void)
 }
 
 
-void DisplaySoc(uint8_t Value)
+void DisplaySoc(uint16_t Value)
 {
 	EcuConfig_t config = GetConfigInstance();
 	uint8_t dutycycle = (uint8_t)interpol((int16_t*)config.SoC, 6, Value);
@@ -99,7 +101,7 @@ void DisplaySoc(uint8_t Value)
 	btnSetOutputLevel(DISPLAY_SOC_CH, dutycycle);
 }
 
-void DisplayTrim(uint8_t Value)
+void DisplayTrim(uint16_t Value)
 {
 	EcuConfig_t config = GetConfigInstance();
 	uint8_t dutycycle = (uint8_t)interpol((int16_t*)config.TrimPosition, 6, Value);
@@ -107,7 +109,7 @@ void DisplayTrim(uint8_t Value)
 	btnSetOutputLevel(DISPLAY_TRIM_CH, dutycycle);
 }
 
-void DisplayEnergy(uint8_t Value)
+void DisplayEnergy(uint16_t Value)
 {
 	EcuConfig_t config = GetConfigInstance();
 	uint8_t dutycycle = (uint8_t)interpol((int16_t*)config.SpecPower, 6, Value);
@@ -115,11 +117,13 @@ void DisplayEnergy(uint8_t Value)
 	btnSetOutputLevel(DISPLAY_CONS_CH, dutycycle);
 }
 
-void DisplayMotorRpm(uint8_t Value)
+void DisplayMotorRpm(uint16_t Value)
 {
 	EcuConfig_t config = GetConfigInstance();
 	uint16_t frequency = (uint16_t)interpol((int16_t*)config.MotorRpm, 6, Value);
 
+	btnSetOutputLevel(DISPLAY_RPM_CH, 125);
+	
 	PwmFreqUpdate(frequency);
 }
 
