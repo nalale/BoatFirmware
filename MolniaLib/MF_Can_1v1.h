@@ -12,34 +12,7 @@
 #define MARINE_ECU					2
 
 
-
-
-
-//#define BASE_CAN_ID					0x100
-//#define BASE_CAN_ID_LEN				10
-
-////#define General_Control1_CAN_ID		BASE_CAN_ID + 1
-////#define General_Control2_CAN_ID 	BASE_CAN_ID + 2
-////#define General_Control3_CAN_ID 	BASE_CAN_ID + 3
-
-
-////#define General_ECU_CAN_ID			BASE_CAN_ID + BASE_CAN_ID_LEN
-//#define General_ECUx_CAN_ID_LEN		2								//Количество сообщений для одного ECU
-//#define General_ECU_CAN_ID_LEN		12								//Количество сообщений для этого класса ECU
-
-
-////#define Bmu_ECU_CAN_ID				General_ECU_CAN_ID + General_ECU_CAN_ID_LEN
-//#define Bmu_ECU_CAN_ID_LEN	2
-
-////#define Bat_ECU_CAN_ID				Bmu_ECU_CAN_ID + Bmu_ECU_CAN_ID_LEN
-//#define Bat_ECUx_CAN_ID_LEN			2								//Количество сообщений для одного ECU
-//#define Bat_ECU_CAN_ID_LEN			8								//Количество сообщений для этого класса ECU
-
-////#define Module_ECU_CAN_ID			Bat_ECU_CAN_ID + Bat_ECU_CAN_ID_LEN
-//#define Module_ECUx_CAN_ID_LEN		2								//Количество сообщений для одного ECU
-//#define Module_ECU_CAN_ID_LEN		32								//Количество сообщений для этого класса ECU
-
-
+#define MaxGEcuNum		6
 #define MaxBatteryNum	4
 #define MaxModuleNum	6
 
@@ -47,20 +20,18 @@ typedef enum
 {
 	BASE_CAN_ID_LEN = 10,
 	
-	General_ECU_CAN_ID_LEN = 12,
 	General_ECUx_CAN_ID_LEN = 2,
+	General_ECU_CAN_ID_LEN = General_ECUx_CAN_ID_LEN * MaxGEcuNum,
 	
 	Bmu_ECU_CAN_ID_LEN = 5,
+	Bmu_ECU_RX_ID_LEN = 2,
 	
-	Bat_ECUx_CAN_ID_LEN = 3,
+	Bat_ECUx_CAN_ID_LEN = 4,
 	Bat_ECU_CAN_ID_LEN = Bat_ECUx_CAN_ID_LEN * MaxBatteryNum,
 
 	Module_ECUx_CAN_ID_LEN = 2,
-	Module_ECU_CAN_ID_LEN = (Module_ECUx_CAN_ID_LEN * MaxModuleNum) * MaxBatteryNum, //32,
-	
-	Bmu_ECU_RX_ID_LEN	= 2,
-	
-	
+	Module_ECU_CAN_ID_LEN = (Module_ECUx_CAN_ID_LEN * MaxModuleNum) * MaxBatteryNum,
+
 } EcuIdsLen_e;
 
 typedef enum
@@ -74,11 +45,11 @@ typedef enum
 	General_ECU_CAN_ID = BASE_CAN_ID + BASE_CAN_ID_LEN,				//0x100 + 0x0A = 0x10a
 	Bmu_ECU_CAN_ID = General_ECU_CAN_ID + General_ECU_CAN_ID_LEN,	//0x10A + 0x0C = 0x116
 	Bat_ECU_CAN_ID = Bmu_ECU_CAN_ID + Bmu_ECU_CAN_ID_LEN,			//0x116 + 0x05 = 0x11b
-	Module_ECU_CAN_ID = Bat_ECU_CAN_ID + Bat_ECU_CAN_ID_LEN,		//0x11b + 0x08 = 0x120
+	Module_ECU_CAN_ID = Bat_ECU_CAN_ID + Bat_ECU_CAN_ID_LEN,		//0x11b + 0x10 = 0x12B
 	
-	Bmu_ECU_RX_ID = Module_ECU_CAN_ID + Module_ECU_CAN_ID_LEN,		//0x120 + 0x20 = 0x140
+	Bmu_ECU_RX_ID = Module_ECU_CAN_ID + Module_ECU_CAN_ID_LEN,		//0x12B + 0x30 = 0x15B
 	
-	Main_ECU_CAN_ID = Bmu_ECU_RX_ID + Bmu_ECU_RX_ID_LEN,			//0x140 + 0x02 = 0x142
+	Main_ECU_CAN_ID = Bmu_ECU_RX_ID + Bmu_ECU_RX_ID_LEN,			//0x15B + 0x02 = 0x15D
 	
 } SystemIds_e;
 

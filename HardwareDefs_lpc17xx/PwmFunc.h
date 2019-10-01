@@ -5,7 +5,7 @@
 
 typedef enum 
 {
-	PWM_Channel1 = 1,
+	PWM_Channel1 = 0,
 	PWM_Channel2,
 	PWM_Channel3,
 	PWM_Channel4,

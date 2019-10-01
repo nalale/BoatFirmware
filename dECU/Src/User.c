@@ -122,8 +122,16 @@ void DisplayMotorRpm(uint16_t Value)
 	EcuConfig_t config = GetConfigInstance();
 	uint16_t frequency = (uint16_t)interpol((int16_t*)config.MotorRpm, 6, Value);
 
-	btnSetOutputLevel(DISPLAY_RPM_CH, 125);
-	
-	PwmFreqUpdate(frequency);
+	// If motor speed < 100 rpm duty cycle should be 0
+	if(Value < 100)
+	{
+		btnSetOutputLevel(DISPLAY_RPM_CH, 0);
+		PwmFreqUpdate(100);
+	}
+	else
+	{
+		btnSetOutputLevel(DISPLAY_RPM_CH, 125);
+		PwmFreqUpdate(frequency);
+	}
 }
 
