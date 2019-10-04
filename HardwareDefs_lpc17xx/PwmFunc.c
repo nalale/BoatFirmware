@@ -47,11 +47,12 @@ void Pwm_Init(uint16_t Freq_Hz)
 	PWM_Cmd(LPC_PWM1, ENABLE);
 }
 
-void Pwm_Ch_Init(uint8_t ChNum, uint16_t Freq, uint8_t DutyCycle)
+void Pwm_Ch_Init(uint8_t ChNum)
 {
     PWM_MATCHCFG_Type PWMMatchCfgDat;
     
-    PwmUpdate(ChNum, DutyCycle);
+	ChNum = ChNum + 1;
+    PWM_MatchUpdate(LPC_PWM1, ChNum, 0, PWM_MATCH_UPDATE_NOW);
     
 	PWMMatchCfgDat.IntOnMatch = DISABLE;
 	PWMMatchCfgDat.MatchChannel = ChNum;
@@ -64,10 +65,11 @@ void Pwm_Ch_Init(uint8_t ChNum, uint16_t Freq, uint8_t DutyCycle)
 
 void PwmUpdate(uint8_t ChNum, uint8_t DutyCycle)
 {    
-    uint16_t duty_cycle_loc = Pwm1_Period_us * DutyCycle / UINT8_MAX;   
+    uint16_t duty_cycle_loc = Pwm1_Period_us * DutyCycle / UINT8_MAX; 
 	
+	ChNum = ChNum + 1;
 	// Регистр Match на 1 больше соответствующего канала.
-    PWM_MatchUpdate(LPC_PWM1, ChNum + 1, duty_cycle_loc, PWM_MATCH_UPDATE_NOW);
+    PWM_MatchUpdate(LPC_PWM1, ChNum, duty_cycle_loc, PWM_MATCH_UPDATE_NOW);
 }
 
 void PwmFreqUpdate(uint16_t Freq_Hz)

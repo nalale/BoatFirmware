@@ -12,7 +12,7 @@ typedef enum
 }PwmChannels_e;
 
 void Pwm_Init(uint16_t Freq);
-void Pwm_Ch_Init(uint8_t ChNum, uint16_t Freq, uint8_t DutyCycle);
+void Pwm_Ch_Init(uint8_t ChNum);
 void PwmUpdate(uint8_t ChNum, uint8_t DutyCycle);
 void PwmFreqUpdate(uint16_t Freq);
 

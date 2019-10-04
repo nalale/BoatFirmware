@@ -107,8 +107,8 @@ typedef union
 	{
 		uint8_t
 		ConfigCrc				:	1,
-		mEcuTimeout				:	1,
 		ExternalCanTimeout		:	1,
+		PCanTimeout				:	1,
 		PwmCircuit				:	1,
 		MeasuringCircuit		:	1,
 		PowerSupplyCircuit		:	1,
@@ -116,7 +116,21 @@ typedef union
 	};
 } gECU_Fauls_t;
 
-
+typedef union
+{
+	uint16_t Faults;
+	struct
+	{
+		uint8_t
+		ConfigCrc				:	1,
+		mEcuTimeout				:	1,
+		BatteryTimeout			:	1,
+		PwmCircuit				:	1,
+		MeasuringCircuit		:	1,
+		PowerSupplyCircuit		:	1,
+		dummy					:	2;
+	};
+} dECU_Fauls_t;
 
 
 // Battery Messages
@@ -217,6 +231,15 @@ typedef struct
 	uint8_t SteeringAngle;
 	uint8_t FeedbackAngle;
 } MainEcuStatus1_Msg_t;
+
+typedef struct
+{
+	uint8_t TrimPosition;
+	uint16_t SpecPowerCons;
+	uint16_t dummy1;
+	uint16_t dummy2;
+	uint8_t dummy3;
+} MainEcuStatus2_Msg_t;
 
 #pragma pack(4)
 

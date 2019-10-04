@@ -66,7 +66,7 @@ const DiagnosticValueFRZF dVal_frzfExtCanOffline[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfExtCanOffline) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_ExtCanOffline = { dtc_CAN_ExtCan, DTC_BIT_WARNING_ENABLE, 0, 10, -10, 100, DIAG_ITEM(dVal_frzfExtCanOffline) };
+dtcProperty_t dtcProp_ExtCanOffline = { dtc_CAN_ExtCan, DTC_BIT_WARNING_ENABLE, 0, 50, -50, 20, DIAG_ITEM(dVal_frzfExtCanOffline) };
 // Все о неисправности
 dtcItem_t dtcExtCanOffline = {&dtcProp_ExtCanOffline};
 
@@ -81,7 +81,7 @@ const DiagnosticValueFRZF dVal_frzfPCanOffline[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfExtCanOffline) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_PCanOffline = { dtc_CAN_PCAN, DTC_BIT_WARNING_ENABLE, 0, 10, -10, 100, DIAG_ITEM(dVal_frzfPCanOffline) };
+dtcProperty_t dtcProp_PCanOffline = { dtc_CAN_PCAN, DTC_BIT_WARNING_ENABLE, 0, 50, -50, 20, DIAG_ITEM(dVal_frzfPCanOffline) };
 // Все о неисправности
 dtcItem_t dtcPCanOffline = {&dtcProp_PCanOffline};
 

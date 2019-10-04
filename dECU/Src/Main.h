@@ -75,8 +75,8 @@ typedef struct
     PowerOff_SaveParams         :   1,
     ReceiveTestRequest          :   1,
 	PowerOn						:	1,
-    ExtCanMsgReceived           :   1,
-	PCanMsgReceived				:   1;
+    BatteryMsgReceived          :   1,
+	mEcuMsgReceived				:   1;
 } StateBits_t;
 
 typedef struct
@@ -103,7 +103,7 @@ typedef struct
 	uint32_t SystemTime;
     
     StateBits_t SB;
-    gECU_Fauls_t Faults;
+    dECU_Fauls_t Faults;
 	
 	uint8_t ecuIndex;
 	uint8_t ecuPowerSupply_0p1;
@@ -122,6 +122,7 @@ typedef struct
 	
 	BatM_Ext1_t BmuData1;
 	MainEcuStatus1_Msg_t MainEcuData1;
+	MainEcuStatus2_Msg_t MainEcuData2;
 
 	uint8_t FaultsNumber;		
 	uint16_t FaultList[MAX_FAULTS_NUM];

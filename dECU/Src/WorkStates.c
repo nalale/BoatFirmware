@@ -128,6 +128,8 @@ void CommonState(void)
 		// Power Manager thread
 		PM_Proc(OD.ecuPowerSupply_0p1, 0);
 
+		Max11612_GetResult(OD.A_CH_Voltage_0p1, V_AN);
+		
 		OD.Out_CSens[0].Out_CSens_Current = btnGetCurrent(0);
 		OD.Out_CSens[1].Out_CSens_Current = btnGetCurrent(1);
 		OD.Out_CSens[2].Out_CSens_Current = btnGetCurrent(2);
@@ -140,7 +142,8 @@ void CommonState(void)
 
 		btnProc();
 		TLE_Proc();
-
+		Max11612_StartConversion();
+		
 		OD.LocalPMState = PM_GetPowerState();
 
 		if(OD.LocalPMState == PM_PowerOn1)
@@ -161,6 +164,8 @@ void CommonState(void)
 		OD.A_Out[3] = btnGetOutputLevel(3);
 		
 		DisplaySoc(OD.BmuData1.SOC);
+		DisplayTrim(OD.MainEcuData2.TrimPosition);
+		DisplayEnergy(OD.MainEcuData2.SpecPowerCons);
 		DisplayMotorRpm(OD.MainEcuData1.MotorRpm);
     }
     
@@ -169,7 +174,7 @@ void CommonState(void)
         OD.LogicTimers.Timer_1s = GetTimeStamp();
         
         // Code
-        
+        FaultHandler();
     }
 }
 

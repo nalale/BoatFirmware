@@ -57,34 +57,34 @@ dtcItem_t dtcUnexpectedPowerOff = {&dtcProp_UnexpectedPowerOff};
 
 
 // ************************************************************************************************
-// DTC: Нет связи внешним CAN
+// DTC: Нет связи с  батареей
 // ************************************************************************************************
 // Стоп-кадр
-dtcFRZF_General frzfExtCanOffline;
+dtcFRZF_General frzfBatteryOffline;
 // Указатели на данные стоп-кадра (аналогично DiagnosticValue)
-const DiagnosticValueFRZF dVal_frzfExtCanOffline[] = 
+const DiagnosticValueFRZF dVal_frzfBatteryOffline[] =
 {
-	{ didFaults_FreezeFrame, DV_FRZF(frzfExtCanOffline) },
+	{ didFaults_FreezeFrame, DV_FRZF(frzfBatteryOffline) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_ExtCanOffline = { dtc_CAN_ExtCan, DTC_BIT_WARNING_ENABLE, 0, 10, -10, 100, DIAG_ITEM(dVal_frzfExtCanOffline) };
+dtcProperty_t dtcProp_BatteryOffline = { dtc_CAN_Battery, DTC_BIT_WARNING_ENABLE, 0, 100, -100, 5, DIAG_ITEM(dVal_frzfBatteryOffline) };
 // Все о неисправности
-dtcItem_t dtcExtCanOffline = {&dtcProp_ExtCanOffline};
+dtcItem_t dtcBatteryOffline = {&dtcProp_BatteryOffline};
 
 // ************************************************************************************************
-// DTC: Нет связи с  PCAN
+// DTC: Нет связи с  main Ecu
 // ************************************************************************************************
 // Стоп-кадр
-dtcFRZF_General frzfPCanOffline;
+dtcFRZF_General frzfmEcuOffline;
 // Указатели на данные стоп-кадра (аналогично DiagnosticValue)
-const DiagnosticValueFRZF dVal_frzfPCanOffline[] = 
+const DiagnosticValueFRZF dVal_frzfmEcuCanOffline[] =
 {
-	{ didFaults_FreezeFrame, DV_FRZF(frzfExtCanOffline) },
+	{ didFaults_FreezeFrame, DV_FRZF(frzfmEcuOffline) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_PCanOffline = { dtc_CAN_PCAN, DTC_BIT_WARNING_ENABLE, 0, 10, -10, 100, DIAG_ITEM(dVal_frzfPCanOffline) };
+dtcProperty_t dtcProp_mEcuOffline = { dtc_CAN_mEcu, DTC_BIT_WARNING_ENABLE, 0, 100, -100, 5, DIAG_ITEM(dVal_frzfmEcuCanOffline) };
 // Все о неисправности
-dtcItem_t dtcPCanOffline = {&dtcProp_PCanOffline};
+dtcItem_t dtcmEcuOffline = {&dtcProp_mEcuOffline};
 
 
 // ************************************************************************************************
@@ -168,8 +168,8 @@ dtcItem_t dtcPowerSupplyCircuit = {&dtcProp_PowerSupplyCircuit};
 // Итоговый список неисправностей
 dtcItem_t* dtcList[] =
 {
-	&dtcEcuConfigMemory, &dtcUnexpectedPowerOff, &dtcExtCanOffline, &dtcPCanOffline, &dtcPwmCircuit_1, &dtcPwmCircuit_2, &dtcPwmCircuit_3,
-	&dtcMeasuringCircuit, &dtcPowerSupplyCircuit,
+	&dtcEcuConfigMemory, &dtcUnexpectedPowerOff, &dtcmEcuOffline, &dtcBatteryOffline, &dtcPwmCircuit_1, &dtcPwmCircuit_2, &dtcPwmCircuit_3,
+	&dtcMeasuringCircuit,
 };
 
 // Количество элементов списка неисправностей
@@ -193,10 +193,10 @@ void ecuInit(ObjectDictionary_t *dictionary)
     
 	Max11612_Init();
 	
-	btnInit(0, A_OUT1_CSENS, 20);
-	btnInit(1, A_OUT2_CSENS, 20);
-	btnInit(2, A_OUT3_CSENS, 20);
-	btnInit(3, 0xff, 0xffff);
+	btnInit(PWM_Channel1, A_OUT1_CSENS, 20);
+	btnInit(PWM_Channel2, A_OUT2_CSENS, 20);
+	btnInit(PWM_Channel3, A_OUT3_CSENS, 20);
+	btnInit(PWM_Channel4, 0xff, 0xffff);
 
 	// Фильтр питания ECU
 	Filter_init(50, 1, &fltVoltage);

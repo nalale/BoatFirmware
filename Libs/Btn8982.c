@@ -11,6 +11,7 @@
 
 
 // добавить фильтр на каждый канал измерения тока и калибровки
+// ошибка по превышению тока. сбрасываем ошибку, когда приходит запрос об сбросе команды ШИМ (target = 0).
 
 #define RES_IS  1000      // Ohm 
 #define dK      195       // *100
@@ -40,6 +41,7 @@ static btnData_t btnData[DRIVER_NUM];
 
 static void _btnMonitor(uint8_t Channel);
 static uint16_t _loadCurrentCalculate(uint16_t Current_IS_uA, uint16_t Current_Offset_uA);
+static void _resetChannel(uint8_t Channel);
 
 void btnInit(uint8_t Number, uint8_t MeasuringChannel, uint16_t CurrentTreshold_0p1A)
 {
@@ -53,7 +55,7 @@ void btnInit(uint8_t Number, uint8_t MeasuringChannel, uint16_t CurrentTreshold_
     btnData[Number].CurrentOffset = 0;    
 	
 	// Инициализация соответствующего канала Pwm
-	Pwm_Ch_Init(Number, 0, 0);
+	Pwm_Ch_Init(Number);
 	// Сигнал разрешения работы btn8982
 	btnInhibit(Number, 1);
 	btnData[Number].MeasuringChannel = MeasuringChannel;
@@ -129,35 +131,40 @@ static void _btnMonitor(uint8_t Channel)
     // Обработка ошибок
     if (btnData[Channel].TargetPwm == 0 && Current_IS_uA > Iis_lim)// voltage > 2925)
     {
-        btnData[Channel].FaultType = BTN_F_SHORT_TO_BAT;
-        btnData[Channel].TargetPwm = 0;
-        btnInhibit(Channel, 0);
-        btnData[Channel].Fault = 1;
+		btnData[Channel].Fault = 1;
+		btnData[Channel].FaultType = BTN_F_SHORT_TO_BAT;     
+		_resetChannel(Channel);
+        btnInhibit(Channel, 0);        
     }
     else if (btnData[Channel].TargetPwm > 2 && Current_IS_uA > Iis_lim) //voltage > 2925)
     {
-        btnData[Channel].FaultType = BTN_F_SHORT_TO_GROUND;
-        btnData[Channel].TargetPwm = 0;
+		btnData[Channel].Fault = 1;
+		btnData[Channel].FaultType = BTN_F_SHORT_TO_GROUND;   		
+		_resetChannel(Channel);	      
         btnInhibit(Channel, 0);
-        btnData[Channel].Fault = 1;
+        
     }
     else if(btnData[Channel].Current > btnData[Channel].CurrentThreshold)
-    {
-        btnData[Channel].FaultType = BTN_F_CURRENT_ABOVE_THRESHOLD;
-        btnData[Channel].TargetPwm = 0;
-        btnSetOutputLevel(Channel, 0);
-        btnInhibit(Channel, 0);
+    {        
+		btnData[Channel].Fault = 1;
+		btnData[Channel].FaultType = BTN_F_CURRENT_ABOVE_THRESHOLD;	
+		_resetChannel(Channel);
+		
+        //btnInhibit(Channel, 0);
     }
     else if (GetTimeFrom(circOpenTimeStamp) > 2000)
         btnData[Channel].FaultType = BTN_F_CIRCUIT_OPEN;
     
-    if(!btnData[Channel].Fault)
-    {
-        // Расчет тока
-        btnData[Channel].Current = _loadCurrentCalculate(Current_IS_uA, btnData[Channel].CurrentOffset);     
-	}
-    else
-        btnData[Channel].Current = 0;
+    btnData[Channel].Current = _loadCurrentCalculate(Current_IS_uA, btnData[Channel].CurrentOffset);
+
+//
+//    if(!btnData[Channel].Fault)
+//    {
+//        // Расчет тока
+//        btnData[Channel].Current = _loadCurrentCalculate(Current_IS_uA, btnData[Channel].CurrentOffset);
+//	}
+//    else
+//        btnData[Channel].Current = 0;
     
 }
 
@@ -165,8 +172,12 @@ void btnSetOutputLevel(uint8_t Channel, uint8_t Level) {
     if (Channel >= DRIVER_NUM)
         return;   
     
-    if (!btnData[Channel].Fault)    
-        btnData[Channel].TargetPwm = Level;               
+	// If channel in op condition set target level
+	// If channel in fault condition reset output, 
+	// if channel in fault condition and target level is 0, then restore output
+	uint8_t loc_level = (!btnData[Channel].Fault)? Level : (Level > 0)? 0 : Level;
+	
+	btnData[Channel].TargetPwm = loc_level;
    	
     PwmUpdate(Channel, btnData[Channel].TargetPwm);
 }
@@ -197,6 +208,11 @@ void btnClearFaults(uint8_t Channel)
 {
     btnData[Channel].Fault = 0;
     btnData[Channel].FaultType = BTN_F_NO_FAULT;
+}
+
+void _resetChannel(uint8_t Channel)
+{
+	PwmUpdate(Channel, 0);
 }
 
 uint16_t _loadCurrentCalculate(uint16_t Current_IS_uA, uint16_t Current_Offset_uA)

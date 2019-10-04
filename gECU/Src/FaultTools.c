@@ -74,6 +74,7 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 		{
 			OD.Faults.ExternalCanTimeout = 0;
 		}
+		OD.SB.ExtCanMsgReceived = 0;
 	}
 	
 	//Таймаут PCAN
@@ -92,13 +93,14 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 					it->Category = 0;
 					SetGeneralFRZR(&frzfPCanOffline);							
 				}
-				OD.Faults.mEcuTimeout = 1;
+				OD.Faults.PCanTimeout = 1;
 			}
 		}
 		else if(dtcFaultDetection(it, &env, 0) == DTC_TEST_RESULT_PASSED)
 		{
-			OD.Faults.mEcuTimeout = 0;
+			OD.Faults.PCanTimeout = 0;
 		}
+		OD.SB.PCanMsgReceived = 0;
 	}
 	
 	//Силовой выход PWM 1

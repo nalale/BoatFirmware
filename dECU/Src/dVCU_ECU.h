@@ -17,8 +17,8 @@
 
 extern dtcItem_t dtcEcuConfigMemory;
 extern dtcItem_t dtcUnexpectedPowerOff;
-extern dtcItem_t dtcExtCanOffline;
-extern dtcItem_t dtcPCanOffline;
+extern dtcItem_t dtcBatteryOffline;
+extern dtcItem_t dtcmEcuOffline;
 extern dtcItem_t dtcPwmCircuit_1;
 extern dtcItem_t dtcPwmCircuit_2;
 extern dtcItem_t dtcPwmCircuit_3;
@@ -28,8 +28,8 @@ extern dtcItem_t dtcPowerSupplyCircuit;
 
 extern dtcFRZF_General frzfEcuConfigMemory;
 extern dtcFRZF_General frzfUnexpectedPowerOff;
-extern dtcFRZF_General frzfExtCanOffline;
-extern dtcFRZF_General frzfPCanOffline;
+extern dtcFRZF_General frzfBatteryOffline;
+extern dtcFRZF_General frzfmEcuOffline;
 extern dtcFRZF_General frzfPwmCircuit_1;
 extern dtcFRZF_General frzfPwmCircuit_2;
 extern dtcFRZF_General frzfPwmCircuit_3;

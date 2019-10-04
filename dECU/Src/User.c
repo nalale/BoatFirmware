@@ -126,7 +126,7 @@ void DisplayMotorRpm(uint16_t Value)
 	if(Value < 100)
 	{
 		btnSetOutputLevel(DISPLAY_RPM_CH, 0);
-		PwmFreqUpdate(100);
+		PwmFreqUpdate(1000);
 	}
 	else
 	{

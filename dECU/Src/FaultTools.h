@@ -22,8 +22,8 @@ typedef enum
 	dtc_General_EcuDataTimeNotCorrect,	
 	
 	// Таймаут CAN
-	dtc_CAN_ExtCan,
-	dtc_CAN_PCAN,	
+	dtc_CAN_mEcu,
+	dtc_CAN_Battery,
 	
 	dtc_PwmCircuit_1,	
 	dtc_PwmCircuit_2,	
@@ -124,7 +124,7 @@ typedef struct
 } dtcItem_t;
 
 
-
+uint8_t FaultHandler(void);
 uint8_t FaultsTest(uint8_t FaultsTestIsEnabled);
 uint8_t FillFaultsList(uint16_t *Array, uint8_t *FaultNum, uint8_t IsActualFaults);
 

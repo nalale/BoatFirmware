@@ -35,26 +35,24 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 	
 	/*
 	1. Напряжение ECU ниже нормы
-	2. Неожиданное отключение питания
-	3. Таймаут внешний CAN
-	4. Таймаут внутренний CAN
+	3. Таймаут mEcu
+	4. Таймаут батареи
 	5. Силовой выход PWM 1
 	6. Силовой выход PWM 2
 	7. Силовой выход PWM 3
 	8. Цепь измерения АЦП
-	9. Цепь питания
 	*/
 	
 	dtcItem_t* it;
 	dtcEnvironment_t env;
 	uint8_t TestFailedThisOperationCycle;
 	
-	//Таймаут PCAN
-	it = &dtcPCanOffline;
+	//Таймаут main Ecu
+	it = &dtcmEcuOffline;
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;
-		if(!OD.SB.PCanMsgReceived)
+		if(!OD.SB.mEcuMsgReceived)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -63,7 +61,7 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 				{
 					dtcSetFault(it, &env);
 					it->Category = 0;
-					SetGeneralFRZR(&frzfPCanOffline);							
+					SetGeneralFRZR(&frzfmEcuOffline);
 				}
 				OD.Faults.mEcuTimeout = 1;
 			}
@@ -72,8 +70,35 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 		{
 			OD.Faults.mEcuTimeout = 0;
 		}
+		OD.SB.mEcuMsgReceived = 0;
 	}
 	
+	//Таймаут Батареи
+	it = &dtcBatteryOffline;
+	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
+	{
+		it->SamplePeriodCounter = 0;
+		if(!OD.SB.BatteryMsgReceived)
+		{
+			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
+			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
+			{
+				if(!TestFailedThisOperationCycle)
+				{
+					dtcSetFault(it, &env);
+					it->Category = 0;
+					SetGeneralFRZR(&frzfBatteryOffline);
+				}
+				OD.Faults.BatteryTimeout = 1;
+			}
+		}
+		else if(dtcFaultDetection(it, &env, 0) == DTC_TEST_RESULT_PASSED)
+		{
+			OD.Faults.BatteryTimeout = 0;
+		}
+		OD.SB.BatteryMsgReceived = 0;
+	}
+
 	//Силовой выход PWM 1
 	it = &dtcPwmCircuit_1;
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
@@ -182,36 +207,26 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 		}
 	}
 	
-	//Цепь питания
-	it = &dtcPowerSupplyCircuit;
-	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
-	{
-		it->SamplePeriodCounter = 0;
-		
-		Tle6368FaultList_e f = TLE_GetCircuitState();
-		if(f > 0)
-		{
-			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
-			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
-			{
-				if(!TestFailedThisOperationCycle)
-				{
-					dtcSetFault(it, &env);
-					it->Category = f;
-					SetGeneralFRZR(&frzfPowerSupplyCircuit);							
-				}
-				OD.Faults.PowerSupplyCircuit = 1;
-			}
-		}
-		else if(dtcFaultDetection(it, &env, 0) == DTC_TEST_RESULT_PASSED)
-		{
-			OD.Faults.PowerSupplyCircuit = 0;
-		}
-	}
-	
 	FillFaultsList(OD.FaultList, &OD.FaultsNumber, 1);
 	
     return 0;
+}
+
+uint8_t FaultHandler()
+{
+	if(OD.Faults.BatteryTimeout)
+	{
+		OD.BmuData1.SOC = 0;
+	}
+
+	if(OD.Faults.mEcuTimeout)
+	{
+		OD.MainEcuData1.MotorRpm = 0;
+		OD.MainEcuData2.SpecPowerCons = 0;
+		OD.MainEcuData2.TrimPosition = 0;
+	}
+	
+	return 0;
 }
 
 uint8_t FillFaultsList(uint16_t *Array, uint8_t *FaultNum, uint8_t IsActualFaults)
