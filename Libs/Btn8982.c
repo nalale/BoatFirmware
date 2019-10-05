@@ -117,13 +117,18 @@ static void _btnMonitor(uint8_t Channel)
 {
     static uint32_t circOpenTimeStamp = 0;
 
-    if (Channel >= DRIVER_NUM || (btnData[Channel].Fault > 0) || !btnData[Channel].IsInit)
+    if (Channel >= DRIVER_NUM || !btnData[Channel].IsInit)
         return;
 
 	uint8_t measuring_channel = btnData[Channel].MeasuringChannel;
 	
     uint16_t voltage = (measuring_channel != 0xFF)? GetVoltageValue(measuring_channel) : 0;
     uint16_t Current_IS_uA = Filter(voltage * 1000 / RES_IS, &(csFilter[Channel]));	//voltage * 1000 / RES_IS;
+	
+	btnData[Channel].Current = _loadCurrentCalculate(Current_IS_uA, btnData[Channel].CurrentOffset);
+	
+	if(btnData[Channel].Fault > 0)
+		return;
 
     if (btnData[Channel].TargetPwm < (uint8_t)30 || btnData[Channel].Current > (uint16_t)10)
         circOpenTimeStamp = GetTimeStamp();
@@ -154,9 +159,6 @@ static void _btnMonitor(uint8_t Channel)
     }
     else if (GetTimeFrom(circOpenTimeStamp) > 2000)
         btnData[Channel].FaultType = BTN_F_CIRCUIT_OPEN;
-    
-    btnData[Channel].Current = _loadCurrentCalculate(Current_IS_uA, btnData[Channel].CurrentOffset);
-
 //
 //    if(!btnData[Channel].Fault)
 //    {
@@ -168,16 +170,25 @@ static void _btnMonitor(uint8_t Channel)
     
 }
 
-void btnSetOutputLevel(uint8_t Channel, uint8_t Level) {
+void btnSetOutputLevel(uint8_t Channel, uint8_t Level) 
+{
     if (Channel >= DRIVER_NUM)
         return;   
     
 	// If channel in op condition set target level
 	// If channel in fault condition reset output, 
-	// if channel in fault condition and target level is 0, then restore output
-	uint8_t loc_level = (!btnData[Channel].Fault)? Level : (Level > 0)? 0 : Level;
+	// if channel in fault condition and target level is 0, then restore output	
+	if(btnData[Channel].Fault)
+	{
+		if(btnData[Channel].FaultType == BTN_F_CURRENT_ABOVE_THRESHOLD && Level == 0)
+		{
+			btnData[Channel].Fault = 0;
+			btnData[Channel].FaultType = BTN_F_NO_FAULT;
+		}
+		Level = 0;
+	}
 	
-	btnData[Channel].TargetPwm = loc_level;
+	btnData[Channel].TargetPwm = Level;
    	
     PwmUpdate(Channel, btnData[Channel].TargetPwm);
 }
