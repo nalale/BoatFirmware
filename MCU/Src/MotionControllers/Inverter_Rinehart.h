@@ -9,6 +9,14 @@
 #define SRC_MOTIONCONTROLLERS_INVERTER_RINEHART_H_
 
 
+typedef enum
+{
+	mcu_Disabled = 0,
+	mcu_Enabled,
+	mcu_Warning,
+	mcu_Fault,
+} mcuStatus_e;
+
 /*
     Tx Messages
 */
@@ -35,11 +43,26 @@ typedef struct
 {
     uint16_t MaxDischargeCurrent;
     uint16_t MaxChargeCurrent;
+    uint32_t dummy1;
 } BMSCurrentLimitMsg_t;
 
 /*
     Rx Messages
 */
+
+typedef enum
+{
+	VSMst_Start = 0,
+	VSMst_PreChargeInit,
+	VSMst_PreChargeActive,
+	VSMst_PreChargeComplete,
+	VSMst_Wait,
+	VSMst_Ready,
+	VSMst_Running,
+	VSMst_Fault,
+	VSMst_Shutdown = 14,
+	VSMst_Reset = 15,
+} VsmStates_e;
 
 typedef struct
 {
@@ -157,6 +180,10 @@ typedef struct
 	uint8_t PreparedMsgNumber;
 	int32_t PreparedMsgTimestamp[2];
 
+	mcuStatus_e Status;
+	uint8_t OnlineSign;
+	uint16_t LastError;
+
 	// Communication
 	InvCmdMsg_t rmsMsgRx_1;
 	BMSCurrentLimitMsg_t rmsMsgRx_2;
@@ -180,6 +207,9 @@ int8_t McuRinehartThread(McuRinehart_t *mcu);
 
 int8_t McuRinehartSetCmd(McuRinehart_t *mcu, int16_t TorqueCmd, int16_t SpeedCmd, int16_t GenCurrentMax, int16_t ConsCurrentMax);
 int8_t McuRinehartSetState(McuRinehart_t *mcu, UnitState_e State);
+
+mcuStatus_e McuRinehartGetState(McuRinehart_t *mcu);
+int16_t McuRinehartGetLastError(McuRinehart_t *mcu);
 
 /***
  * Function fills MsgData array for transmit message

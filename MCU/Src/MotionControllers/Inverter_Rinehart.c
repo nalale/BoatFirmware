@@ -44,16 +44,59 @@ int8_t McuRinehartThread(McuRinehart_t *mcu)
 	if(mcu == 0)
 		return -1;
 
+	// Clear error if inverter is reinitialized
 	if(mcu->EnableCommand == stateCmd_Enable)
 	{
-		if(mcu->rmsMsgTx_1.InvEnableLockout == 1)
+		switch(mcu->rmsMsgTx_1.VSMState)
+		{
+		case VSMst_Start:
 			mcu->rmsMsgRx_1.InvEnable = 0;
-		else
+			mcu->Status = mcu_Disabled;
+			mcu->LastError = 0;
+			break;
+
+		case VSMst_PreChargeInit:
+		case VSMst_PreChargeActive:
+		case VSMst_PreChargeComplete:
+			mcu->Status = mcu_Disabled;
+			break;
+
+		case VSMst_Wait:
+		{
+			mcu->rmsMsgRx_1.InvEnable = (mcu->rmsMsgTx_1.InvEnableLockout == 1)? 0 : 1;
+			mcu->Status = mcu_Disabled;
+		}
+			break;
+
+		case VSMst_Ready:
 			mcu->rmsMsgRx_1.InvEnable = 1;
+			mcu->Status = mcu_Enabled;
+			break;
+
+		case VSMst_Running:
+			mcu->rmsMsgRx_1.InvEnable = 1;
+			mcu->Status = mcu_Enabled;
+			break;
+
+		case VSMst_Fault:
+			mcu->Status = mcu_Fault;
+			break;
+
+		case VSMst_Shutdown:
+		case VSMst_Reset:
+			mcu->Status = mcu_Disabled;
+			break;
+
+		default:
+			mcu->rmsMsgRx_1.InvEnable = 0;
+			mcu->Status = mcu_Disabled;
+			break;
+		}
 	}
 	else if(mcu->EnableCommand == stateCmd_Disable)
 		mcu->rmsMsgRx_1.InvEnable = 0;
 
+	mcu->LastError = (mcu->LastError == 0)? mcu->rmsMsgTx_2.PostCode : mcu->LastError;
 
 	mcu->rmsMsgRx_1.TorqueCmd_0p1 = (mcu->rmsMsgRx_1.InvEnable == 1)? mcu->RequestTorque : 0;
 	mcu->rmsMsgRx_1.SpeedCmd = (mcu->rmsMsgRx_1.InvEnable == 1)? mcu->RequestSpeed : 0;
@@ -86,6 +129,22 @@ int8_t McuRinehartSetState(McuRinehart_t *mcu, UnitState_e State)
 	return 0;
 }
 
+mcuStatus_e McuRinehartGetState(McuRinehart_t *mcu)
+{
+	if(mcu == 0)
+		return (mcuStatus_e)0;
+
+	return mcu->Status;
+}
+
+int16_t McuRinehartGetLastError(McuRinehart_t *mcu)
+{
+	if(mcu == 0)
+		return 0;
+
+	return mcu->LastError;
+}
+
 
 int McuRinehartTxMsgGenerate(McuRinehart_t *mcu, uint8_t *MsgData, uint8_t *MsgDataLen, int32_t MsCounter)
 {
@@ -111,6 +170,10 @@ int McuRinehartTxMsgGenerate(McuRinehart_t *mcu, uint8_t *MsgData, uint8_t *MsgD
 				msg_id = InvCmdMsg_ID;
 
 				mcu->rmsMsgRx_1.TorqueCmd_0p1 = mcu->rmsMsgRx_1.TorqueCmd_0p1 * 10;
+				mcu->rmsMsgRx_1.DirCmd = 0;
+				mcu->rmsMsgRx_1.SpeedModeEnable = 0;
+				mcu->rmsMsgRx_1.InvDischarge = 0;
+				mcu->rmsMsgRx_1.TorqueLimitCmd_0p1 = 0;
 
 				memcpy(MsgData, &mcu->rmsMsgRx_1, sizeof(InvCmdMsg_t));
 			}
@@ -118,7 +181,9 @@ int McuRinehartTxMsgGenerate(McuRinehart_t *mcu, uint8_t *MsgData, uint8_t *MsgD
 
 			case 1:
 			{
+				msg_id = BMSCurrentLimitMsg_ID;
 
+				memcpy(MsgData, &mcu->rmsMsgRx_2, sizeof(BMSCurrentLimitMsg_t));
 			}
 			break;
 		}
@@ -129,10 +194,53 @@ int McuRinehartTxMsgGenerate(McuRinehart_t *mcu, uint8_t *MsgData, uint8_t *MsgD
 
 
 
-int8_t McuRinehartMsgHandle(McuRinehart_t *mcu, int MsgLen, uint8_t *MsgData, uint8_t MsgDataLen)
+int8_t McuRinehartMsgHandle(McuRinehart_t *mcu, int MsgID, uint8_t *MsgData, uint8_t MsgDataLen)
 {
-	if(mcu == 0)
-		return -1;
+	if(mcu == 0 || MsgData == 0)
+		return 1;
+
+	mcu->OnlineSign = 0;
+
+	if(MsgID == TempSet1Msg_ID)
+	{
+		memcpy(&mcu->rmsMsgTx_7, MsgData, sizeof(TempSet1Msg_t));
+	}
+	else if(MsgID == TempSet2Msg_ID)
+	{
+		memcpy(&mcu->rmsMsgTx_8, MsgData, sizeof(TempSet2Msg_t));
+	}
+	else if(MsgID == TempSet3Msg_ID)
+	{
+		memcpy(&mcu->rmsMsgTx_9, MsgData, sizeof(TempSet3Msg_t));
+	}
+	else if(MsgID == MotorPositionMsg_ID)
+	{
+		memcpy(&mcu->rmsMsgTx_3, MsgData, sizeof(MotorPositionMsg_t));
+	}
+	else if(MsgID == InvCurrentMsg_ID)
+	{
+		memcpy(&mcu->rmsMsgTx_5, MsgData, sizeof(InvCurrentMsg_t));
+	}
+	else if(MsgID == InvVoltageMsg_ID)
+	{
+		memcpy(&mcu->rmsMsgTx_6, MsgData, sizeof(InvVoltageMsg_t));
+	}
+	else if(MsgID == InvInternalStatesMsg_ID)
+	{
+		memcpy(&mcu->rmsMsgTx_1, MsgData, sizeof(InvInternalStatesMsg_t));
+	}
+	else if(MsgID == InvFaultCodesMsg_ID)
+	{
+		memcpy(&mcu->rmsMsgTx_2, MsgData, sizeof(InvFaultCodesMsg_t));
+	}
+	else if(MsgID == TorqueAndTimerMsg_ID)
+	{
+		memcpy(&mcu->rmsMsgTx_4, MsgData, sizeof(TorqueAndTimerMsg_t));
+	}
+	else
+		return 1;
+
+	mcu->OnlineSign = 1;
 
 	return 0;
 }
