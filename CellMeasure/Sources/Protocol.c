@@ -18,14 +18,14 @@ void Protocol(void)
 	
 	EcuConfig_t ecuConfig = GetConfigInstance();
     
+	if(isNewMsg)
+		isNewMsg = ObdThread(&PCanRxMsg);
     if(isNewMsg)
 		isNewMsg = ExternalRx(&PCanRxMsg);
     if(isNewMsg)
-        isNewMsg = SlaveRx(&PCanRxMsg);
-    if(isNewMsg)
-		isNewMsg = ObdThread(&PCanRxMsg);
-    if(isNewMsg)
 		isNewMsg = ModuleRx(&PCanRxMsg);
+    if(isNewMsg)
+		isNewMsg = SlaveRx(&PCanRxMsg);
     if(isNewMsg)
 		isNewMsg = MasterRx(&PCanRxMsg);
 	

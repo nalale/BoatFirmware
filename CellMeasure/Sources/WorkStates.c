@@ -43,34 +43,33 @@ void SetWorkState(StateMachine_t *state_machine, WorkStates_e new_state)
 
 void InitializationState(uint8_t *SubState)
 {
-    int tmp;
-	
-	EcuConfig_t ecuConfig = GetConfigInstance();
-    
     switch(*SubState)
     {
 		// Read saved faults
     	case 0:
+    		ModuleSetContactorPosition(OD.BatteryData, stBat_Disabled, OD.ConfigData, &timeStamp);
+    		ControlBatteriesState(&OD.MasterControl.RequestState, WORKSTATE_INIT);
+
+			if(ReadFaults())
+				FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
+
 			OD.SB.CheckFaults = 0;          // запрещаем проверку ошибок
 			OD.SB.CurrentSensorReady = 0;	// датчик тока не откалиброван
             OD.SB.FaultStateHandled = 1;	// все ошибки обработаны
+            OD.SB.PrechargeDone = 0;		// Флаг успешного предзаряда
             
 			OD.MasterControl.CCL = 0;
 			OD.MasterControl.DCL = 0;
-		
-			if(ReadFaults())
-				FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
-			
-			ControlBatteriesState(&OD.MasterControl.RequestState, WORKSTATE_INIT);
+
+			// Сбрасываем счетчики предзаряда
+			OD.LastPrechargeMaxCurrent_0p1A = INT16_MIN;
+			OD.LastPrechargeDuration = 0;
 		
     		*SubState = 1;
     	break;
 			
 		// Waiting for power on
         case 1:
-            BAT_PLUS(BAT_OPEN);
-            BAT_MINUS(BAT_OPEN);
-            PRECHARGE(BAT_OPEN);                
             
             if(OD.SB.PowerOn == 1)
 			{				
@@ -82,58 +81,28 @@ void InitializationState(uint8_t *SubState)
 		// Current sensor calibration
         case 2:
 		{
-        	static uint8_t cnt = 0;
+			OD.SB.CheckFaults = 1;
 
-            csCalibrateCurrentSensor();
-		
-            // Welded contactor handle
-            if(GetTimeFrom(timeStamp) >= 100 * cnt)
+            if(GetTimeFrom(timeStamp) > 1000)
             {
-            	if(!(cnt & 0x01))
-            	{
-					if((FB_PLUS && !GET_BAT_PLUS))
-					{
-						BAT_PLUS(BAT_CLOSE);
-					}
-            	}
-            	else
-            		BAT_PLUS(BAT_OPEN);
-
-            	if(!(cnt & 0x01))
-				{
-					if(FB_MINUS && !GET_BAT_MINUS)
-					{
-						BAT_MINUS(BAT_CLOSE);
-					}
-				}
-            	else
-            		BAT_MINUS(BAT_OPEN);
-
-				cnt++;
+            	OD.SB.CurrentSensorReady = 1;
+            	*SubState = 3;
             }
-            
-            if(GetTimeFrom(timeStamp) >= 1000)
-            {                
-				BAT_PLUS(BAT_OPEN);
-				BAT_MINUS(BAT_OPEN);				               
-                *SubState = 3;
-            }
+            else
+            	csCalibrateCurrentSensor();
 		}
             break;
             
         case 3:
-             OD.SB.CheckFaults = 1;        
-            
 			// Модуль сразу переходит в рабочий режим и замыкает контакторы
-			if(ecuConfig.ModuleIndex > 0)
+			if(!ModuleIsTerminal(OD.ConfigData))
 				SetWorkState(&OD.StateMachine, WORKSTATE_OPERATE);
 			else		
 			{		
-				OD.SB.CurrentSensorReady = 1;	
-				
-				if(ecuConfig.IsMaster)
-					OD.Energy_As = GetEnergyFromMinUcell((int16_t*)ecuConfig.OCVpoint, OD.MasterData.MinCellVoltage.Voltage_mv, ecuConfig.ModuleCapacity * ecuConfig.Sys_ModulesCountP);
+				if(OD.ConfigData->IsMaster)
+					OD.Energy_As = GetEnergyFromMinUcell((int16_t*)OD.ConfigData->OCVpoint, OD.MasterData.MinCellVoltage.Voltage_mv, OD.ConfigData->ModuleCapacity * OD.ConfigData->Sys_ModulesCountP);
 								
+				timeStamp = GetTimeStamp();
 				*SubState = 4;
 			}
             
@@ -141,128 +110,48 @@ void InitializationState(uint8_t *SubState)
             
         case 4:
 			// Батареи ждут когда модули пройдут инициализацию и замкнут контакторы
-			if(OD.BatteryData[ecuConfig.BatteryIndex].OnlineNumber == ecuConfig.Sys_ModulesCountS)
-			{
-				tmp = 1;
-				for (uint8_t i = 1; i < ecuConfig.Sys_ModulesCountS; i++)
-				{
-					// Ждем когда все модули замкнут контакторы
-					if (OD.ModuleData[i].StateMachine.MainState != WORKSTATE_OPERATE || 
-						OD.ModuleData[i].StateMachine.SubState != 3)
-						tmp = 0;
-				}
-				
-				if(tmp == 1)
-				{
-					if(GetTimeFrom(timeStamp) > 2000)
-					{
-						timeStamp = GetTimeStamp();
-						*SubState = 5;
-					}
-				}					
-				else
-					timeStamp = GetTimeStamp();
-			}
-			else
+        	if(BatteryIsReady(OD.BatteryData, OD.ModuleData, OD.ConfigData, &timeStamp))
+        	{
 				timeStamp = GetTimeStamp();
+				SetWorkState(&OD.StateMachine, WORKSTATE_PREOP);
+        	}
             
-            break;	
-
-		case 5:
-		{
-			if(ecuConfig.IsMaster)
-            {
-                // Мастер проверяет что все батареи в сети
-                if(OD.MasterData.OnlineNumber == ecuConfig.Sys_ModulesCountP)
-                {
-                    tmp = 1;
-                    for (uint8_t i = 0; i < ecuConfig.Sys_ModulesCountP - 1; i++)
-                    {
-						if((OD.BatteryData[i].TotalVoltage < OD.BatteryData[i+1].TotalVoltage - ecuConfig.Sys_MaxVoltageDisbalanceP) || 
-							(OD.BatteryData[i].TotalVoltage > OD.BatteryData[i+1].TotalVoltage + ecuConfig.Sys_MaxVoltageDisbalanceP))
-							tmp = 0;                     
-                    }
-                    
-                    // Ожидаем выполнения определенных условий: CCL/DCL рассчитаны, все модули доступны и т.п.		
-                    if(tmp == 1)
-					{
-						if(GetTimeFrom(timeStamp) > 2000)
-						{
-							ControlBatteriesState(&OD.MasterControl.RequestState, WORKSTATE_PREOP);
-						}
-					}
-                }
-				else
-					timeStamp = GetTimeStamp();
-            }
-		}
-		break;		
+            break;
     }       
 }
 
 void PreoperationState(uint8_t *SubState)
 { 
-	BAT_MINUS(BAT_OPEN);
-	BAT_PLUS(BAT_OPEN);
-	PRECHARGE(BAT_OPEN);
-	ControlBatteriesState(&OD.MasterControl.RequestState, WORKSTATE_OPERATE);	
+	ModuleSetContactorPosition(OD.BatteryData, stBat_Disabled, OD.ConfigData, &timeStamp);
+
+	// Мастер ждет когда система будет готовы к предзаряду
+	if(MasterIsReady(&OD.MasterData, OD.BatteryData, OD.ConfigData, &timeStamp))
+		ControlBatteriesState(&OD.MasterControl.RequestState, WORKSTATE_OPERATE);
 }
 
 void OperatingState(uint8_t *SubState)
 {    
-    static uint32_t ZeroPreChCurrentTimeStamp = 0;
-	EcuConfig_t ecuConfig = GetConfigInstance();
-            
-    // Реализация предзаряда
-	// Предусмотреть - если ток предзаряда будет пересекать PreZeroCurrent в обе стороны, то предзаряд может не закончиться никогда
-	switch (*SubState)
+	if(ModuleSetContactorPosition(OD.BatteryData, stBat_Precharging, OD.ConfigData, &timeStamp))
 	{
-		case 0:			
-			OD.LastPrechargeMaxCurrent_0p1A = INT16_MIN;
-			OD.LastPrechargeDuration = 0;			
-			
-            *SubState = 1;
-			break;
-		case 1:
-			// Замкнуть цепь предзаряда
-			BAT_MINUS(BAT_CLOSE);
-			PRECHARGE(BAT_CLOSE);
-			OD.SB.PrechargeDone = 0;
-			*SubState = 2;
-			timeStamp = GetTimeStamp();
-			ZeroPreChCurrentTimeStamp = GetTimeStamp();
-			
-			break;
-		case 2:
-			// Считаем максимальный ток предзаряда
-			if(OD.LastPrechargeMaxCurrent_0p1A < OD.BatteryData[ecuConfig.ModuleIndex].TotalCurrent)
-				OD.LastPrechargeMaxCurrent_0p1A = OD.BatteryData[ecuConfig.ModuleIndex].TotalCurrent;
-            
-			// Считаем длительность предзаряда
-			OD.LastPrechargeDuration = (uint16_t)GetTimeFrom(timeStamp);
-						
-			// Если этап предзаряда не завершается фиксируем время
-			if((OD.BatteryData[ecuConfig.BatteryIndex].TotalCurrent > ((uint16_t)ecuConfig.PreZeroCurrent * 10)) || 
-				(OD.BatteryData[ecuConfig.BatteryIndex].TotalCurrent < -((int16_t)ecuConfig.PreZeroCurrent * 10)))
-				ZeroPreChCurrentTimeStamp = GetTimeStamp();
-			
-			// Если этап предзаряда завершается PreZeroCurrentDuration мс, переходим в рабочий режим
-			if (GetTimeFrom(ZeroPreChCurrentTimeStamp) > ecuConfig.PreZeroCurrentDuration)
-			{
-				*SubState = 3;				
-			}
-			break;
-		case 3:						
-			BAT_PLUS(BAT_CLOSE);
-			PRECHARGE(BAT_OPEN);
-			break;
+		OD.SB.PrechargeDone = 1;
+
+		// Operation loop
+
+	}
+	else
+	{
+		// Считаем максимальный ток предзаряда
+		if(OD.LastPrechargeMaxCurrent_0p1A < OD.BatteryData[OD.ConfigData->ModuleIndex].TotalCurrent)
+			OD.LastPrechargeMaxCurrent_0p1A = OD.BatteryData[OD.ConfigData->ModuleIndex].TotalCurrent;
+
+		// Считаем длительность предзаряда
+		OD.LastPrechargeDuration = (uint16_t)GetTimeFrom(timeStamp);
 	}
 }
 
 
 void ShutdownState(uint8_t *SubState)
 {
-	EcuConfig_t _config = GetConfigInstance();
 	OD.SB.CheckFaults = 0;     
 	
 	switch (*SubState)
@@ -275,7 +164,8 @@ void ShutdownState(uint8_t *SubState)
 		break;
 
 		case 1:
-			if(GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= _config.PowerOffDelay_ms)
+			ModuleSetContactorPosition(OD.BatteryData, stBat_Disabled, OD.ConfigData, &timeStamp);
+			if(GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= OD.ConfigData->PowerOffDelay_ms)
 				*SubState = 2;
 		break;
 
@@ -297,14 +187,10 @@ void ShutdownState(uint8_t *SubState)
 
 void FaultState(uint8_t *SubState)
 {
-	static uint32_t timeStamp = 0;
-	
 	switch(*SubState)
 	{
 		case 0:
-			BAT_MINUS(BAT_OPEN);
-			BAT_PLUS(BAT_OPEN);
-			PRECHARGE(BAT_OPEN);
+			ModuleSetContactorPosition(OD.BatteryData, stBat_Disabled, OD.ConfigData, &timeStamp);
 			timeStamp = GetTimeStamp();
 		break;
 			
@@ -322,24 +208,8 @@ void TestingState(uint8_t *SubState)
 }
 
 void CommonState(void)
-{       
-	EcuConfig_t ecuConfig = GetConfigInstance();
-	
+{
     Protocol();
-	
-
-	// Измеряем ток
-	if(OD.SB.CurrentSensorReady)
-	{
-		OD.ModuleData[ecuConfig.ModuleIndex].TotalCurrent = (csGetAverageCurrent());
-		OD.MasterData.SoC = CapacityCulc(OD.MasterData.TotalCurrent, &(OD.Energy_As), ecuConfig.ModuleCapacity * ecuConfig.Sys_ModulesCountP);
-	}
-	else
-	{
-		OD.ModuleData[ecuConfig.ModuleIndex].TotalCurrent = 0;
-		OD.BatteryData[ecuConfig.BatteryIndex].SoC = 0;
-		OD.MasterData.SoC = 0;
-	}	
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1ms) >= OD.DelayValues.Time1_ms)
     {        
@@ -351,9 +221,10 @@ void CommonState(void)
 		OD.A_IN[1] = GetVoltageValue(5);		
 
 		// Power Manager thread
-		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);		
+		PM_Proc(OD.ecuPowerSupply_0p1, OD.ConfigData->IsPowerManager);
 		ecuProc();
 		vs_thread(OD.CellVoltageArray_mV, OD.CellTemperatureArray);
+		BatteryCapacityCalculating(OD.BatteryData, OD.ConfigData, OD.SB.CurrentSensorReady);
 		
 		if(FaultsTest())
 		{
@@ -363,13 +234,13 @@ void CommonState(void)
 		}
         
         // Переход в требуемое состояние для батареи и мастера
-		if((ecuConfig.ModuleIndex == 0) && (OD.MasterControl.RequestState != OD.StateMachine.MainState && OD.StateMachine.MainState != WORKSTATE_FAULT))
+		if((OD.ConfigData->ModuleIndex == 0) && (OD.MasterControl.RequestState != OD.StateMachine.MainState && OD.StateMachine.MainState != WORKSTATE_FAULT))
 		{			
 			SetWorkState(&OD.StateMachine, OD.MasterControl.RequestState);
 		}
 
-		OD.BatteryData[ecuConfig.ModuleIndex].StateMachine.MainState = OD.StateMachine.MainState;
-		OD.BatteryData[ecuConfig.ModuleIndex].StateMachine.SubState = OD.StateMachine.SubState;
+		OD.BatteryData[OD.ConfigData->ModuleIndex].StateMachine.MainState = OD.StateMachine.MainState;
+		OD.BatteryData[OD.ConfigData->ModuleIndex].StateMachine.SubState = OD.StateMachine.SubState;
     }
     
 	if(GetTimeFrom(OD.LogicTimers.Timer_10ms) >= OD.DelayValues.Time10_ms)
@@ -377,13 +248,12 @@ void CommonState(void)
 		OD.LogicTimers.Timer_10ms = GetTimeStamp();
 		
 		// модуль
-        GetCellStatistics(&OD.ModuleData[ecuConfig.ModuleIndex]);
+        ModuleStatisticCalculating(&OD.ModuleData[OD.ConfigData->ModuleIndex], OD.ConfigData, OD.CellVoltageArray_mV, OD.CellTemperatureArray);
 		// батарея
-		GetBatteriesStatistic(&OD.BatteryData[ecuConfig.BatteryIndex], OD.ModuleData, ecuConfig.Sys_ModulesCountS, 1);
+		BatteryStatisticCalculating(&OD.BatteryData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData);
 		// master		
-		GetBatteriesStatistic(&OD.MasterData, OD.BatteryData, ecuConfig.Sys_ModulesCountP, 0);
-		
-		
+		BatteryStatisticCalculating(&OD.MasterData, OD.BatteryData, OD.ConfigData);
+
 		OD.PowerMaganerState = PM_GetPowerState();
 		
 		if(OD.PowerMaganerState == PM_PowerOn1 || OD.PowerMaganerState == PM_PowerOn2)
@@ -400,16 +270,16 @@ void CommonState(void)
         OD.LogicTimers.Timer_100ms = GetTimeStamp();
 		
 		// Функции мастера
-		OD.MasterControl.TargetVoltage_mV = TargetVoltageCulc(OD.MasterData.MinCellVoltage.Voltage_mv, OD.ModuleData[ecuConfig.ModuleIndex].MinCellVoltage.Voltage_mv);
-        OD.MasterControl.BalancingEnabled = GetBalancingPermission(OD.ModuleData[ecuConfig.ModuleIndex].TotalCurrent);
+		OD.MasterControl.TargetVoltage_mV = TargetVoltageCulc(OD.MasterData.MinCellVoltage.Voltage_mv, OD.ModuleData[OD.ConfigData->ModuleIndex].MinCellVoltage.Voltage_mv);
+        OD.MasterControl.BalancingEnabled = GetBalancingPermission(OD.ModuleData[OD.ConfigData->ModuleIndex].TotalCurrent);
 		GetCurrentLimit(&OD.MasterControl.DCL, &OD.MasterControl.CCL);
 		
 		vs_ban_balancing(!OD.MasterControl.BalancingEnabled);
 		vs_set_min_dis_chars(OD.MasterControl.TargetVoltage_mV);
 			
-		LedStatus(FB_PLUS & FB_MINUS, OD.ModuleData[ecuConfig.ModuleIndex].DischargingCellsFlag);
+		LedStatus(FB_PLUS & FB_MINUS, OD.ModuleData[OD.ConfigData->ModuleIndex].DischargingCellsFlag);
 
-		OD.SB.MsgFromSystem = (ecuConfig.IsAutonomic)? 1 : 0;
+		OD.SB.MsgFromSystem = (OD.ConfigData->IsAutonomic)? 1 : 0;
     }
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1s) >= OD.DelayValues.Time1_s)
@@ -427,8 +297,8 @@ void CommonState(void)
         
 		uint16_t discharge_mask1 = ltc6803_GetDischargingMask(0);
 		uint16_t discharge_mask2 = ltc6803_GetDischargingMask(1);		
-        OD.ModuleData[ecuConfig.ModuleIndex].DischargingCellsFlag = discharge_mask1 + ((uint32_t)discharge_mask2 << 12);
-		OD.ModuleData[ecuConfig.ModuleIndex].DischargeEnergy_Ah = OD.Energy_As / 3600;
+        OD.ModuleData[OD.ConfigData->ModuleIndex].DischargingCellsFlag = discharge_mask1 + ((uint32_t)discharge_mask2 << 12);
+		OD.ModuleData[OD.ConfigData->ModuleIndex].DischargeEnergy_Ah = OD.Energy_As / 3600;
 		
 		OD.DebugData.CanMod = (uint8_t)LPC_CAN1->MOD;
 		OD.DebugData.CanGlobalStatus = (uint8_t)LPC_CAN1->GSR;

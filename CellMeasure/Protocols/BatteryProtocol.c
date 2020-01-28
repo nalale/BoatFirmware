@@ -12,14 +12,14 @@ const uint16_t slvPeriod[Bat_ECUx_CAN_ID_LEN] = {
 
 uint8_t SlaveRx(CanMsg *msg)
 {  
-	EcuConfig_t ecuConfig = GetConfigInstance();
+	const EcuConfig_t *ecuConfig = OD.ConfigData;
 	
 	if(msg->ID > 0x700 && msg->ID < 0x71f)
 	{		
-		uint8_t _mod_index = ((msg->ID & 0x01f) - ecuConfig.DiagnosticID) % MAX_MODULE_NUM;
+		uint8_t _mod_index = ((msg->ID & 0x01f) - ecuConfig->DiagnosticID) % MAX_MODULE_NUM;
 		if(_mod_index == 0)
 		{
-			uint8_t _bat_index = ((msg->ID & 0x01f) - ecuConfig.DiagnosticID) / MAX_MODULE_NUM;
+			uint8_t _bat_index = ((msg->ID & 0x01f) - ecuConfig->DiagnosticID) / MAX_MODULE_NUM;
 			OD.BatteryData[_bat_index].StateMachine.MainState = (WorkStates_e)((msg->data[0] >> 4) & 0x0F);
 			OD.BatteryData[_bat_index].StateMachine.SubState = msg->data[0] & 0x0F;
 		}
@@ -33,7 +33,7 @@ uint8_t SlaveRx(CanMsg *msg)
 	
 	
 	
-	if((bat_id == ecuConfig.BatteryIndex) || (bat_id >= MAX_BATTERY_AMOUNT))
+	if((bat_id == ecuConfig->BatteryIndex) || (bat_id >= MAX_BATTERY_AMOUNT))
 		return 1;
 
 	uint8_t mes_num = msg->ID & 0x01;	
@@ -60,6 +60,7 @@ uint8_t SlaveRx(CanMsg *msg)
 			OD.BatteryData[bat_id].MinCellVoltage.Voltage_mv = d->MinCellVoltage_0p1V;
 			OD.BatteryData[bat_id].MaxModuleTemperature.Temperature = d->MaxModTemperature - 40;
 			OD.BatteryData[bat_id].MinModuleTemperature.Temperature = d->MinModTemperature - 40;			
+			OD.BatteryData[bat_id].SoC = d->Soc;
 		}
 		break;
 		
@@ -94,10 +95,10 @@ void SlaveMesGenerate(void)
         if(msg == 0)
             return;
         
-		EcuConfig_t ecuConfig = GetConfigInstance();
+		const EcuConfig_t *ecuConfig = OD.ConfigData;
         extSendTime[extSendMesNumber] = GetTimeStamp();
 		
-		msg->ID = Bat_ECU_CAN_ID + (Bat_ECUx_CAN_ID_LEN * ecuConfig.BatteryIndex) + extSendMesNumber;
+		msg->ID = Bat_ECU_CAN_ID + (Bat_ECUx_CAN_ID_LEN * ecuConfig->BatteryIndex) + extSendMesNumber;
 		msg->DLC = 8;
 		msg->Ext = 0;
 
@@ -107,10 +108,10 @@ void SlaveMesGenerate(void)
             {               
 				BatBatteryStatus1Msg_t *d = (BatBatteryStatus1Msg_t*)msg->data;
 			
-				d->BatTotalCurrent_0p1A = OD.BatteryData[ecuConfig.BatteryIndex].TotalCurrent;
-				d->BatTotalVoltage_0p1A = OD.BatteryData[ecuConfig.BatteryIndex].TotalVoltage;
-				d->BatMaxModVoltage_0p1V = OD.BatteryData[ecuConfig.BatteryIndex].MaxBatteryVoltage.Voltage;
-				d->BatMinModVoltage_0p1V = OD.BatteryData[ecuConfig.BatteryIndex].MinBatteryVoltage.Voltage;				
+				d->BatTotalCurrent_0p1A = OD.BatteryData[ecuConfig->BatteryIndex].TotalCurrent;
+				d->BatTotalVoltage_0p1A = OD.BatteryData[ecuConfig->BatteryIndex].TotalVoltage;
+				d->BatMaxModVoltage_0p1V = OD.BatteryData[ecuConfig->BatteryIndex].MaxBatteryVoltage.Voltage;
+				d->BatMinModVoltage_0p1V = OD.BatteryData[ecuConfig->BatteryIndex].MinBatteryVoltage.Voltage;
             }
             break;
 			
@@ -118,11 +119,12 @@ void SlaveMesGenerate(void)
 			{
 				BatBatteryStatus2Msg_t *d = (BatBatteryStatus2Msg_t*)msg->data;
 				
-				d->Faults = (OD.Faults.Flags >> 12) & 0x0FFF;
-				d->MaxCellVoltage_0p1V = OD.BatteryData[ecuConfig.BatteryIndex].MaxCellVoltage.Voltage_mv;
-				d->MinCellVoltage_0p1V = OD.BatteryData[ecuConfig.BatteryIndex].MinCellVoltage.Voltage_mv;					
-				d->MaxModTemperature = OD.BatteryData[ecuConfig.BatteryIndex].MaxModuleTemperature.Temperature + 40;
-				d->MinModTemperature = OD.BatteryData[ecuConfig.BatteryIndex].MinModuleTemperature.Temperature + 40;
+				d->Faults = (OD.Faults.Flags >> 12) & 0x00FF;
+				d->MaxCellVoltage_0p1V = OD.BatteryData[ecuConfig->BatteryIndex].MaxCellVoltage.Voltage_mv;
+				d->MinCellVoltage_0p1V = OD.BatteryData[ecuConfig->BatteryIndex].MinCellVoltage.Voltage_mv;
+				d->MaxModTemperature = OD.BatteryData[ecuConfig->BatteryIndex].MaxModuleTemperature.Temperature + 40;
+				d->MinModTemperature = OD.BatteryData[ecuConfig->BatteryIndex].MinModuleTemperature.Temperature + 40;
+				d->Soc = OD.BatteryData[ecuConfig->BatteryIndex].SoC;
 			}
 			break;
         }

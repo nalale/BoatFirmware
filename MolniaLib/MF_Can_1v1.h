@@ -167,7 +167,8 @@ typedef struct
     uint16_t MinCellVoltage_0p1V;
 	uint8_t MaxModTemperature;
 	uint8_t MinModTemperature;
-	uint16_t Faults;
+	uint8_t Faults;
+	uint8_t Soc;
 } BatBatteryStatus2Msg_t;
 
 typedef struct

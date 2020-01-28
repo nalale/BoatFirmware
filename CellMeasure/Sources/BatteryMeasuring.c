@@ -1,223 +1,20 @@
+#include <string.h>
+
 #include "Main.h"
 #include "BatteryMeasuring.h"
 #include "../MolniaLib/MF_Tools.h"
 #include "TimerFunc.h"
-#include <string.h>
+
 
 
 #define SOC_TABLE_SIZE			(CCL_DCL_POINTS_NUM * 2)
 
 int16_t CurrentLimitArray[CCL_DCL_POINTS_NUM * 2];
 
-void GetCellStatistics(BatteryData_t* bat)
-{
-	uint16_t nv = 0;
-	uint32_t SumVoltage = 0;
-	
-	EcuConfig_t ecuConfig = GetConfigInstance();
-	
-	int16_t nt = 0;
-	int32_t SumTemperature = 0;
-	uint8_t cellsCount = ecuConfig.CellNumber;
-	
-	
-	
-	bat->MaxCellVoltage.Voltage_mv = INT16_MIN;	
-	bat->MaxCellVoltage.CellNumber = cellsCount;
-	bat->MaxCellVoltage.ModuleNumber = ecuConfig.ModuleIndex;
-	
-	bat->MinCellVoltage.Voltage_mv = INT16_MAX;
-	bat->MinCellVoltage.CellNumber = cellsCount;	
-	bat->MaxCellVoltage.ModuleNumber = ecuConfig.ModuleIndex;	
-	
-	bat->MaxModuleTemperature.Temperature = INT8_MIN;	
-	bat->MaxModuleTemperature.SensorNum = TMP_SENSOR_IN_MODULE;
-	bat->MaxModuleTemperature.ModuleNumber = ecuConfig.ModuleIndex;
-    
-	bat->MinModuleTemperature.Temperature = INT8_MAX;
-	bat->MinModuleTemperature.SensorNum = TMP_SENSOR_IN_MODULE;
-	bat->MinModuleTemperature.ModuleNumber = ecuConfig.ModuleIndex;	    
-
-    // Рассчёт Max/Min напряжения
-    for (uint8_t cellInd = 0; cellInd < cellsCount; cellInd++)
-    {
-        nv++;
-        SumVoltage += OD.CellVoltageArray_mV[cellInd];
-
-        // Поиск максимльного напряжения
-        if (OD.CellVoltageArray_mV[cellInd] > bat->MaxCellVoltage.Voltage_mv)
-        {
-            bat->MaxCellVoltage.Voltage_mv = OD.CellVoltageArray_mV[cellInd];
-            bat->MaxCellVoltage.CellNumber = cellInd;
-        }
-        // Поиск минимального напряжения
-        if (OD.CellVoltageArray_mV[cellInd] < bat->MinCellVoltage.Voltage_mv)
-        {
-            bat->MinCellVoltage.Voltage_mv = OD.CellVoltageArray_mV[cellInd];
-            bat->MinCellVoltage.CellNumber = cellInd;
-        }
-    }    
-    
-    bat->TotalVoltage = SumVoltage / 100;
-    
-    // Среднее значение напряжений на ячейках
-	if(nv > 0)
-		bat->AvgCellVoltage = SumVoltage / nv;	
-
-    // Рассчёт Max/Min температуры
-	for (uint8_t TempSensCnt = 0; TempSensCnt < TMP_SENSOR_IN_MODULE; TempSensCnt++)
-    {
-        int8_t t = OD.CellTemperatureArray[TempSensCnt];
-        
-        if (t > 100 || t < -100)
-            continue;
-
-        nt++;
-        SumTemperature += t;
-        
-        if (t > bat->MaxModuleTemperature.Temperature)
-        {
-            bat->MaxModuleTemperature.Temperature = t;    
-			bat->MaxModuleTemperature.SensorNum = TempSensCnt;
-        }
-        if (t < bat->MinModuleTemperature.Temperature)
-        {
-            bat->MinModuleTemperature.Temperature = t;   
-			bat->MinModuleTemperature.SensorNum = TempSensCnt;					
-        }
-    }
-        
-    if(nv > 0)
-		bat->AvgModuleTemperature = SumTemperature / nt;	
-	
-}
 
 
-void GetBatteriesStatistic(BatteryData_t *Data, BatteryData_t *SourceData, uint8_t BatteryCount, uint8_t IsModulesData)
-{
-    uint32_t SumVoltageTemp = 0;	
-	uint32_t SumAvgCellVoltage = 0;
-	uint32_t SumCurrentTmp = 0;
-	uint32_t SumEnergyTmp = 0;
-	uint8_t n = 0;
-	
-	EcuConfig_t ecuConfig = GetConfigInstance();
 
-	Data->TotalCurrent = 0;
-	Data->MinCellVoltage.Voltage_mv = INT16_MAX;
-	Data->MaxCellVoltage.Voltage_mv = INT16_MIN;
-	Data->MinModuleTemperature.Temperature = INT8_MAX;
-	Data->MaxModuleTemperature.Temperature = INT8_MIN;
-	Data->MaxBatteryCurrent.Current = INT16_MIN;
-	Data->MinBatteryCurrent.Current = INT16_MAX;
-	Data->MaxBatteryVoltage.Voltage = 0;
-	Data->MinBatteryVoltage.Voltage = UINT16_MAX;
-	Data->CCL = INT16_MIN;
-	Data->DCL = INT16_MAX;
-		
-	for (uint8_t i = 0; i < BatteryCount; i++)
-	{
-        // Сбросить значения
-		Data->OnlineFlags = 1;
-		Data->OnlineNumber = 1;
-        
-        for (uint8_t i = 1; i < BatteryCount; i++)
-		{
-			// Если батарея/модуль в сети
-            uint32_t bat_delay = GetTimeFrom(SourceData[i].TimeOutCnts);
-			if (bat_delay < 1000)
-			{              
-				// Зафиксировать наличие батарей
-				Data->OnlineFlags |= 1L << i;
-				Data->OnlineNumber = Data->OnlineNumber + 1;
-			}
-		}
-        
-        
-		// Если батареи нет в сети - проверить следующую
-		if (!(Data->OnlineFlags & (1L << i)))
-			continue;	
-		
-		// Среднее значение напряжения на ячейках
-		SumAvgCellVoltage += SourceData[i].AvgCellVoltage;
-		n++;
-		
-		// Рассчёт Max/Min напряжения
-		SumVoltageTemp += SourceData[i].TotalVoltage;
-		SumCurrentTmp += SourceData[i].TotalCurrent;
-		SumEnergyTmp += SourceData[i].DischargeEnergy_Ah;
 
-		// Поиск максимльного напряжяения
-		if (SourceData[i].MaxCellVoltage.Voltage_mv > Data->MaxCellVoltage.Voltage_mv)
-		{
-			Data->MaxCellVoltage.Voltage_mv = SourceData[i].MaxCellVoltage.Voltage_mv;
-			Data->MaxCellVoltage.CellNumber = SourceData[i].MaxCellVoltage.CellNumber;
-			Data->MaxCellVoltage.ModuleNumber = i;
-			Data->MaxCellVoltage.BatteryNumber = i;
-		}
-		// Поиск минимального напряжяения
-		if (SourceData[i].MinCellVoltage.Voltage_mv < Data->MinCellVoltage.Voltage_mv)
-		{
-			Data->MinCellVoltage.Voltage_mv = SourceData[i].MinCellVoltage.Voltage_mv;
-			Data->MinCellVoltage.CellNumber = SourceData[i].MinCellVoltage.CellNumber;
-			Data->MinCellVoltage.ModuleNumber = i;
-			Data->MinCellVoltage.BatteryNumber = i;
-		}
-		// Поиск максимльной температуры
-		if (SourceData[i].MaxModuleTemperature.Temperature > Data->MaxModuleTemperature.Temperature)
-		{
-			Data->MaxModuleTemperature.Temperature = SourceData[i].MaxModuleTemperature.Temperature;
-			Data->MaxModuleTemperature.SensorNum = SourceData[i].MaxModuleTemperature.SensorNum;
-			Data->MaxModuleTemperature.ModuleNumber = i;
-			Data->MaxModuleTemperature.BatteryNumber = i;
-		}
-		// Поиск максимльной температуры
-		if (SourceData[i].MinModuleTemperature.Temperature < Data->MinModuleTemperature.Temperature)
-		{
-			Data->MinModuleTemperature.Temperature = SourceData[i].MinModuleTemperature.Temperature;
-			Data->MinModuleTemperature.SensorNum = SourceData[i].MinModuleTemperature.SensorNum;
-			Data->MinModuleTemperature.ModuleNumber = i;
-			Data->MinModuleTemperature.BatteryNumber = i;
-		}
-		// Поиск минимального и максимального тока
-		if (SourceData[i].TotalCurrent > Data->MaxBatteryCurrent.Current)
-		{
-			Data->MaxBatteryCurrent.Current = SourceData[i].TotalCurrent;
-			Data->MaxBatteryCurrent.BatteryNumber = i;
-		}
-		if (SourceData[i].TotalCurrent < Data->MinBatteryCurrent.Current)
-		{
-			Data->MinBatteryCurrent.Current = SourceData[i].TotalCurrent;
-			Data->MinBatteryCurrent.BatteryNumber = i;
-		}
-		
-		// Поиск минимального и максимального напряжения
-		if (SourceData[i].TotalVoltage > Data->MaxBatteryVoltage.Voltage)
-		{
-			Data->MaxBatteryVoltage.Voltage = SourceData[i].TotalVoltage;
-			Data->MaxBatteryVoltage.BatteryNumber = i;
-		}
-		if (SourceData[i].TotalVoltage < Data->MinBatteryVoltage.Voltage)
-		{
-			Data->MinBatteryVoltage.Voltage = SourceData[i].TotalVoltage;
-			Data->MinBatteryVoltage.BatteryNumber = i;
-		}
-	}
-	
-	
-	
-	if(n > 0)
-		Data->AvgCellVoltage = SumAvgCellVoltage / n;
-		
-	Data->DischargeEnergy_Ah = SumEnergyTmp;
-	Data->TotalVoltage = (IsModulesData)? SumVoltageTemp : SumVoltageTemp / n;
-	Data->TotalCurrent = SumCurrentTmp;
-	
-	// Мастер умножает минимальный CCL батарей на количество батарей
-	Data->CCL = (!IsModulesData)?  OD.MasterControl.CCL * BatteryCount : OD.MasterControl.CCL;
-	Data->DCL = (!IsModulesData)?  OD.MasterControl.DCL * BatteryCount : OD.MasterControl.DCL;
-	
-}
 
 // Функция получения энергии по минимальному напряжению
 uint32_t GetEnergyFromMinUcell(int16_t *OcvTable, uint16_t Voltage, uint16_t TotalCapatity)
@@ -271,7 +68,7 @@ uint16_t CapacityCulc(int16_t Current, uint32_t* CurrentEnergy, uint16_t ModuleC
 	if(result > 1000)
 			result = 1000;
 	
-	return result;
+	return result / 10;
 }
 
 uint16_t TargetVoltageCulc(uint16_t MinSystemCellVoltage, uint16_t MinModuleCellVoltage)
@@ -286,9 +83,7 @@ uint16_t TargetVoltageCulc(uint16_t MinSystemCellVoltage, uint16_t MinModuleCell
 		TargetVoltTemp_mV = ecuConfig.MinVoltageForBalancing;
 	
 	// Если мастер или модуль работает автономно, то возвращаем рассчитанное значение, если нет, то значение принятое по CAN
-	if(ecuConfig.IsMaster || ecuConfig.IsAutonomic)
-		TargetVoltTemp_mV = TargetVoltTemp_mV;
-	else
+	if(!(ecuConfig.IsMaster || ecuConfig.IsAutonomic))
 		TargetVoltTemp_mV = OD.MasterControl.TargetVoltage_mV;	
 	
 	return TargetVoltTemp_mV;

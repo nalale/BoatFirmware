@@ -143,30 +143,6 @@ typedef struct
     int8_t BatteryNumber;
 } BatteryVoltage_t;
 
-//typedef struct
-//{
-//	// Состояние конечного автомата
-//    StateMachine_t StateMachine;
-
-//	// Ток батареи в амперах * 10
-//    int16_t BatteryCurrent;
-//    // Напряжение модуля в вольтах * 10
-//    uint16_t BatteryVoltage_0p1V;
-//	
-//    // Напряжение наиболее заряженной ячейки в мВ
-//	CellVoltage_t MaxCellVoltage;
-//    // Напряжение наименее заряженной ячейки в мВ
-//	CellVoltage_t MinCellVoltage;
-
-//	// Среднее напряжение на ячейках в мВ
-//	uint16_t AvgCellVoltage;
-//		
-//    // Максимальная температура модуля
-//    ModuleTemperature_t MaxModuleTemperature;
-//    // Минимальная температура модуля
-//    ModuleTemperature_t MinModuleTemperature;
-//} BatteryData_t;
-
 // структура данных статистика мастера
 typedef struct
 {
@@ -339,6 +315,8 @@ typedef struct
 	
 	PowerStates_e PowerMaganerState;
 	uint16_t ecuPowerSupply_0p1;
+
+	const EcuConfig_t *ConfigData;
 
 	// Неисправности
 	FaultsFlag_t Faults;

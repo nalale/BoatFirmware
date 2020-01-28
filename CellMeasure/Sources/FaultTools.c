@@ -32,9 +32,11 @@ typedef struct
 uint8_t MasterFaultTest(EcuConfig_t *ecuConfig);
 uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig);
 uint8_t ModuleFaultTest(EcuConfig_t *ecuConfig);
+
+// Handlers
+static uint8_t ContactorWeldingHandler(uint32_t *timeStamp);
+
 void SetGeneralFRZR(dtcFRZF_General* f);
-
-
 void dtcSetFault(dtcItem_t* it, dtcEnvironment_t* env);
 uint8_t dtcFaultDetection(dtcItem_t* it, dtcEnvironment_t *env, uint8_t isFault);
 
@@ -781,6 +783,48 @@ uint8_t ModuleFaultTest(EcuConfig_t *ecuConfig)
 	return env.CriticalFaultExist;
 }
 
+
+// Faul Handlers
+uint8_t ContactorWeldingHandler(uint32_t *timeStamp)
+{
+	static uint8_t cnt = 0;
+
+	// Every 100ms check contactor conditions
+	if(GetTimeFrom(*timeStamp) >= 100 * cnt)
+	{
+		if(!(cnt & 0x01))
+		{
+			// If positive contactor is welded negative contactor
+			if((FB_PLUS && !GET_BAT_PLUS) && !FB_MINUS)
+			{
+				BAT_PLUS(BAT_CLOSE);
+			}
+		}
+		else
+			BAT_PLUS(BAT_OPEN);
+
+		if(!(cnt & 0x01))
+		{
+			if(FB_MINUS && !GET_BAT_MINUS && !FB_PLUS)
+			{
+				BAT_MINUS(BAT_CLOSE);
+			}
+		}
+		else
+			BAT_MINUS(BAT_OPEN);
+
+		cnt++;
+	}
+
+	if(GetTimeFrom(*timeStamp) >= 1000)
+	{
+		BAT_PLUS(BAT_OPEN);
+		BAT_MINUS(BAT_OPEN);
+		return 1;
+	}
+
+	return 0;
+}
 
 
 void SetGeneralFRZR(dtcFRZF_General* f)

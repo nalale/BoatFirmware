@@ -82,7 +82,7 @@ void MasterMesGenerate(void)
             
 				d->MainState = OD.StateMachine.MainState;
 				d->SubState = OD.StateMachine.SubState;
-				d->SOC = OD.MasterData.SoC / 10;
+				d->SOC = OD.MasterData.SoC;
                 d->TotalCurrent_0p1A = OD.MasterData.TotalCurrent;
                 d->TotalVoltage_0p1V = OD.MasterData.TotalVoltage;
 				d->MaxTemperature = OD.MasterData.MaxModuleTemperature.Temperature + 40;
