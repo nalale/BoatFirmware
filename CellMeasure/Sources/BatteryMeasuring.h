@@ -7,7 +7,7 @@ void ModuleStatisticCalculating(BatteryData_t* Handle, const EcuConfig_t *ecuCon
 
 void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *SourceData, const EcuConfig_t *ecuConfig);
 
-uint32_t GetEnergyFromMinUcell(int16_t *OcvTable, uint16_t Voltage, uint16_t ModuleCapacity);
+uint32_t GetEnergyFromMinUcell(int16_t *OcvTable, uint32_t Voltage, uint32_t TotalCapatity);
 uint16_t CapacityCulc(int16_t Current, uint32_t* CurrentEnergy, uint16_t ModuleCapacity);
 void GetCurrentLimit(int16_t* Discharge, int16_t* Charge);
 uint16_t TargetVoltageCulc(uint16_t MinSystemCellVoltage, uint16_t MinModuleCellVoltage);

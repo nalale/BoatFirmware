@@ -22,6 +22,10 @@
 #include "UartFunc.h"
 
 
+// Description:
+// Intermidiate module: battery module is battery line intermidiate. It doesn't include current sensor and precharge circuit;
+// Terminal module: battery module terminates batteries line, includes current sensor and collects line's statistic. Can make precharging;
+
 uint32_t timeStamp;
 
 // Массив указателей на функции-режимы
@@ -64,8 +68,8 @@ void InitializationState(uint8_t *SubState)
 			// Сбрасываем счетчики предзаряда
 			OD.LastPrechargeMaxCurrent_0p1A = INT16_MIN;
 			OD.LastPrechargeDuration = 0;
-		
-    		*SubState = 1;
+
+			*SubState = 1;
     	break;
 			
 		// Waiting for power on
@@ -73,19 +77,27 @@ void InitializationState(uint8_t *SubState)
             
             if(OD.SB.PowerOn == 1)
 			{				
+            	OD.SB.CheckFaults = 1;
+
+				// Intermediate module goes to Operating state and closes contactors
+            	// Terminal module goes to sensor calibrating proccess
+				if(!ModuleIsTerminal(OD.ConfigData))
+					SetWorkState(&OD.StateMachine, WORKSTATE_OPERATE);
+				else
+					*SubState = 2;
+
 				timeStamp = GetTimeStamp();
-				*SubState = 2;
 			}
             break;
         
 		// Current sensor calibration
         case 2:
 		{
-			OD.SB.CheckFaults = 1;
-
             if(GetTimeFrom(timeStamp) > 1000)
             {
             	OD.SB.CurrentSensorReady = 1;
+            	timeStamp = GetTimeStamp();
+
             	*SubState = 3;
             }
             else
@@ -94,26 +106,13 @@ void InitializationState(uint8_t *SubState)
             break;
             
         case 3:
-			// Модуль сразу переходит в рабочий режим и замыкает контакторы
-			if(!ModuleIsTerminal(OD.ConfigData))
-				SetWorkState(&OD.StateMachine, WORKSTATE_OPERATE);
-			else		
-			{		
-				if(OD.ConfigData->IsMaster)
-					OD.Energy_As = GetEnergyFromMinUcell((int16_t*)OD.ConfigData->OCVpoint, OD.MasterData.MinCellVoltage.Voltage_mv, OD.ConfigData->ModuleCapacity * OD.ConfigData->Sys_ModulesCountP);
-								
-				timeStamp = GetTimeStamp();
-				*SubState = 4;
-			}
-            
-            break;
-            
-        case 4:
-			// Батареи ждут когда модули пройдут инициализацию и замкнут контакторы
+			// Terminal module waits for all intermediate modules close contactors
         	if(BatteryIsReady(OD.BatteryData, OD.ModuleData, OD.ConfigData, &timeStamp))
         	{
+        		OD.Energy_As = GetEnergyFromMinUcell((int16_t*)OD.ConfigData->OCVpoint, OD.BatteryData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv, OD.ConfigData->ModuleCapacity);
 				timeStamp = GetTimeStamp();
-				SetWorkState(&OD.StateMachine, WORKSTATE_PREOP);
+
+				ControlBatteriesState(&OD.MasterControl.RequestState, WORKSTATE_PREOP);
         	}
             
             break;
@@ -122,10 +121,12 @@ void InitializationState(uint8_t *SubState)
 
 void PreoperationState(uint8_t *SubState)
 { 
+	static uint32_t preChargingTmr = 0;
+
 	ModuleSetContactorPosition(OD.BatteryData, stBat_Disabled, OD.ConfigData, &timeStamp);
 
 	// Мастер ждет когда система будет готовы к предзаряду
-	if(MasterIsReady(&OD.MasterData, OD.BatteryData, OD.ConfigData, &timeStamp))
+	if(MasterIsReady(&OD.MasterData, OD.BatteryData, OD.ConfigData, &preChargingTmr))
 		ControlBatteriesState(&OD.MasterControl.RequestState, WORKSTATE_OPERATE);
 }
 
@@ -299,13 +300,6 @@ void CommonState(void)
 		uint16_t discharge_mask2 = ltc6803_GetDischargingMask(1);		
         OD.ModuleData[OD.ConfigData->ModuleIndex].DischargingCellsFlag = discharge_mask1 + ((uint32_t)discharge_mask2 << 12);
 		OD.ModuleData[OD.ConfigData->ModuleIndex].DischargeEnergy_Ah = OD.Energy_As / 3600;
-		
-		OD.DebugData.CanMod = (uint8_t)LPC_CAN1->MOD;
-		OD.DebugData.CanGlobalStatus = (uint8_t)LPC_CAN1->GSR;
-		OD.DebugData.CanInt = LPC_CAN1->ICR;
-		OD.DebugData.StartSign = 's' | ('t' << 8) | ('o' << 16) | ('p' << 24);
-		
-		Uart_SendData(0, (uint8_t*)&OD.DebugData, sizeof(OD.DebugData));
     }
 }
 

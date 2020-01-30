@@ -354,186 +354,188 @@ bool vs_thread(int16_t *cell_voltage_array, int16_t *cell_temp_array)
 	static uint8_t flag = 0;
 	static uint8_t balanc_flag = 0;
 	
+	// Active current sensor count: if second sensor doesn't have any active cells active sensor will equal 1
+	uint8_t sens_cnt = (vs[1].Parameters.CellNumber > 0)? VSENS_COUNT : 1;
 	
-        switch (step)
-        {
-        // Open Connection Detection
-			case 0:
+	switch (step)
+	{
+	// Open Connection Detection
+		case 0:
+		{
+			m_timestamp = GetTimeStamp();
+
+			for(vs_num = 0; vs_num < sens_cnt; vs_num++)
+				lts_cmd_send(vs_num, STOWAD);
+
+			meas_step++;
+			step = 1;
+		}
+		break;
+		case 1:
+		if (GetTimeFrom(m_timestamp) > 20)
+		{
+			m_timestamp = GetTimeStamp();
+			for(vs_num = 0; vs_num < sens_cnt; vs_num++)
 			{
-				m_timestamp = GetTimeStamp();
-				
-				for(vs_num = 0; vs_num < VSENS_COUNT; vs_num++)
-					lts_cmd_send(vs_num, STOWAD);
-				
-				meas_step++;
-				step = 1;
+				int16_t *target_array = (int16_t *)((meas_step == 1)? first_meas_cells[vs_num] : second_meas_cells[vs_num]);
+				lts_cmd_send(vs_num, RDCV);
+				volt_code_parse(vs_num, vs[vs_num].Parameters.CellNumber, vs[vs_num].m_code_arr, target_array);
+
+				if(meas_step == 1)
+				{
+					vs[vs_num].open_conncetion_cell = OpenConnectionDetectin(first_meas_cells[vs_num], second_meas_cells[vs_num], vs[vs_num].Parameters.CellNumber);
+					step = 2;
+				}
+				else
+					step = 	0;
 			}
+
+			open_connect_timestamp = GetTimeStamp();
+		}
+		break;
+
+		// Get Cells Voltage
+		case 2:
+			m_timestamp = GetTimeStamp();
+			for(vs_num = 0; vs_num < sens_cnt; vs_num++)
+			{
+				vs[vs_num].volt_fault = 0;
+
+				if(ltc6803_GetError(vs_num) != LTC6803_FAULTS_NONE)
+					vs[vs_num].IsFault = 1;
+
+				// start cell voltage measuring
+				lts_cmd_send(vs_num, STCVDC);
+			}
+
+
+			step = 3;
 			break;
-			case 1:
+
+		// Read cell voltage
+		case 3:
 			if (GetTimeFrom(m_timestamp) > 20)
 			{
 				m_timestamp = GetTimeStamp();
-				for(vs_num = 0; vs_num < VSENS_COUNT; vs_num++)
+				for(vs_num = 0; vs_num < sens_cnt; vs_num++)
 				{
-					int16_t *target_array = (int16_t *)((meas_step == 1)? first_meas_cells[vs_num] : second_meas_cells[vs_num]);
 					lts_cmd_send(vs_num, RDCV);
-					volt_code_parse(vs_num, vs[vs_num].Parameters.CellNumber, vs[vs_num].m_code_arr, target_array);
+					vs[vs_num].volt_fault = volt_code_parse(vs_num, vs[vs_num].Parameters.CellNumber, vs[vs_num].m_code_arr, vs[vs_num].m_voltage_array);
+					memcpy((void*)(cell_voltage_array + vs_num * CELL_VOLT_ARRAY_SZ), (void*)vs[vs_num].m_voltage_array, sizeof(vs[vs_num].m_voltage_array));
+				}
+				step = 4;
+			}
+			break;
+		case 4:
+			for(vs_num = 0; vs_num < sens_cnt; vs_num++)
+				lts_cmd_send(vs_num, DAGN);
 
-					if(meas_step == 1)
-					{
-						vs[vs_num].open_conncetion_cell = OpenConnectionDetectin(first_meas_cells[vs_num], second_meas_cells[vs_num], vs[vs_num].Parameters.CellNumber);						
-						step = 2;
-					}
-					else
-						step = 	0;
+			step = 5;
+		break;
+			// Temperature measuring
+		case 5:
+			if(GetTimeFrom(m_timestamp) > 20)
+			{
+				for(vs_num = 0; vs_num < sens_cnt; vs_num++)
+				{
+					lts_cmd_send(vs_num, RDDGNR);
+					lts_cmd_send(vs_num, STTMPAD);
+					uint16_t code = vs[vs_num].m_diag_reg[0] + ((uint16_t)(vs[vs_num].m_diag_reg[1] & 0x0f) << 8);
+					vs[vs_num].m_ref_volt = code_to_voltage(code);
 				}
 				
-				open_connect_timestamp = GetTimeStamp();
+				m_timestamp = GetTimeStamp();
+				step = 6;
+			}
+			break;
+		case 6:
+			if (GetTimeFrom(m_timestamp) > 10)
+			{
+				for(vs_num = 0; vs_num < sens_cnt; vs_num++)
+				{
+					// read temperature
+					lts_cmd_send(vs_num, RDTMP);
+					temp_code_parse(2, vs[vs_num].m_tmp_code_arr, vs[vs_num].m_ref_volt, vs[vs_num].m_tmp_arr);
+					int16_t *dest = cell_temp_array + vs_num * EXT_TMP_SENSOR_NUM;
+					memcpy((void*)dest, (void*)vs[vs_num].m_tmp_arr, sizeof(vs[vs_num].m_tmp_arr));
+					lts_cmd_send(vs_num, STCLEAR);
+
+					m_timestamp = GetTimeStamp();
+				}
+				step = 7;
 			}
 			break;
 
-        	// Get Cells Voltage
-            case 2:
+			// Get CFG register to find out discharging cell mask
+			// Find out cell number for discharge
+		case 7:
+			{
 				m_timestamp = GetTimeStamp();
-            	for(vs_num = 0; vs_num < VSENS_COUNT; vs_num++)
-                {
-					vs[vs_num].volt_fault = 0;
 
-					if(ltc6803_GetError(vs_num) != LTC6803_FAULTS_NONE)
-						vs[vs_num].IsFault = 1;
-
-					// start cell voltage measuring
-					lts_cmd_send(vs_num, STCVDC);
-                }
-
-            	
-                step = 3;
-                break;
+				static uint16_t dummy1 = 0;
 				
-			// Read cell voltage
-            case 3:
-                if (GetTimeFrom(m_timestamp) > 20)
-                {
-					m_timestamp = GetTimeStamp();
-					for(vs_num = 0; vs_num < VSENS_COUNT; vs_num++)
-					{
-						lts_cmd_send(vs_num, RDCV);
-						vs[vs_num].volt_fault = volt_code_parse(vs_num, vs[vs_num].Parameters.CellNumber, vs[vs_num].m_code_arr, vs[vs_num].m_voltage_array);
-						memcpy((void*)(cell_voltage_array + vs_num * CELL_VOLT_ARRAY_SZ), (void*)vs[vs_num].m_voltage_array, sizeof(vs[vs_num].m_voltage_array));
-					}				   
-					step = 4;
-                }
-                break;
-			case 4:
-				for(vs_num = 0; vs_num < VSENS_COUNT; vs_num++)
-					lts_cmd_send(vs_num, DAGN);
-			
-				step = 5;
+				for(vs_num = 0; vs_num < sens_cnt; vs_num++)
+				{
+					lts_cmd_send(vs_num, RDCFG);
+
+					if(vs_num == 0)
+						dummy1 |= (uint16_t)vs[vs_num].rx_cfg[1] + ((uint16_t)(vs[vs_num].rx_cfg[2] & 0x0f) << 8);
+					else
+						vs[vs_num].discharge_cell_mask = dummy1 + (uint32_t)(((uint16_t)vs[vs_num].rx_cfg[1] + ((uint16_t)(vs[vs_num].rx_cfg[2] & 0x0f) << 8)) << 12);
+
+					vs[vs_num].IsFault = vs_faults_check(vs_num);
+				}
+				step = 8;
+			}
 			break;
-            	// Temperature measuring
-            case 5:
-				if(GetTimeFrom(m_timestamp) > 20)
-                {
-					for(vs_num = 0; vs_num < VSENS_COUNT; vs_num++)
+		case 8:
+		{
+				// Turn on or turn off balancing proccess
+				if(GetTimeFrom(discharge_timestamp) > discharge_timer)
+				{
+					uint16_t discharge_mask = 0;
+					uint16_t balanc_limit = 0;
+					balanc_flag = 0;
+					for(vs_num = 0; vs_num < sens_cnt; vs_num++)
 					{
-						lts_cmd_send(vs_num, RDDGNR);
-						lts_cmd_send(vs_num, STTMPAD);
-						uint16_t code = vs[vs_num].m_diag_reg[0] + ((uint16_t)(vs[vs_num].m_diag_reg[1] & 0x0f) << 8);
-						vs[vs_num].m_ref_volt = code_to_voltage(code);
-					}
-					
-                    m_timestamp = GetTimeStamp();
-                    step = 6;
-                }
-                break;
-            case 6:
-                if (GetTimeFrom(m_timestamp) > 10)
-                {
-                	for(vs_num = 0; vs_num < VSENS_COUNT; vs_num++)
-					{
-						// read temperature
-						lts_cmd_send(vs_num, RDTMP);
-						temp_code_parse(2, vs[vs_num].m_tmp_code_arr, vs[vs_num].m_ref_volt, vs[vs_num].m_tmp_arr);
-						int16_t *dest = cell_temp_array + vs_num * EXT_TMP_SENSOR_NUM;
-						memcpy((void*)dest, (void*)vs[vs_num].m_tmp_arr, sizeof(vs[vs_num].m_tmp_arr));
-						lts_cmd_send(vs_num, STCLEAR);
-
-						m_timestamp = GetTimeStamp();
-					}
-                    step = 7;
-                }
-                break;
-
-                // Get CFG register to find out discharging cell mask
-                // Find out cell number for discharge
-            case 7:
-                {
-                    m_timestamp = GetTimeStamp();			   
-					
-					static uint16_t dummy1 = 0;					
-					
-					for(vs_num = 0; vs_num < VSENS_COUNT; vs_num++)
-					{
-						lts_cmd_send(vs_num, RDCFG);
-						
-						if(vs_num == 0)					
-							dummy1 |= (uint16_t)vs[vs_num].rx_cfg[1] + ((uint16_t)(vs[vs_num].rx_cfg[2] & 0x0f) << 8);						
-						else					
-							vs[vs_num].discharge_cell_mask = dummy1 + (uint32_t)(((uint16_t)vs[vs_num].rx_cfg[1] + ((uint16_t)(vs[vs_num].rx_cfg[2] & 0x0f) << 8)) << 12);
-						
-						vs[vs_num].IsFault = vs_faults_check(vs_num);
-					}
-					step = 8;
-                }
-                break;
-            case 8:
-            {
-					// Turn on or turn off balancing proccess
-					if(GetTimeFrom(discharge_timestamp) > discharge_timer)
-					{
-						uint16_t discharge_mask = 0;
-						uint16_t balanc_limit = 0;
-						balanc_flag = 0;
-						for(vs_num = 0; vs_num < VSENS_COUNT; vs_num++)
-						{
-							if((flag == 0) && !vs[0].IsFault && !vs[1].IsFault && !vs[0].BanBalancing && !vs[1].BanBalancing)
-								balanc_limit = vs[vs_num].Parameters.BalancingMinVoltage;
-							else
-								balanc_limit = INT16_MAX;
-
-							discharge_mask = find_cell_for_discharge( (int16_t*)vs[vs_num].m_voltage_array, vs[vs_num].Parameters.CellNumber, vs[vs_num].Parameters.CellTargetVoltage, balanc_limit);
-							discharge_mask_set(vs_num, discharge_mask);
-							balanc_flag |= (discharge_mask > 0)? 1 : 0;
-						}
-
-						discharge_timestamp = GetTimeStamp();
-						if(flag == 0)
-						{						
-							flag = 	1;
-							discharge_timer = vs[0].Parameters.BalancingTime_s * 1000;						
-						}
+						if((flag == 0) && !vs[0].IsFault && !vs[1].IsFault && !vs[0].BanBalancing && !vs[1].BanBalancing)
+							balanc_limit = vs[vs_num].Parameters.BalancingMinVoltage;
 						else
-						{
-							discharge_timer = 2000;								
-							flag = 0;
-						}	
+							balanc_limit = INT16_MAX;
+
+						discharge_mask = find_cell_for_discharge( (int16_t*)vs[vs_num].m_voltage_array, vs[vs_num].Parameters.CellNumber, vs[vs_num].Parameters.CellTargetVoltage, balanc_limit);
+						discharge_mask_set(vs_num, discharge_mask);
+						balanc_flag |= (discharge_mask > 0)? 1 : 0;
 					}
-		
-					step = 9;
-                }
-				break;
-			case 9:
-                    m_timestamp = GetTimeStamp();	
-                    for(vs_num = 0; vs_num < VSENS_COUNT; vs_num++)
-                    	lts_cmd_send(vs_num, WRCFG);
-					
-                    meas_step = 0;
-					// Open connection detection produce every 1 sec
-					step = (GetTimeFrom(open_connect_timestamp) >= 1000)? 0 : 2;
-					// If balancing is active don't measure cell voltage
-					step = (balanc_flag)? 4 : step;
+
+					discharge_timestamp = GetTimeStamp();
+					if(flag == 0)
+					{
+						flag = 	1;
+						discharge_timer = vs[0].Parameters.BalancingTime_s * 1000;
+					}
+					else
+					{
+						discharge_timer = 2000;
+						flag = 0;
+					}
+				}
+
+				step = 9;
+			}
 			break;
-        }		
+		case 9:
+				m_timestamp = GetTimeStamp();
+				for(vs_num = 0; vs_num < sens_cnt; vs_num++)
+					lts_cmd_send(vs_num, WRCFG);
+
+				meas_step = 0;
+				// Open connection detection produce every 1 sec
+				step = (GetTimeFrom(open_connect_timestamp) >= 1000)? 0 : 2;
+				// If balancing is active don't measure cell voltage
+				step = (balanc_flag)? 4 : step;
+		break;
+	}
 		
     return false;
 }

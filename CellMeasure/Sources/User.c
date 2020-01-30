@@ -318,7 +318,7 @@ uint8_t BatteryIsReady(const BatteryData_t* Handle, const BatteryData_t *Modules
 		if(Handle[config->BatteryIndex].OnlineNumber == config->Sys_ModulesCountS)
 		{
 			uint8_t tmp = 1;
-			for (uint8_t i = config->ModuleIndex; i < config->Sys_ModulesCountS; i++)
+			for (uint8_t i = config->ModuleIndex + 1; i < config->Sys_ModulesCountS; i++)
 			{
 				// ∆дем когда все модули замкнут контакторы
 				if (ModulesData[i].StateMachine.MainState != WORKSTATE_OPERATE)
@@ -396,7 +396,7 @@ uint8_t BatteryCapacityCalculating(BatteryData_t* Handle, const EcuConfig_t *con
 	if(StartMeasuringPermission && ModuleIsTerminal(config))
 	{
 		Handle[config->BatteryIndex].TotalCurrent = csGetAverageCurrent();
-		Handle[config->BatteryIndex].SoC = CapacityCulc(Handle[config->BatteryIndex].TotalCurrent, &OD.Energy_As, config->ModuleCapacity * config->Sys_ModulesCountS);
+		Handle[config->BatteryIndex].SoC = CapacityCulc(Handle[config->BatteryIndex].TotalCurrent, &OD.Energy_As, config->ModuleCapacity);
 
 		return 1;
 	}
@@ -545,6 +545,9 @@ void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *Sou
 
 uint8_t MasterIsReady(const BatteryData_t* Handle, const BatteryData_t *BatteriesData, const EcuConfig_t *config, uint32_t *ReadyConditionTimeStamp)
 {
+	if(*ReadyConditionTimeStamp == 0)
+		*ReadyConditionTimeStamp = GetTimeStamp();
+
 	if(config->IsMaster && Handle->OnlineNumber == config->Sys_ModulesCountP)
 	{
 		uint8_t tmp = 1;

@@ -17,9 +17,9 @@ int16_t CurrentLimitArray[CCL_DCL_POINTS_NUM * 2];
 
 
 // Функция получения энергии по минимальному напряжению
-uint32_t GetEnergyFromMinUcell(int16_t *OcvTable, uint16_t Voltage, uint16_t TotalCapatity)
+uint32_t GetEnergyFromMinUcell(int16_t *OcvTable, uint32_t Voltage, uint32_t TotalCapatity)
 {
-	uint32_t TempSoC = interpol(OcvTable, SOC_TABLE_SIZE, Voltage);	
+	uint32_t TempSoC = interpol(OcvTable, SOC_TABLE_SIZE, (uint16_t)Voltage);	
 	
 	return (TempSoC * (TotalCapatity * 36)) / 10;			// Ah * 3600 [Asec] * SoC / 100;
 }

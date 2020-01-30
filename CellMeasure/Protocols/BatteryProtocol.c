@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "Main.h"
 #include "protocol.h"
 #include "CanFunc.h"
@@ -8,6 +10,8 @@ static uint32_t extSendTime[Bat_ECUx_CAN_ID_LEN];
 const uint16_t slvPeriod[Bat_ECUx_CAN_ID_LEN] = {
 								100,
 								250,
+								UINT16_MAX,
+								UINT16_MAX
 								 };
 
 uint8_t SlaveRx(CanMsg *msg)
@@ -101,6 +105,8 @@ void SlaveMesGenerate(void)
 		msg->ID = Bat_ECU_CAN_ID + (Bat_ECUx_CAN_ID_LEN * ecuConfig->BatteryIndex) + extSendMesNumber;
 		msg->DLC = 8;
 		msg->Ext = 0;
+		
+		memset(msg->data, 0xff, 8);
 
 		switch (extSendMesNumber)
 		{

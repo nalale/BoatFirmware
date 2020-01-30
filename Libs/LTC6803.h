@@ -104,8 +104,6 @@ typedef struct
 	uint8_t * m_dst_ptr_table[11];// = {NULL, rx_cfg, NULL, NULL, NULL, m_diag_reg, m_tmp_code_arr, m_code_arr, NULL, NULL, NULL};
 	uint8_t * m_src_ptr_table[11];// = {NULL, NULL, m_cfg, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 	uint8_t m_size_ptr_table[11];// = {NULL, SZ(rx_cfg), SZ(m_cfg), NULL, NULL, SZ(m_diag_reg), SZ(m_tmp_code_arr), SZ(m_code_arr), NULL, NULL, NULL};
-	
-	
 } ltc6803_Sensor_t;
 
 #pragma pack(4)
@@ -122,6 +120,8 @@ uint32_t ltc6803_GetDischargingMask(uint8_t num_cs);
 
 void vs_ban_balancing(uint8_t cmd);
 uint16_t find_cell_for_discharge(const int16_t * cell_voltage_array, uint8_t cell_num, const int16_t discharge_volt_target, const int16_t discharge_volt_min);
+
+int8_t CellsSensorInit(ltc6803_Sensor_t *Handle, VoltageSensorParams_t *p, int16_t *VoltageArray, int16_t *TempArray);
 #ifdef	__cplusplus
 }
 #endif
