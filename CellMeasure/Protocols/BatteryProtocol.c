@@ -10,11 +10,11 @@ static uint32_t extSendTime[Bat_ECUx_CAN_ID_LEN];
 const uint16_t slvPeriod[Bat_ECUx_CAN_ID_LEN] = {
 								100,
 								250,
-								UINT16_MAX,
+								500,
 								UINT16_MAX
 								 };
 
-uint8_t SlaveRx(CanMsg *msg)
+uint8_t packMsgHandler(CanMsg *msg)
 {  
 	const EcuConfig_t *ecuConfig = OD.ConfigData;
 	
@@ -68,6 +68,18 @@ uint8_t SlaveRx(CanMsg *msg)
 		}
 		break;
 		
+		case 2:
+		{
+			cmPack_Tx1 *d = (cmPack_Tx1*)msg->data;
+
+			if(bat_id == ecuConfig->BatteryIndex)
+			{
+				OD.PackControl.BalancingEnabled = d->BalancingEnabled;
+				OD.PackControl.TargetVoltage_mV = d->TargetBalancingVoltage;
+			}
+		}
+		break;
+
 		default:
 			return 1;
 	}				
@@ -133,6 +145,14 @@ void SlaveMesGenerate(void)
 				d->Soc = OD.BatteryData[ecuConfig->BatteryIndex].SoC;
 			}
 			break;
+
+			case 2:
+			{
+				cmPack_Tx1 *d = (cmPack_Tx1*)msg->data;
+
+				d->BalancingEnabled = OD.PackControl.BalancingEnabled;
+				d->TargetBalancingVoltage = OD.PackControl.TargetVoltage_mV;
+			}
         }
 
     }

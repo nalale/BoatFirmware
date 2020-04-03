@@ -28,7 +28,7 @@ void LedBlink(void);
 // Precharge proccess function
 // Parameters:
 // Return value: 0 - precharge doesn't complete, 1 - precharge complete
-static uint8_t BatteryWaitForPrecharge(const BatteryData_t* Handle, const EcuConfig_t *config, uint32_t *CompleteConditionTimeStamp);
+static uint8_t packWaitForPrecharge(const BatteryData_t* Handle, const EcuConfig_t *config, uint32_t *CompleteConditionTimeStamp);
 
 void AppInit(ObjectDictionary_t *dictionary)
 {
@@ -76,23 +76,6 @@ void ControlBatteriesState(WorkStates_e *CurrentState, WorkStates_e RequestState
 	}
 }
 
-uint8_t GetBalancingPermission(int16_t TotalCurrent)
-{
-	EcuConfig_t ecuConfig = GetConfigInstance();
-	uint8_t res = 0;
-	if(ecuConfig.IsMaster || ecuConfig.IsAutonomic)
-	{		
-		// Разрешаем балансировку при токе меньше 1 Ампера
-		if(TotalCurrent > 10 || TotalCurrent < -10)
-			res = 0;
-		else
-			res = 1;
-	}		
-	else
-		res = OD.MasterControl.BalancingEnabled;
-	
-	return res;
-}
 
 void LedStatus(uint8_t ContFB, uint32_t Balancing)
 {
@@ -198,8 +181,8 @@ uint8_t ModuleSetContactorPosition(const BatteryData_t* Handle, stBattery_e Stat
 	case stBat_Precharging:
 	{
 		// If current module is terminal with precharge function
-		if(ModuleIsTerminal(config))
-			return BatteryWaitForPrecharge(Handle, config, CompleteConditionTimeStamp);
+		if(ModuleIsPackHeader(config))
+			return packWaitForPrecharge(Handle, config, CompleteConditionTimeStamp);
 		else
 			BAT_MINUS(BAT_CLOSE);
 			BAT_PLUS(BAT_CLOSE);
@@ -217,7 +200,7 @@ uint8_t ModuleSetContactorPosition(const BatteryData_t* Handle, stBattery_e Stat
 	return 0;
 }
 
-uint8_t ModuleIsTerminal(const EcuConfig_t *config)
+uint8_t ModuleIsPackHeader(const EcuConfig_t *config)
 {
 	return config->ModuleIndex == 0;
 }
@@ -307,13 +290,11 @@ void ModuleStatisticCalculating(BatteryData_t* Handle, const EcuConfig_t *ecuCon
 
 }
 
-
-
 /* *********************** Battery Functionality ****************************** */
 
-uint8_t BatteryIsReady(const BatteryData_t* Handle, const BatteryData_t *ModulesData, const EcuConfig_t *config, uint32_t *ReadyConditionTimeStamp)
+uint8_t packIsReady(const BatteryData_t* Handle, const BatteryData_t *ModulesData, const EcuConfig_t *config, uint32_t *ReadyConditionTimeStamp)
 {
-	if(ModuleIsTerminal(config))
+	if(ModuleIsPackHeader(config))
 	{
 		if(Handle[config->BatteryIndex].OnlineNumber == config->Sys_ModulesCountS)
 		{
@@ -344,9 +325,9 @@ uint8_t BatteryIsReady(const BatteryData_t* Handle, const BatteryData_t *Modules
 // Precharge proccess function
 // Parameters:
 // Return value: 0 - precharge doesn't complete, 1 - precharge complete
-uint8_t BatteryWaitForPrecharge(const BatteryData_t* Handle, const EcuConfig_t *config, uint32_t *CompleteConditionTimeStamp)
+uint8_t packWaitForPrecharge(const BatteryData_t* Handle, const EcuConfig_t *config, uint32_t *CompleteConditionTimeStamp)
 {
-	if(ModuleIsTerminal(config))
+	if(ModuleIsPackHeader(config))
 	{
 		if(GET_BAT_MINUS && GET_BAT_PLUS)
 		{
@@ -388,15 +369,15 @@ uint8_t BatteryWaitForPrecharge(const BatteryData_t* Handle, const EcuConfig_t *
 // Function Defenition:
 // SOC is calculated for each battery by themself.
 // Master calculates SOC as minimum SOC values of each battery
-uint8_t BatteryCapacityCalculating(BatteryData_t* Handle, const EcuConfig_t *config, uint8_t StartMeasuringPermission)
+uint8_t packCapacityCalculating(BatteryData_t* Handle, const EcuConfig_t *config, uint8_t StartMeasuringPermission)
 {
 	if(Handle == 0 || config == 0)
 		return 0;
 
-	if(StartMeasuringPermission && ModuleIsTerminal(config))
+	if(StartMeasuringPermission && ModuleIsPackHeader(config))
 	{
 		Handle[config->BatteryIndex].TotalCurrent = csGetAverageCurrent();
-		Handle[config->BatteryIndex].SoC = CapacityCulc(Handle[config->BatteryIndex].TotalCurrent, &OD.Energy_As, config->ModuleCapacity);
+		Handle[config->BatteryIndex].SoC = StateOfChargeCalculation(Handle[config->BatteryIndex].TotalCurrent, &OD.Energy_As, config->ModuleCapacity);
 
 		return 1;
 	}
@@ -411,19 +392,18 @@ uint8_t BatteryCapacityCalculating(BatteryData_t* Handle, const EcuConfig_t *con
 
 void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *SourceData, const EcuConfig_t *ecuConfig)
 {
+	if(Handle == 0 || SourceData == 0 || ecuConfig == 0 || ecuConfig->ModuleIndex > 0)
+		return;
+		
     uint32_t SumVoltageTemp = 0;
 	uint32_t SumAvgCellVoltage = 0;
 	uint32_t SumCurrentTmp = 0;
-	uint32_t SumEnergyTmp = 0;
-	uint8_t minSoc = 0;
+	uint32_t SumEnergyTmp = 0;	
+	uint16_t minSoc = UINT16_MAX;
 	uint8_t n = 0;
-	uint8_t isModulesData = !ecuConfig->IsMaster;
-	uint8_t batteryCount = (isModulesData)? ecuConfig->Sys_ModulesCountP :  ecuConfig->Sys_ModulesCountS;
+	uint8_t isModulesData = (Handle->Type == type_Pack)? 1 : 0;
+	uint8_t packsNum = (isModulesData)? ecuConfig->Sys_ModulesCountS :  ecuConfig->Sys_ModulesCountP;
 
-	if(Handle == 0 || SourceData == 0 || ecuConfig == 0 || ecuConfig->ModuleIndex > 0)
-		return;
-
-	Handle->TotalCurrent = 0;
 	Handle->MinCellVoltage.Voltage_mv = INT16_MAX;
 	Handle->MaxCellVoltage.Voltage_mv = INT16_MIN;
 	Handle->MinModuleTemperature.Temperature = INT8_MAX;
@@ -432,16 +412,14 @@ void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *Sou
 	Handle->MinBatteryCurrent.Current = INT16_MAX;
 	Handle->MaxBatteryVoltage.Voltage = 0;
 	Handle->MinBatteryVoltage.Voltage = UINT16_MAX;
-	Handle->CCL = INT16_MIN;
-	Handle->DCL = INT16_MAX;
 
-	for (uint8_t i = 0; i < batteryCount; i++)
+	for (uint8_t i = 0; i < packsNum; i++)
 	{
         // Сбросить значения
 		Handle->OnlineFlags = 1;
 		Handle->OnlineNumber = 1;
 
-        for (uint8_t i = 1; i < batteryCount; i++)
+        for (uint8_t i = 1; i < packsNum; i++)
 		{
 			// Если батарея/модуль в сети
             uint32_t bat_delay = GetTimeFrom(SourceData[i].TimeOutCnts);
@@ -452,7 +430,6 @@ void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *Sou
 				Handle->OnlineNumber = Handle->OnlineNumber + 1;
 			}
 		}
-
 
 		// Если батареи нет в сети - проверить следующую
 		if (!(Handle->OnlineFlags & (1L << i)))
@@ -523,22 +500,59 @@ void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *Sou
 			Handle->MinBatteryVoltage.BatteryNumber = i;
 		}
 
-		if(SourceData[i].SoC < Handle->SoC)
+		if(SourceData[i].SoC < minSoc)
 			minSoc = SourceData[i].SoC;
 	}
 
 	if(n > 0)
 		Handle->AvgCellVoltage = SumAvgCellVoltage / n;
 
-	Handle->DischargeEnergy_Ah = SumEnergyTmp;
+	// Мастер умножает минимальный CCL на количество packs
+	Handle->CCL = (isModulesData)? OD.MasterControl.CCL : OD.MasterControl.CCL * packsNum;
+	Handle->DCL = (isModulesData)? OD.MasterControl.DCL : OD.MasterControl.DCL * packsNum;
+	Handle->SoC = (isModulesData)?	Handle->SoC : minSoc;
 	Handle->TotalVoltage = (isModulesData)? SumVoltageTemp : SumVoltageTemp / n;
-	Handle->TotalCurrent = SumCurrentTmp;
+	Handle->TotalCurrent = (isModulesData)? Handle->TotalCurrent : SumCurrentTmp;
+	Handle->DischargeEnergy_Ah = (isModulesData)? Handle->DischargeEnergy_Ah : SumEnergyTmp;
+}
 
-	// Мастер умножает минимальный CCL батарей на количество батарей
-	Handle->CCL = (!isModulesData)? OD.MasterControl.CCL * batteryCount : OD.MasterControl.CCL;
-	Handle->DCL = (!isModulesData)? OD.MasterControl.DCL * batteryCount : OD.MasterControl.DCL;
-	Handle->SoC = (!isModulesData)?	minSoc : Handle->SoC;
+uint8_t packGetBalancingPermission(const BatteryData_t *PackHandle, const PackControl_t *PackControl, const EcuConfig_t *ecuConfig)
+{
+	uint8_t res = 0;
 
+	if(PackHandle->Type == type_Pack)
+	{
+		if(ecuConfig->ModuleIndex == 0)
+		{
+			// Разрешаем балансировку при токе меньше 1 Ампера
+			if(PackHandle->TotalCurrent > 10 || PackHandle->TotalCurrent < -10)
+				res = 0;
+			else
+				res = 1;
+		}
+		else
+			res = PackControl->BalancingEnabled;
+	}
+	else
+		res = PackControl->BalancingEnabled;
+
+	return res;
+}
+
+uint16_t packGetBalancingVoltage(const BatteryData_t *PackHandle, const PackControl_t *PackControl, const EcuConfig_t *ecuConfig)
+{
+	if(ecuConfig->ModuleIndex != 0 || PackHandle->Type != type_Pack)
+		return PackControl->TargetVoltage_mV;
+
+	uint16_t _minVolt_mV = PackHandle->MinCellVoltage.Voltage_mv;
+
+	// Расчёт напряжения балансировки
+	uint16_t TargetVoltTemp_mV = _minVolt_mV + ecuConfig->MaxVoltageDiff;
+
+	if (TargetVoltTemp_mV < ecuConfig->MinVoltageForBalancing)
+		TargetVoltTemp_mV = ecuConfig->MinVoltageForBalancing;
+
+	return TargetVoltTemp_mV;
 }
 
 /* *********************** Master Functionality ******************************* */

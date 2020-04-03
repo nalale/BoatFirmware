@@ -23,7 +23,7 @@ typedef enum
 	General_ECUx_CAN_ID_LEN = 2,
 	General_ECU_CAN_ID_LEN = General_ECUx_CAN_ID_LEN * MaxGEcuNum,
 	
-	Bmu_ECU_CAN_ID_LEN = 5,
+	Bmu_ECU_CAN_ID_LEN = 4,
 	Bmu_ECU_RX_ID_LEN = 2,
 	
 	Bat_ECUx_CAN_ID_LEN = 4,
@@ -44,12 +44,12 @@ typedef enum
 	
 	General_ECU_CAN_ID = BASE_CAN_ID + BASE_CAN_ID_LEN,				//0x100 + 0x0A = 0x10a
 	Bmu_ECU_CAN_ID = General_ECU_CAN_ID + General_ECU_CAN_ID_LEN,	//0x10A + 0x0C = 0x116
-	Bat_ECU_CAN_ID = Bmu_ECU_CAN_ID + Bmu_ECU_CAN_ID_LEN,			//0x116 + 0x05 = 0x11b
-	Module_ECU_CAN_ID = Bat_ECU_CAN_ID + Bat_ECU_CAN_ID_LEN,		//0x11b + 0x10 = 0x12B
+	Bat_ECU_CAN_ID = Bmu_ECU_CAN_ID + Bmu_ECU_CAN_ID_LEN,			//0x116 + 0x04 = 0x11a
+	Module_ECU_CAN_ID = Bat_ECU_CAN_ID + Bat_ECU_CAN_ID_LEN,		//0x11a + 0x10 = 0x12a
 	
-	Bmu_ECU_RX_ID = Module_ECU_CAN_ID + Module_ECU_CAN_ID_LEN,		//0x12B + 0x30 = 0x15B
+	Bmu_ECU_RX_ID = Module_ECU_CAN_ID + Module_ECU_CAN_ID_LEN,		//0x12a + 0x30 = 0x15a
 	
-	Main_ECU_CAN_ID = Bmu_ECU_RX_ID + Bmu_ECU_RX_ID_LEN,			//0x15B + 0x02 = 0x15D
+	Main_ECU_CAN_ID = Bmu_ECU_RX_ID + Bmu_ECU_RX_ID_LEN,			//0x15a + 0x02 = 0x15c
 	
 } SystemIds_e;
 
@@ -174,6 +174,15 @@ typedef struct
 typedef struct
 {
 	uint8_t
+	BalancingEnabled	: 1,
+	dummy				: 7;
+
+	uint16_t TargetBalancingVoltage;
+} cmPack_Tx1;
+
+typedef struct
+{
+	uint8_t
 	MainState	:	4,
 	SubState	:	4;	
 	
@@ -188,15 +197,12 @@ typedef struct
 {
 	uint8_t 
 	RequestState		: 4,
-	BalancingEnabled	: 1,
-	dummy				: 3;
+	dummy				: 4;
 	
     // Лимит зарядного тока
     int16_t CCL;
     // Лимит разрядного тока
     int16_t DCL;
-	// Напряжение балансировки
-	uint16_t TargetVoltage_mV;
 	
 }BatM_Ext2_t;
 

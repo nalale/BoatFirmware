@@ -10,7 +10,7 @@ const uint16_t msgPeriod[Module_ECUx_CAN_ID_LEN] = {
 								250
 								 };
 
-uint8_t ModuleRx(CanMsg *msg)
+uint8_t moduleMsgHandler(CanMsg *msg)
 {	
 	if((msg->ID < Module_ECU_CAN_ID) || (msg->ID >= Module_ECU_CAN_ID + Module_ECU_CAN_ID))
 		return 1;	
@@ -18,8 +18,8 @@ uint8_t ModuleRx(CanMsg *msg)
 	EcuConfig_t ecuConfig = GetConfigInstance();
 	
 	// Проверяем индекс сообщения. Если ID нечетный, значит пришло второе сообщение из группы сообщений Battery
-	uint16_t msg_id = (msg->ID & 0x01)? msg->ID - 1 : msg->ID;	
-	uint8_t module_id = ((msg_id - Module_ECU_CAN_ID) / Module_ECUx_CAN_ID_LEN) - (MAX_MODULE_NUM * ecuConfig.BatteryIndex);
+	uint16_t msg_id = (msg->ID & 0x01)? msg->ID - 1 : msg->ID;		
+	uint8_t module_id = ((msg_id - Module_ECU_CAN_ID) / Module_ECUx_CAN_ID_LEN) - (MaxModuleNum * ecuConfig.BatteryIndex);
 	uint8_t msg_num = msg->ID & 0x01;
 
 	// Модуль не принадлежит ветке своей батареи
@@ -81,7 +81,7 @@ void ModuleMesGenerate(void)
 		
         modSendTime[SendMesNumber] = GetTimeStamp();
 		
-		msg->ID = Module_ECU_CAN_ID + (Module_ECUx_CAN_ID_LEN * (ecuConfig.ModuleIndex + (MAX_MODULE_NUM * ecuConfig.BatteryIndex))) + SendMesNumber;	
+		msg->ID = Module_ECU_CAN_ID + (Module_ECUx_CAN_ID_LEN * (ecuConfig.ModuleIndex + (MaxModuleNum * ecuConfig.BatteryIndex))) + SendMesNumber;	
 		msg->DLC = 8;
 		msg->Ext = 0;
 

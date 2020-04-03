@@ -344,6 +344,9 @@ void ecuInit(ObjectDictionary_t *dictionary)
 	dictionary->EcuInfo[2] = FW_VERSION;
 	dictionary->EcuInfo[3] = HW_VERSION;
 	
+	dictionary->BatteryData[_config.BatteryIndex].Type = type_Pack;
+	dictionary->MasterData.Type = type_Master;
+	
 	// Применение ошибок
 	if(!_config.CheckContactor)
 		dtcContactor.Property->Bits.IsCritical = 0;

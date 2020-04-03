@@ -30,6 +30,12 @@
 // Максимальное количество в списке ошибок
 #define MAX_FAULTS_NUM				10
 
+typedef enum
+{
+	type_Master = 0,
+	type_Pack,
+	type_Module,
+} ModuleType_e;
 
 // Состояния конечного автомата
 typedef enum {
@@ -145,7 +151,8 @@ typedef struct
 
 // структура данных статистика мастера
 typedef struct
-{
+{	
+	ModuleType_e Type;
 	// Состояние конечного автомата
     StateMachine_t StateMachine;
 	
@@ -205,8 +212,6 @@ typedef struct
 {
     // Запрос от мастера на определённое состояние
     WorkStates_e RequestState;
-    // Напряжение балансировки
-    uint16_t TargetVoltage_mV;
     // Лимит зарядного тока
     int16_t CCL;
     // Лимит разрядного тока
@@ -215,8 +220,15 @@ typedef struct
     uint16_t CellOverVoltageLevel_mV;
     // Минимально допустимое напряжение аккумулятора
     uint16_t CellUnderVoltageLevel_mV;
-	uint8_t BalancingEnabled;
+
 } MasterControl_t;
+
+typedef struct
+{
+	// Напряжение балансировки
+	uint16_t TargetVoltage_mV;
+	uint8_t BalancingEnabled;
+} PackControl_t;
 
 typedef union
 {
@@ -299,8 +311,8 @@ typedef struct
     // Данные мастера
     BatteryData_t MasterData;
 	
-    // Управляющие данные мастера
     MasterControl_t MasterControl;
+    PackControl_t PackControl;
     
     int16_t LastPrechargeMaxCurrent_0p1A;
     uint32_t LastPrechargeDuration;

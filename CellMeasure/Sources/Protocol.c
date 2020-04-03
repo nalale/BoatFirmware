@@ -23,11 +23,11 @@ void Protocol(void)
     if(isNewMsg)
 		isNewMsg = ExternalRx(&PCanRxMsg);
     if(isNewMsg)
-		isNewMsg = ModuleRx(&PCanRxMsg);
+		isNewMsg = moduleMsgHandler(&PCanRxMsg);
     if(isNewMsg)
-		isNewMsg = SlaveRx(&PCanRxMsg);
+		isNewMsg = packMsgHandler(&PCanRxMsg);
     if(isNewMsg)
-		isNewMsg = MasterRx(&PCanRxMsg);
+		isNewMsg = MasterMsgHandler(&PCanRxMsg);
 	
 	//Master
 	if(ecuConfig.IsMaster)
@@ -36,7 +36,7 @@ void Protocol(void)
 	if(ecuConfig.ModuleIndex == 0)
 		SlaveMesGenerate();
 	//Module
-	if(ecuConfig.ModuleIndex != 0)	
+	if(ecuConfig.ModuleIndex > 0)
 		ModuleMesGenerate();
 	   
 	ExternalMesGenerate();

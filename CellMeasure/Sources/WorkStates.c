@@ -81,7 +81,7 @@ void InitializationState(uint8_t *SubState)
 
 				// Intermediate module goes to Operating state and closes contactors
             	// Terminal module goes to sensor calibrating proccess
-				if(!ModuleIsTerminal(OD.ConfigData))
+				if(!ModuleIsPackHeader(OD.ConfigData))
 					SetWorkState(&OD.StateMachine, WORKSTATE_OPERATE);
 				else
 					*SubState = 2;
@@ -95,10 +95,11 @@ void InitializationState(uint8_t *SubState)
 		{
             if(GetTimeFrom(timeStamp) > 1000)
             {
+				timeStamp = GetTimeStamp();
             	OD.SB.CurrentSensorReady = 1;
-            	timeStamp = GetTimeStamp();
-
-            	*SubState = 3;
+				OD.Energy_As = GetEnergyFromMinUcell((int16_t*)OD.ConfigData->OCVpoint, OD.BatteryData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv, OD.ConfigData->ModuleCapacity);
+   
+				*SubState = 3;
             }
             else
             	csCalibrateCurrentSensor();
@@ -107,11 +108,9 @@ void InitializationState(uint8_t *SubState)
             
         case 3:
 			// Terminal module waits for all intermediate modules close contactors
-        	if(BatteryIsReady(OD.BatteryData, OD.ModuleData, OD.ConfigData, &timeStamp))
-        	{
-        		OD.Energy_As = GetEnergyFromMinUcell((int16_t*)OD.ConfigData->OCVpoint, OD.BatteryData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv, OD.ConfigData->ModuleCapacity);
+        	if(packIsReady(OD.BatteryData, OD.ModuleData, OD.ConfigData, &timeStamp))
+        	{        		
 				timeStamp = GetTimeStamp();
-
 				ControlBatteriesState(&OD.MasterControl.RequestState, WORKSTATE_PREOP);
         	}
             
@@ -225,7 +224,7 @@ void CommonState(void)
 		PM_Proc(OD.ecuPowerSupply_0p1, OD.ConfigData->IsPowerManager);
 		ecuProc();
 		vs_thread(OD.CellVoltageArray_mV, OD.CellTemperatureArray);
-		BatteryCapacityCalculating(OD.BatteryData, OD.ConfigData, OD.SB.CurrentSensorReady);
+		packCapacityCalculating(OD.BatteryData, OD.ConfigData, OD.SB.CurrentSensorReady);
 		
 		if(FaultsTest())
 		{
@@ -234,8 +233,8 @@ void CommonState(void)
 			SetWorkState(&OD.StateMachine, WORKSTATE_FAULT);
 		}
         
-        // Переход в требуемое состояние для батареи и мастера
-		if((OD.ConfigData->ModuleIndex == 0) && (OD.MasterControl.RequestState != OD.StateMachine.MainState && OD.StateMachine.MainState != WORKSTATE_FAULT))
+		if(ModuleIsPackHeader(OD.ConfigData)
+				&& (OD.MasterControl.RequestState != OD.StateMachine.MainState && OD.StateMachine.MainState != WORKSTATE_FAULT))
 		{			
 			SetWorkState(&OD.StateMachine, OD.MasterControl.RequestState);
 		}
@@ -248,11 +247,11 @@ void CommonState(void)
 	{
 		OD.LogicTimers.Timer_10ms = GetTimeStamp();
 		
-		// модуль
+		// Battery Module
         ModuleStatisticCalculating(&OD.ModuleData[OD.ConfigData->ModuleIndex], OD.ConfigData, OD.CellVoltageArray_mV, OD.CellTemperatureArray);
-		// батарея
+		// Battery Pack
 		BatteryStatisticCalculating(&OD.BatteryData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData);
-		// master		
+		// Master
 		BatteryStatisticCalculating(&OD.MasterData, OD.BatteryData, OD.ConfigData);
 
 		OD.PowerMaganerState = PM_GetPowerState();
@@ -270,13 +269,12 @@ void CommonState(void)
     {
         OD.LogicTimers.Timer_100ms = GetTimeStamp();
 		
-		// Функции мастера
-		OD.MasterControl.TargetVoltage_mV = TargetVoltageCulc(OD.MasterData.MinCellVoltage.Voltage_mv, OD.ModuleData[OD.ConfigData->ModuleIndex].MinCellVoltage.Voltage_mv);
-        OD.MasterControl.BalancingEnabled = GetBalancingPermission(OD.ModuleData[OD.ConfigData->ModuleIndex].TotalCurrent);
-		GetCurrentLimit(&OD.MasterControl.DCL, &OD.MasterControl.CCL);
+		OD.PackControl.TargetVoltage_mV = packGetBalancingVoltage(&OD.BatteryData[OD.ConfigData->BatteryIndex], &OD.PackControl, OD.ConfigData);
+        OD.PackControl.BalancingEnabled = packGetBalancingPermission(&OD.BatteryData[OD.ConfigData->BatteryIndex], &OD.PackControl, OD.ConfigData);
+		GetCurrentLimit(&OD.MasterData, OD.ConfigData, &OD.MasterControl.DCL, &OD.MasterControl.CCL);
 		
-		vs_ban_balancing(!OD.MasterControl.BalancingEnabled);
-		vs_set_min_dis_chars(OD.MasterControl.TargetVoltage_mV);
+		vs_ban_balancing(!OD.PackControl.BalancingEnabled);
+		vs_set_min_dis_chars(OD.PackControl.TargetVoltage_mV);
 			
 		LedStatus(FB_PLUS & FB_MINUS, OD.ModuleData[OD.ConfigData->ModuleIndex].DischargingCellsFlag);
 
@@ -299,7 +297,7 @@ void CommonState(void)
 		uint16_t discharge_mask1 = ltc6803_GetDischargingMask(0);
 		uint16_t discharge_mask2 = ltc6803_GetDischargingMask(1);		
         OD.ModuleData[OD.ConfigData->ModuleIndex].DischargingCellsFlag = discharge_mask1 + ((uint32_t)discharge_mask2 << 12);
-		OD.ModuleData[OD.ConfigData->ModuleIndex].DischargeEnergy_Ah = OD.Energy_As / 3600;
+//		OD.ModuleData[OD.ConfigData->ModuleIndex].DischargeEnergy_Ah = OD.Energy_As / 3600;
     }
 }
 

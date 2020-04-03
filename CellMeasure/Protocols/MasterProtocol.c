@@ -16,34 +16,33 @@ const uint16_t mstPeriod[MASTER_SEND_MSG_AMOUNT] = {
 								 };
 
 
-uint8_t MasterRx(CanMsg *msg)
+uint8_t MasterMsgHandler(CanMsg *msg)
 {
 	// Сообщение от мастера
-	if (msg->ID == Bmu_ECU_CAN_ID + 1)
-	{		
-		BatM_Ext2_t *d = (BatM_Ext2_t*)msg->data;
-				
-		OD.MasterControl.RequestState = (WorkStates_e)d->RequestState;
-		OD.MasterControl.BalancingEnabled = d->BalancingEnabled;
-		
-		OD.MasterControl.CCL = d->CCL;
-		OD.MasterControl.DCL = d->DCL;
-		OD.MasterControl.TargetVoltage_mV = d->TargetVoltage_mV;
-		
-		OD.SB.MsgFromSystem = 1;
-		
-		return 0;
-	}
-	else if(msg->ID == Bmu_ECU_RX_ID)
+	if(msg->ID == Bmu_ECU_RX_ID)
 	{
 		EcuConfig_t cfgEcu = GetConfigInstance();
 		if(cfgEcu.IsMaster)
 		{
 			BatM_ExtRx_t *d = (BatM_ExtRx_t*)msg->data;
-			
+
 			OD.SystemOperateEnabled = d->OpEnabled;
 			OD.SB.MsgFromSystem = 1;
 		}
+	}
+	else if (msg->ID == Bmu_ECU_CAN_ID + 1)
+	{		
+		BatM_Ext2_t *d = (BatM_Ext2_t*)msg->data;
+				
+		OD.MasterControl.RequestState = (WorkStates_e)d->RequestState;
+
+		OD.MasterControl.CCL = d->CCL;
+		OD.MasterControl.DCL = d->DCL;
+		
+
+		OD.SB.MsgFromSystem = 1;
+		
+		return 0;
 	}
 	
 	return 1;
@@ -96,8 +95,6 @@ void MasterMesGenerate(void)
 				BatM_Ext2_t *d = (BatM_Ext2_t*)msg->data;
             
 				d->RequestState = OD.MasterControl.RequestState;
-				d->BalancingEnabled = OD.MasterControl.BalancingEnabled;	
-				d->TargetVoltage_mV = OD.MasterControl.TargetVoltage_mV;
                 d->DCL = OD.MasterControl.DCL;
                 d->CCL = OD.MasterControl.CCL;							
 			}
