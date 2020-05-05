@@ -5,6 +5,11 @@
 #include "User.h"
 #include "TimerFunc.h"
 
+#include "UserApplications/SteeringFunc.h"
+#include "UserApplications/ObcDriver.h"
+#include "UserApplications/HelmDriver.h"
+#include "UserApplications/DriveControl.h"
+
 
 void CommonState(void);
 
@@ -21,8 +26,8 @@ int main(void)
     // Инициализация контроллера, внутренних переменных словаря
     AppInit(&OD);
     
-    SET_A_OUT1_EN(1);
-    SET_A_OUT2_EN(1);
+    SET_D_OUT1_EN(1);
+    SET_D_OUT2_EN(1);
     
     SetWorkState(&OD.StateMachine, WORKSTATE_INIT);
 
@@ -42,25 +47,25 @@ int main(void)
 uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 {
 	uint8_t _size = 0;
-	static uint32_t _data = 0;	
-	EcuConfig_t _config = GetConfigInstance();
+	static uint32_t _data = 0;
 	
 	switch(Index)
 	{
+	// Common Data
 		case didEcuInfo:
-			*Buf = (uint8_t*)OD.EcuInfo;
-			_size = (subindex > 0)? 0 : sizeof(OD.EcuInfo);
+			*Buf = (uint8_t*)(&OD.EcuInfo[subindex]);
+			_size = (subindex > 3)? 0 : sizeof(OD.EcuInfo[0]);
 		break;
 		
-		case didMachineState:
-			*Buf = (uint8_t*)&OD.StateMachine.MainState;
-			_size = (subindex > 0)? 0: sizeof(OD.StateMachine.MainState);
+		case didConfigStructIndex:
+			*Buf = (uint8_t*)OD.cfgEcu;
+			_size = (subindex > CONFIG_SIZE)? 0 : CONFIG_SIZE;
 		break;
-		
-		case didMachineSubState:
-			*Buf = (uint8_t*)&OD.StateMachine.SubState;
-			_size = (subindex > 0)? 0: sizeof(OD.StateMachine.SubState);
-		break;
+
+		case didDateTime:
+			*Buf = (uint8_t*)&OD.SystemTime;
+			_size = (subindex > 0)? 0 : sizeof(OD.SystemTime);
+			break;
 		
 		case didEcuVoltage:
 			*Buf = (uint8_t*)&OD.ecuPowerSupply_0p1;
@@ -72,12 +77,7 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			_size = (subindex > 0)? 0 : sizeof(OD.LocalPMState);
 		break;
 		
-		
-		case didConfigStructIndex:			
-			*Buf = (uint8_t*)&_config;
-			_size = (subindex > CONFIG_SIZE)? 0 : CONFIG_SIZE;
-		break;
-		
+		// Voltage Data
 		case didVoltageSensor1:
 			*Buf = (uint8_t*)&OD.A_CH_Voltage_0p1[0];
 			_size = (subindex > 0)? 0 : sizeof(OD.A_CH_Voltage_0p1[0]);
@@ -113,6 +113,17 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			_size = (subindex > 0)? 0 : sizeof(OD.PwmLoadCurrent[2]);
 		break;
 		
+		case didMachineState:
+			*Buf = (uint8_t*)&OD.StateMachine.MainState;
+			_size = (subindex > 0)? 0: sizeof(OD.StateMachine.MainState);
+		break;
+
+		// Internal State
+		case didMachineSubState:
+			*Buf = (uint8_t*)&OD.StateMachine.SubState;
+			_size = (subindex > 0)? 0: sizeof(OD.StateMachine.SubState);
+		break;
+
 		case didInOutState:
 			*Buf = (uint8_t*)&OD.IO;
 			_size = (subindex > 0)? 0 : sizeof(OD.IO);
@@ -123,15 +134,22 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			_size = (subindex > 3)? 0 : sizeof(OD.PwmTargetLevel[subindex]);		
 		break;
 		
-		case didSteeringTargetAngle:
-			*Buf = (uint8_t*)&OD.HelmData.TargetAngle;
-			_size = (subindex > 0)? 0 : sizeof(OD.HelmData.TargetAngle);
+		case didHelmDemandAngle:
+			_data = HelmGetTargetAngle();
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0 : 2;
 		break;
 		
+		case didHelmStatus:
+			_data = HelmGetStatus();
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0 : 1;
+			break;
+
 		case didSteeringFBAngle:
-			_data = OD.steeringFeedbackAngle;
+			_data = SteeringGetFeedBackAngle(&OD.SteeringData);
 			*Buf = (uint8_t*)&_data;	
-			_size = (subindex > 0)? 0: sizeof(OD.steeringFeedbackAngle);
+			_size = (subindex > 0)? 0: 2;
 		break;
 		
 		case didSteeringFB:
@@ -161,23 +179,27 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 		break;
 		
 		case didMotorTemp:
-			*Buf = (uint8_t*)&OD.InvertorDataRx.MotorTemperature;
-			_size = (subindex > 0)? 0: sizeof(OD.InvertorDataRx.MotorTemperature);
+			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0 : 2;
 		break;
 		
 		case didInvTemp:
-			*Buf = (uint8_t*)&OD.InvertorDataRx.InverterTemperature;
-			_size = (subindex > 0)? 0: sizeof(OD.InvertorDataRx.InverterTemperature);
+			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_BoardTemperature);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
 			break;
 		
 		case didInverterCurrent:
-			*Buf = (uint8_t*)&OD.InvertorDataRx.CurrentDC;
-			_size = (subindex > 0)? 0: sizeof(OD.InvertorDataRx.CurrentDC);
+			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_CurrentDC);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
 			break;
 		
 		case didActualRpm:
-			*Buf = (uint8_t*)&OD.MovControlDataRx.ActualSpeed;
-			_size = (subindex > 0)? 0: sizeof(OD.MovControlDataRx.ActualSpeed);
+			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_ActualSpeed);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
 			break;
 		
 		case didBatteryCurrent:
@@ -191,23 +213,27 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 		break;
 		
 		case didActualGear:
-			*Buf = (uint8_t*)&OD.MovControlDataRx.Gear;
-			_size = (subindex > 0)? 0: sizeof(OD.MovControlDataRx.Gear);
+			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_Direction);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: sizeof(_data);
 		break;
 		
 		case didTargetSpeed:
-			*Buf = (uint8_t*)&OD.TractionData.TargetTorque;
-			_size = (subindex > 0)? 0: sizeof(OD.TractionData.TargetTorque);
+			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_TargetTorque);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
 		break;
 		
 		case didAccPosition:
-			*Buf = (uint8_t*)&OD.MovControlDataRx.AccPosition;
-			_size = (subindex > 0)? 0: sizeof(OD.MovControlDataRx.AccPosition);
+			_data = driveGetDemandAcceleration();
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
 		break;
 		
 		case didInverterVoltage:
-			*Buf = (uint8_t*)&OD.InvertorDataRx.VoltageDC;
-			_size = (subindex > 0)? 0: sizeof(OD.InvertorDataRx.VoltageDC);
+			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_VoltageDC);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
 			break;
 		
 		case didBatteryCmd:
@@ -216,15 +242,15 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 		break;
 		
 		case didInverterEnable:
-			_data = OD.InvertorDataRx.InverterIsEnable;
+			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_EnableCmd);
 			*Buf = (uint8_t*)&_data;
-			_size = (subindex > 0)? 0: sizeof(uint8_t);
+			_size = (subindex > 0)? 0: 2;
 		break;
 				
 		case didInverterState:
-			_data = OD.InvertorDataRx.InverterState;
+			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_Status);
 			*Buf = (uint8_t*)&_data;
-			_size = (subindex > 0)? 0: sizeof(OD.InvertorDataRx.InverterState);
+			_size = (subindex > 0)? 0: 2;
 		break;
 		
 		case didWaterSwitches:

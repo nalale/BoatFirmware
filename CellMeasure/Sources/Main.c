@@ -23,7 +23,6 @@ void (*Algorithm)(uint8_t *);
 
 // Словарь объектов
 ObjectDictionary_t OD;
-static EcuConfig_t _config;
 static uint8_t Buffer[512];
 
 
@@ -52,7 +51,6 @@ int main(int argc, char** argv) {
 uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t **Buf)
 {
 	uint8_t _size = 0;
-	_config = GetConfigInstance();
 	
 	switch(Index)
 	{
@@ -63,14 +61,14 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t **Buf)
 		
 		// Module Parameters
 		case didConfigStructIndex:			
-			*Buf = (uint8_t*)&_config;
+			*Buf = (uint8_t*)OD.ConfigData; //&_config;
 			_size = CONFIG_SIZE;
 		break;
 		
 		case didDateTime:
 		{
-			*Buf = (uint8_t*)&secondsTotal;			
-			_size = (subindex < 1)? sizeof(secondsTotal) : 0;
+			*Buf = (uint8_t*)&OD.SystemTime;			
+			_size = (subindex < 1)? sizeof(OD.SystemTime) : 0;
 		}
 		break;
 		
@@ -120,40 +118,40 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t **Buf)
 		
 		case didCellsVoltages:
 			*Buf = (uint8_t*)(&OD.CellVoltageArray_mV[subindex]);
-			_size = (subindex < _config.CellNumber)? sizeof(OD.CellVoltageArray_mV[0]) : 0;
+			_size = (subindex < OD.ConfigData->CellNumber)? sizeof(OD.CellVoltageArray_mV[0]) : 0;
 			break;
 		case didModuleTemperatures:
 			*Buf = (uint8_t*)(&OD.CellTemperatureArray[subindex]);
 			_size = (subindex < TMP_SENSOR_IN_MODULE)? sizeof(OD.CellTemperatureArray[0]) : 0;
 		break;	
 		case didModMaxCellVoltage:
-			*Buf = (uint8_t*)&OD.ModuleData[_config.ModuleIndex].MaxCellVoltage.Voltage_mv;
-			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[_config.ModuleIndex].MaxCellVoltage.Voltage_mv);
+			*Buf = (uint8_t*)&OD.ModuleData[OD.ConfigData->ModuleIndex].MaxCellVoltage.Voltage_mv;
+			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[OD.ConfigData->ModuleIndex].MaxCellVoltage.Voltage_mv);
 		break;
 		
 		case didModMinCellVoltage:
-			*Buf = (uint8_t*)&OD.ModuleData[_config.ModuleIndex].MinCellVoltage.Voltage_mv;
-			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[_config.ModuleIndex].MinCellVoltage.Voltage_mv);
+			*Buf = (uint8_t*)&OD.ModuleData[OD.ConfigData->ModuleIndex].MinCellVoltage.Voltage_mv;
+			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[OD.ConfigData->ModuleIndex].MinCellVoltage.Voltage_mv);
 		break;
 		
 		case didModMaxTemperature:
-			*Buf = (uint8_t*)&OD.ModuleData[_config.ModuleIndex].MaxModuleTemperature.Temperature;
-			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[_config.ModuleIndex].MaxModuleTemperature.Temperature);
+			*Buf = (uint8_t*)&OD.ModuleData[OD.ConfigData->ModuleIndex].MaxModuleTemperature.Temperature;
+			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[OD.ConfigData->ModuleIndex].MaxModuleTemperature.Temperature);
 		break;
 		
 		case didModMinTemperature:
-			*Buf = (uint8_t*)&OD.ModuleData[_config.ModuleIndex].MinModuleTemperature.Temperature;
-			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[_config.ModuleIndex].MinModuleTemperature.Temperature);
+			*Buf = (uint8_t*)&OD.ModuleData[OD.ConfigData->ModuleIndex].MinModuleTemperature.Temperature;
+			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[OD.ConfigData->ModuleIndex].MinModuleTemperature.Temperature);
 		break;
 		
 		case didModTotalVoltage:
-			*Buf = (uint8_t*)&OD.ModuleData[_config.ModuleIndex].TotalVoltage;
-			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[_config.ModuleIndex].TotalVoltage);
+			*Buf = (uint8_t*)&OD.ModuleData[OD.ConfigData->ModuleIndex].TotalVoltage;
+			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[OD.ConfigData->ModuleIndex].TotalVoltage);
 		break;
 		
 		case didModDischargeCellsFlag:
-			*Buf = (uint8_t*)&OD.ModuleData[_config.ModuleIndex].DischargingCellsFlag;
-			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[_config.ModuleIndex].DischargingCellsFlag);
+			*Buf = (uint8_t*)&OD.ModuleData[OD.ConfigData->ModuleIndex].DischargingCellsFlag;
+			_size = (subindex > 0)? 0 : sizeof(OD.ModuleData[OD.ConfigData->ModuleIndex].DischargingCellsFlag);
 		break;
 		
 		case didModInOutState:
@@ -163,62 +161,62 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t **Buf)
 		
 		// Battery Parameters
 		case didBatMaxCellVoltage:
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].MaxCellVoltage.Voltage_mv;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[_config.BatteryIndex].MaxCellVoltage.Voltage_mv);
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].MaxCellVoltage.Voltage_mv;
+			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].MaxCellVoltage.Voltage_mv);
 		break;
 		
 		case didBatMinCellVoltage:
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].MinCellVoltage.Voltage_mv;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[_config.BatteryIndex].MinCellVoltage.Voltage_mv);
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv;
+			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv);
 		break;
 		
 		case didBatMaxTemperature:
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].MaxModuleTemperature.Temperature;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[_config.BatteryIndex].MaxModuleTemperature.Temperature);
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].MaxModuleTemperature.Temperature;
+			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].MaxModuleTemperature.Temperature);
 		break;
 		
 		case didBatMinTemperature:
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].MaxModuleTemperature.Temperature;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[_config.BatteryIndex].MaxModuleTemperature.Temperature);
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].MaxModuleTemperature.Temperature;
+			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].MaxModuleTemperature.Temperature);
 		break;
 		
 		case didBatMaxVoltage:
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].MaxBatteryVoltage.Voltage;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[_config.BatteryIndex].MaxBatteryVoltage.Voltage);
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].MaxBatteryVoltage.Voltage;
+			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].MaxBatteryVoltage.Voltage);
 			break;
 		
 		case didBatMinVoltage:
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].MinBatteryVoltage.Voltage;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[_config.BatteryIndex].MinBatteryVoltage.Voltage);
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].MinBatteryVoltage.Voltage;
+			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].MinBatteryVoltage.Voltage);
 		break;
 		
 		case didBatTotalCurrent:
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].TotalCurrent;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[_config.BatteryIndex].TotalCurrent);
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].TotalCurrent;
+			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].TotalCurrent);
 		break;
 		
 		case didBatTotalVoltage:
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].TotalVoltage;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[_config.BatteryIndex].TotalCurrent);
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].TotalVoltage;
+			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].TotalCurrent);
 		break;
 		
 		case didBatStateOfCharge:
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].SoC;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[_config.BatteryIndex].SoC);
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].SoC;
+			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].SoC);
 		break;
 		
 		case didBatEnergy:
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].DischargeEnergy_Ah;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[_config.BatteryIndex].DischargeEnergy_Ah);
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].DischargeEnergy_Ah;
+			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].DischargeEnergy_Ah);
 		break;	
 		
 		case didBatCCL:		
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].CCL;
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].CCL;
 			_size = (subindex > 0)? 0 : sizeof(OD.MasterControl.CCL);
 		break;
 		
 		case didBatDCL:		
-			*Buf = (uint8_t*)&OD.BatteryData[_config.BatteryIndex].DCL;
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].DCL;
 			_size = (subindex > 0)? 0 : sizeof(OD.MasterControl.DCL);
 		break;
 		

@@ -5,30 +5,38 @@
  *      Author: green
  */
 
-//#include <time.h>
 #include <string.h>
 #include "DateTime.h"
 
-
-uint32_t CalcDOW(RTC_TIME_Type* time);
-uint32_t CalcDOY(RTC_TIME_Type* time);
-
 // Количество дней по месяцам
-uint8_t months[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+static uint8_t months[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 RTC_TIME_Type currentRtc;
-uint32_t secondsTotal;			// Количество пройденных секунд начиная с 01.01.2000
-uint32_t secondsToday;			// Количество пройденных секунд в текущем дне
+static SystemTime_t sysTime;
+
+//uint32_t secondsTotal;			// Количество пройденных секунд начиная с 01.01.2000
+//uint32_t secondsToday;			// Количество пройденных секунд в текущем дне
 //uint32_t secondsAtStartYear;	// Количество пройденных секунд на начало текущего года
 
+static void CheckDateTime(RTC_TIME_Type* dateTime);
+static double GetDayAt2000(int y, int m, int d);
+static uint32_t CalcDOY(RTC_TIME_Type* time);
 
+RTC_TIME_Type* dateTime_GetCurrentRtcTime(void)
+{
+	return &currentRtc;
+}
 
+uint8_t dateTime_IsInit()
+{
+	return sysTime.IsInit;
+}
 
-void newSecond()
+void dateTime_newSecond()
 {
 	// Счетчики времени в секундах
-	secondsTotal++;
-	secondsToday++;
+	sysTime.secondsTotal++;
+	sysTime.secondsToday++;
 
 	// Считаем обычное время
 	currentRtc.SEC += 1;
@@ -46,74 +54,80 @@ void newSecond()
 	}
 
 	// Если новые сутки
-	if (secondsToday >= SECONDS_IN_DAY) // 86400 секунд в одном дне
+	if (sysTime.secondsToday >= SECONDS_IN_DAY) // 86400 секунд в одном дне
 	{
-		secondsToday = 0;
+		sysTime.secondsToday = 0;
 		NewDay();
-		// Проверяем батарейку в часах
-		//board.SB.CheckBat = 1;
 	}
 }
 
-// Количество дней с начала 2000-го года
-// Выполняется ~ 1,6 мкс
-double GetDayAt2000(int y, int m, int d)
+uint32_t dateTime_GetCurrentTotalSeconds()
 {
-	uint32_t luku = -7 * (y + (m + 9) / 12) / 4 + 275 * m / 9 + d;
-	luku += y * 367;
-
-	//double h = 12;	// 12/24.0 = 0.5
-	//return (double) luku - 730531.5 + 0.5;
-	return (double) luku - 730531;
+	if(!sysTime.IsInit)
+		return sysTime.secondsToday;
+	else
+		return sysTime.secondsTotal;
 }
 
+uint16_t dateTime_GetCurrentTotalDays(){
+	
+	if(!sysTime.IsInit)
+		return currentRtc.DOY;
+	else
+		return GetDayAt2000(currentRtc.YEAR, currentRtc.MONTH, currentRtc.DOM);
+}
 
-
-void SetDateTimeInt(uint32_t seconds)
-{
+RTC_TIME_Type* dateTime_InitCurrent(uint32_t seconds)
+{	
 	SecondsToRtc(seconds, &currentRtc);
-	SetDateTime(&currentRtc);
+	dateTime_SetCurrentTime(&currentRtc);
+	
+	return &currentRtc;
 }
 
-
-uint32_t SetDateTime(RTC_TIME_Type* time)
+void CheckDateTime(RTC_TIME_Type* dateTime)
 {
 	// Проверка правильности данных
-	if (time->YEAR < 2012)
-		time->YEAR = 2012;
-	if (time->YEAR > 2099)
-		time->YEAR = 2099;
+	if (dateTime->YEAR < 2012)
+		dateTime->YEAR = 2012;
+	if (dateTime->YEAR > 2099)
+		dateTime->YEAR = 2099;
 
-	if (time->MONTH < 1)
-		time->MONTH = 1;
-	if (time->MONTH > 12)
-		time->MONTH = 12;
+	if (dateTime->MONTH < 1)
+		dateTime->MONTH = 1;
+	if (dateTime->MONTH > 12)
+		dateTime->MONTH = 12;
 
 	// Проверка на високосный год
-	if (time->YEAR % 4 == 0)
+	if (dateTime->YEAR % 4 == 0)
 		months[1] = 29; // Если год високосный, то в феврале 29 дней
 	else
 		months[1] = 28;
 
-	if (time->DOM < 1)
-		time->DOM = 1;
-	if (time->DOM > months[time->MONTH - 1])
-		time->DOM = months[time->MONTH - 1];
+	if (dateTime->DOM < 1)
+		dateTime->DOM = 1;
+	if (dateTime->DOM > months[dateTime->MONTH - 1])
+		dateTime->DOM = months[dateTime->MONTH - 1];
 
 	// Расчет дня недели
-	time->DOW = CalcDOW(time);
+	dateTime->DOW = GetDayOfWeek(dateTime);
 	// Расчет дня года
-	time->DOY = CalcDOY(time);
+	dateTime->DOY = CalcDOY(dateTime);
+}
 
+uint32_t dateTime_SetCurrentTime(RTC_TIME_Type* time)
+{
+	sysTime.IsInit = 1;
+	
+	CheckDateTime(time);
 
-	// Установка даты/времени
-	//currentDate = *time;	// Если time - указатель на uip_appdata, то вылетает исключение. Поэтому memcpy...
-	memcpy((void*)&currentRtc, time, sizeof(RTC_TIME_Type));
+	if(time != &currentRtc)
+		memcpy((void*)&currentRtc, time, sizeof(RTC_TIME_Type));
 	 
-	secondsTotal = RtcToSeconds(time);
-	secondsToday = time->HOUR * 3600 + time->MIN * 60 + time->SEC;
+	sysTime.secondsTotal = RtcToSeconds(time);
+	sysTime.secondsToday = time->HOUR * 3600 + time->MIN * 60 + time->SEC;
 
-	return secondsTotal;
+	return sysTime.secondsTotal;
 }
 
 // Перевод секунд в rtc-формат
@@ -202,6 +216,18 @@ uint32_t RtcToSeconds(RTC_TIME_Type* rtc)
 	return res;
 }
 
+// Количество дней с начала 2000-го года
+// Выполняется ~ 1,6 мкс
+double GetDayAt2000(int y, int m, int d)
+{
+	uint32_t luku = -7 * (y + (m + 9) / 12) / 4 + 275 * m / 9 + d;
+	luku += y * 367;
+
+	//double h = 12;	// 12/24.0 = 0.5
+	//return (double) luku - 730531.5 + 0.5;
+	return (double) luku - 730531;
+}
+
 // Перевод даты (ТОЛЬКО даты) в секунды, начиная с 01.01.2000 г.
 uint32_t GetSecondsFromDate(RTC_TIME_Type* time)
 {
@@ -253,7 +279,7 @@ uint8_t GetDaysInMonth(int month, int year)
 }
 
 // Расчет дня недели указанной даты
-uint32_t CalcDOW(RTC_TIME_Type* time)
+uint32_t GetDayOfWeek(RTC_TIME_Type* time)
 {
 	uint32_t n;
 	uint32_t nyy;

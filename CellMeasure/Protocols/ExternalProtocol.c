@@ -30,7 +30,10 @@ uint8_t ExternalRx(CanMsg *msg)
 		}
 		else if(msg->DLC >= sizeof(cmTimeServer))
 		{
-			secondsTotal = ((cmTimeServer*)msg->data)->DateTime;
+			if(!dateTime_IsInit())
+			{
+				dateTime_InitCurrent(((cmTimeServer*)msg->data)->DateTime);
+			}
 		}
 
 		return 0;
@@ -70,7 +73,8 @@ void ExternalMesGenerate(void)
 		extSendMesNumber = 0;
 	}
 
-	if(!_config.IsTimeServer)
+	// Wait for init RTC
+	if(!_config.IsTimeServer || !dateTime_IsInit())
 	{
 		if(extSendMesNumber == 0)
 			return;
@@ -95,7 +99,7 @@ void ExternalMesGenerate(void)
 			{				
 				msg->DLC = 4;
 				cmTimeServer *d = (cmTimeServer*)msg->data;
-				d->DateTime = secondsTotal;
+				d->DateTime = OD.SystemTime;
 			}            
             break;
         }

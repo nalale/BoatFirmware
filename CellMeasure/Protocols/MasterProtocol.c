@@ -106,7 +106,8 @@ void MasterMesGenerate(void)
 
 				d->MaxCellVoltage_mV = OD.MasterData.MaxCellVoltage.Voltage_mv;
 				d->MinCellVoltage_mV = OD.MasterData.MinCellVoltage.Voltage_mv;
-				d->dummy1 = 0xffffffff;
+				d->SystemCCL = OD.MasterData.CCL + 35767;
+				d->SystemDCL = OD.MasterData.DCL + 35767;
 			}
 			break;
         }

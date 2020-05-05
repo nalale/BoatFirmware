@@ -1018,9 +1018,33 @@ uint8_t ReadFaults()
 	return 1;
 }
 
-uint8_t ClearFaults(void)
+int8_t ClearFaults(void)
 {
-	return MemEcuDtcClear();	
+	uint16_t dtc_cnt = 0;	
+	
+	// Clear saved fault
+	int8_t status = MemEcuDtcClear();	
+	
+	// Clear runtime faults
+	for(uint8_t i = 0; i < dtcListSize; i++)
+	{
+		if(dtcList[i]->Status.ConfirmedDTC)
+			dtc_cnt++;
+		
+		dtcList[i]->Status.ConfirmedDTC = 0;
+		dtcList[i]->Status.TestFailed = 0;
+		dtcList[i]->Status.TestFailedThisOperationCycle = 0;
+		dtcList[i]->Status.TestNotCompletedThisOperationCycle = 0;
+		dtcList[i]->Status.WarningIndicatorRequested = 0;		
+	}	
+	
+	FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
+	FillFaultsList(OD.FaultList, &OD.FaultsNumber, 1);
+	
+	if(status == CMD_SUCCESS)	
+		return dtc_cnt;
+	else
+		return -1;
 }
 
 

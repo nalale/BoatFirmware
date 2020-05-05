@@ -4,7 +4,8 @@
 #include "lpc17xx_gpio.h"
 #include "AdcFunc.h"
 
-
+#define DIR_IN      0
+#define DIR_OUT     1
 
 #define A_OUT2_CSENS    ADC_CHANNEL_2
 #define A_OUT1_CSENS    ADC_CHANNEL_3
@@ -79,13 +80,13 @@
 #define OUT3_EN             2, P2_6
 #define OUT4_EN             2, P2_9
 
-#define SET_A_OUT1_EN(x)		    ((x) > 0)? GPIO_SetValue(OUT1_EN) : GPIO_ClearValue(OUT1_EN)
+#define SET_D_OUT1_EN(x)		    ((x) > 0)? GPIO_SetValue(OUT1_EN) : GPIO_ClearValue(OUT1_EN)
 #define A_OUT1_EN_STATE            ((GPIO_ReadValue(2) & P2_4) != 0)
-#define SET_A_OUT2_EN(x)		    ((x) > 0)? GPIO_SetValue(OUT2_EN) : GPIO_ClearValue(OUT2_EN)
+#define SET_D_OUT2_EN(x)		    ((x) > 0)? GPIO_SetValue(OUT2_EN) : GPIO_ClearValue(OUT2_EN)
 #define A_OUT2_EN_STATE            ((GPIO_ReadValue(2) & P2_5) != 0)
-#define SET_A_OUT3_EN(x)		    ((x) > 0)? GPIO_SetValue(OUT3_EN) : GPIO_ClearValue(OUT3_EN)
+#define SET_D_OUT3_EN(x)		    ((x) > 0)? GPIO_SetValue(OUT3_EN) : GPIO_ClearValue(OUT3_EN)
 #define A_OUT3_EN_STATE            ((GPIO_ReadValue(2) & P2_6) != 0)
-#define SET_A_OUT4_EN(x)		    ((x) > 0)? GPIO_SetValue(OUT4_EN) : GPIO_ClearValue(OUT4_EN)
+#define SET_D_OUT4_EN(x)		    ((x) > 0)? GPIO_SetValue(OUT4_EN) : GPIO_ClearValue(OUT4_EN)
 #define A_OUT4_EN_STATE            ((GPIO_ReadValue(2) & P2_9) != 0)
 
 
@@ -116,7 +117,10 @@
 
 
 void SetDOutput(uint8_t num, uint8_t state);
-uint32_t GetDiscretIO(void);
+uint32_t boardMarineECU_GetDiscreteIO(void);
 
+void boardMarineECU_Init(void);
+void boardMarineECU_Thread(void);
+uint16_t boardMarineECU_GetVoltage(void);
 
 #endif

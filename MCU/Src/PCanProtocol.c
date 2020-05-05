@@ -1,21 +1,21 @@
+#include <string.h>
+
 #include "Main.h"
-#include "PCanProtocol.h"
-#include "SkfTypes.h"
 #include "TimerFunc.h"
+
+#include "../Libs/Btn8982.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
 
 #include "../MolniaLib/MF_CAN_1v1.h"
-#include <string.h>
+#include "../MolniaLib/DateTime.h"
 
-#include "../Libs/Btn8982.h"
-#include "Sim100.h"
+#include "PCanProtocol.h"
 
-#define EXTERNAL_SEND_MSG_AMOUNT	5
+#define EXTERNAL_SEND_MSG_AMOUNT	4
 
 static uint32_t extSendTime[EXTERNAL_SEND_MSG_AMOUNT];
 // Периоды отправки сообщений
 static uint16_t extPeriod[EXTERNAL_SEND_MSG_AMOUNT] = {
-								250,	
                                 250,
 								100,
 								50,			// sim100
@@ -26,9 +26,16 @@ uint8_t PCanRx(CanMsg *msg)
 {
 	EcuConfig_t config = GetConfigInstance();	
 	
-	if(msg->ID == PM_CAN_ID)
+	if (msg->ID == BASE_CAN_ID)		// Date Time
 	{
-		OD.PowerManagerCmd = msg->data[0];
+		if(!dateTime_IsInit())
+		{
+			dateTime_InitCurrent(((cmTimeServer*)msg->data)->DateTime);
+		}
+	}
+	else if(msg->ID == PM_CAN_ID)
+	{
+		OD.PowerManagerCmd = (PowerStates_e)msg->data[0];
 	}
 	else if(msg->ID == General_ECU_CAN_ID)
     {
@@ -95,12 +102,12 @@ uint8_t PCanRx(CanMsg *msg)
 		
 		OD.LogicTimers.BatteryTimer_ms = GetTimeStamp();
 	}
-	else if(msg->ID == Bmu_ECU_CAN_ID + 1)
+	else if(msg->ID == Bmu_ECU_CAN_ID + 2)
 	{
-		BatM_Ext2_t *d = (BatM_Ext2_t*)msg->data;
+		BatM_Ext3_t *d = (BatM_Ext3_t*)msg->data;
 		
-		OD.BatteryDataRx.CCL = d->CCL;
-		OD.BatteryDataRx.DCL = d->DCL;
+		OD.BatteryDataRx.CCL = d->SystemCCL - 35767;
+		OD.BatteryDataRx.DCL = d->SystemDCL - 35767;
 	}
 	if (msg->ID == 0xA100100)
 	{
@@ -152,11 +159,7 @@ uint8_t PCanRx(CanMsg *msg)
 void PCanMesGenerate(void)
 {
     // Номер отправляемого сообщения
-	static uint8_t extSendMesNumber = 0;
-	
-	EcuConfig_t config = GetConfigInstance();
-	
-    CanMsg *msg;
+	static uint8_t extSendMesNumber = 0;	  
     
     // Генерация сообщений
 	if (++extSendMesNumber >= EXTERNAL_SEND_MSG_AMOUNT)
@@ -164,7 +167,7 @@ void PCanMesGenerate(void)
 
 	if (GetTimeFrom(extSendTime[extSendMesNumber]) >= extPeriod[extSendMesNumber])
 	{
-         msg = ecanGetEmptyTxMsg(P_CAN_CH);
+         CanMsg *msg = ecanGetEmptyTxMsg(P_CAN_CH);
         
         if(msg == 0)
             return;		
@@ -175,29 +178,6 @@ void PCanMesGenerate(void)
 		switch (extSendMesNumber)
 		{
 			case 0:
-			{
-				uint16_t loc_CCL = OD.TargetChargingCurrent_A;
-				uint16_t loc_TargetVoltage = 4000;
-
-				loc_CCL = (loc_CCL > 12)? 12 : loc_CCL;
-				loc_CCL *= 10;			
-
-				msg->ID = 0x1806E5F4;
-				msg->DLC = 8;
-				msg->Ext = 1;
-
-				msg->data[0] = (uint8_t) (loc_TargetVoltage >> 8);
-				msg->data[1] = (uint8_t) loc_TargetVoltage;
-				msg->data[2] = (uint8_t) (loc_CCL >> 8);
-				msg->data[3] = (uint8_t) loc_CCL;
-				msg->data[4] = 0;
-				msg->data[5] = 0;
-				msg->data[6] = 0;
-				msg->data[7] = 0;
-			}
-			break;
-			
-			case 1:
 			{
 				msg->ID = General_Control1_CAN_ID;
 				msg->DLC = 8;
@@ -212,7 +192,7 @@ void PCanMesGenerate(void)
 			}
 			break;
 			
-			case 2:
+			case 1:
 			{
 				msg->ID = Bmu_ECU_RX_ID;
 				msg->DLC = 8;
@@ -226,7 +206,7 @@ void PCanMesGenerate(void)
 			}
 			break;
 			
-			case 3:
+			case 2:
 			{
 				static uint8_t sim_100_msg_num = 0;
 				
@@ -257,7 +237,7 @@ void PCanMesGenerate(void)
 			}
 			break;
 			
-			case 4:
+			case 3:
 			{
 				msg->ID = Main_ECU_CAN_ID;
 				msg->DLC = 8;
@@ -265,13 +245,13 @@ void PCanMesGenerate(void)
 				
 				MainEcuStatus1_Msg_t* d = (MainEcuStatus1_Msg_t*)msg->data;
 				
-				d->MotorRpm = OD.MovControlDataRx.ActualSpeed;
-				d->MotorTemperature = OD.InvertorDataRx.MotorTemperature + 40;
-				d->InverterTemperature = OD.InvertorDataRx.InverterTemperature + 40;
-				d->TargetTorque = OD.MovControlDataRx.AccPosition;
-				d->ActualTorque = OD.MovControlDataRx.ActualTorque * 100 / config.MaxMotorTorque;
-				d->SteeringAngle = (((uint32_t)OD.HelmData.TargetAngle << 7) - 1) >> 11;	// angle_value * 255 / 4095
-				d->FeedbackAngle = (((uint32_t)OD.steeringFeedbackAngle << 7) - 1) >> 11;			// angle_value * 255 / 4095
+//				d->MotorRpm = OD.MovControlDataRx.ActualSpeed;
+//				d->MotorTemperature = OD.InvertorDataRx.MotorTemperature + 40;
+//				d->InverterTemperature = OD.InvertorDataRx.InverterTemperature + 40;
+//				d->TargetTorque = OD.MovControlDataRx.AccPosition;
+//				d->ActualTorque = OD.MovControlDataRx.ActualTorque * 100 / config.MaxMotorTorque;
+//				d->SteeringAngle = (((uint32_t)OD.HelmData.TargetAngle << 7) - 1) >> 11;	// angle_value * 255 / 4095
+//				d->FeedbackAngle = (((uint32_t)SteeringGetFeedBackAngle(&OD.SteeringData) << 7) - 1) >> 11;			// angle_value * 255 / 4095
 				
 			}
 			break;

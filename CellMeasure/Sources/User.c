@@ -45,7 +45,7 @@ void HardwareInit(void)
 	
 	RTC_TIME_Type rtc;
 	RTC_GetFullTime(LPC_RTC, &rtc);
-	SetDateTime(&rtc);
+	dateTime_SetCurrentTime(&rtc);
 	
     IO_Init();
     

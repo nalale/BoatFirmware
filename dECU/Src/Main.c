@@ -8,19 +8,19 @@
 
 void CommonState(void);
 
-// Алгоритм работы
+// Algorithm step
 void (*Algorithm)(uint8_t *);
 
-// Словарь объектов
 ObjectDictionary_t OD;
-static EcuConfig_t _config;
+
+
 int main(void)
 {	
     SystemInit();    
-    // Инициализация контроллера, внутренних переменных словаря
+    boardMarineECU_Init();
+
+    // Application variable init, objects dictionary init
     AppInit(&OD);
-	
-    SetWorkState(&OD.StateMachine, WORKSTATE_INIT);
 
     while(1)
     {       
@@ -37,21 +37,25 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 {
 	uint8_t _size = 0;
 	static uint32_t _data = 0;
-	_config = GetConfigInstance();
 	
 	switch(Index)
 	{
 		case didEcuInfo:
-			*Buf = (uint8_t*)OD.EcuInfo;
-			_size = (subindex > 0)? 0 : sizeof(OD.EcuInfo);
+			*Buf = (uint8_t*)(&OD.EcuInfo[subindex]);
+			_size = (subindex > 3)? 0 : sizeof(OD.EcuInfo[0]);
 		break;
-		
+
 		// Module Parameters
 		case didConfigStructIndex:			
-			*Buf = (uint8_t*)&_config;
+			*Buf = (uint8_t*)OD.cfg;
 			_size = (subindex > CONFIG_SIZE)? 0 : CONFIG_SIZE;
 		break;
 		
+		case didDateTime:
+			*Buf = (uint8_t*)&OD.SystemTime;
+			_size = (subindex > 0)? 0 : sizeof(OD.SystemTime);
+		break;
+
 		case didMachineState:
 			*Buf = (uint8_t*)&OD.StateMachine.MainState;
 			_size = (subindex > 0)? 0 : sizeof(OD.StateMachine.MainState);
@@ -62,6 +66,12 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			_size = (subindex > 0)? 0 : sizeof(OD.StateMachine.SubState);
 		break;
 		
+		case didInOutState:
+			_data = (OD.IO);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0 : sizeof(OD.IO);
+		break;
+
 		case didEcuVoltage:
 			*Buf = (uint8_t*)&OD.ecuPowerSupply_0p1;
 			_size = (subindex > 0)? 0 : sizeof(OD.ecuPowerSupply_0p1);
@@ -122,16 +132,16 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			_size = (subindex > 0)? 0 : sizeof(OD.Out_CSens[2].Out_CSens_Current);
 		break;
 		
-		case didInOutState:
-			_data = (OD.IO);
-			*Buf = (uint8_t*)&_data;
-			_size = (subindex > 0)? 0 : sizeof(OD.IO);
+		case didCurrentSensor4:
+			*Buf = NULL;
+			_size = (subindex > 0)? 0 : 0;
 		break;
 		
 		case didPwmOutState:
 			*Buf = (uint8_t*)&OD.A_Out[subindex];
 			_size = (subindex > 3)? 0 : sizeof(OD.A_Out[subindex]);
 		break;
+
 		// Faults parameters
 		case didFaults_Actual:
 		{
@@ -151,7 +161,7 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 }
 
 
-uint8_t check_failed(uint8_t *file, uint8_t line)
-{
-	return 0;
-}
+//uint8_t check_failed(uint8_t *file, uint8_t line)
+//{
+//	return 0;
+//}

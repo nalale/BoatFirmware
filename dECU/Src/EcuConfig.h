@@ -27,15 +27,14 @@ typedef struct
 	uint16_t addition_4;
 	uint16_t addition_5;
 	uint16_t addition_6;
-//	uint16_t addition_7;
-	
 	
 	// Контрольная сумма
     uint16_t CRC;
 } EcuConfig_t;
 
+#include "../MolniaLib/Config.h"
 
-void cfgApply(void);	
+void cfgApply(const EcuConfig_t **pConfig);	
 EcuConfig_t GetConfigInstance(void);
 
 

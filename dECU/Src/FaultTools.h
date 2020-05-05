@@ -128,19 +128,9 @@ uint8_t FaultHandler(void);
 uint8_t FaultsTest(uint8_t FaultsTestIsEnabled);
 uint8_t FillFaultsList(uint16_t *Array, uint8_t *FaultNum, uint8_t IsActualFaults);
 
-uint8_t SaveFaults(void);
-uint8_t ReadFaults(void);
-uint8_t ClearFaults(void);
-
-
-
-
-
-
-
-
-
-
+int8_t SaveFaults(void);
+int8_t ReadFaults(void);
+int8_t ClearFaults(void);
 
 #endif
 

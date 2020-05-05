@@ -5,24 +5,24 @@
 #include "../Libs/filter.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
 
-#include "SteeringFunc.h"
 #include "PwmFunc.h"
 #include "TimerFunc.h"
 #include "ExternalProtocol.h"
 
-FILTER_STRUCT _ctrlPos;
+#include "UserApplications/SteeringFunc.h"
 
 static int16_t SteeringControl(SteeringData_t *_steeringData, int16_t TargetAngle);
 static int16_t PID_Controller(SteeringData_t *_steeringData, uint16_t feedback_value, uint16_t set_value);
 
-uint8_t SteeringInit(SteeringData_t *_steeringData, uint8_t *FeedbackVoltage_0p1V, uint8_t MinPosLimit_V, uint8_t MaxPosLimit_V, uint16_t *fstDriverCurrent, uint16_t *sndDriverCurrent, uint16_t CurrentLimit_0p1A)
+uint8_t SteeringInit(SteeringData_t *_steeringData, PID_Struct_t *PID,
+		const uint8_t *srcFeedbackVoltage_0p1V, uint8_t MinPosLimit_V, uint8_t MaxPosLimit_V,
+		const uint16_t *srcFstDriverCurrent, const uint16_t *srcSndDriverCurrent, uint16_t CurrentLimit_0p1A)
 {
-	EcuConfig_t cfgEcu = GetConfigInstance();
 	
-	_steeringData->FeedbackVoltage_0p1V = FeedbackVoltage_0p1V;
+	_steeringData->FeedbackVoltage_0p1V = srcFeedbackVoltage_0p1V;
 
-	_steeringData->fstDriverCurrent_0p1A = fstDriverCurrent;
-	_steeringData->sndDriverCurrent_0p1A = sndDriverCurrent;
+	_steeringData->fstDriverCurrent_0p1A = srcFstDriverCurrent;
+	_steeringData->sndDriverCurrent_0p1A = srcSndDriverCurrent;
 
 	_steeringData->SteeringMinVal_0p1V = MinPosLimit_V;
 	_steeringData->SteeringMaxVal_0p1V = MaxPosLimit_V;
@@ -33,45 +33,42 @@ uint8_t SteeringInit(SteeringData_t *_steeringData, uint8_t *FeedbackVoltage_0p1
 	_steeringData->FeedbackVoltageRanges[2] = 0;
 	_steeringData->FeedbackVoltageRanges[3] = 4095;
 	
-	_steeringData->kp = cfgEcu.SteeringKp;
-	_steeringData->ki = cfgEcu.SteeringKi;
-	_steeringData->kd = cfgEcu.SteeringKd;
+	_steeringData->kp = PID->Kp;
+	_steeringData->ki = PID->Ki;
+	_steeringData->kd = PID->Kd;
 
 	_steeringData->SteeringFuncIsReady = 1;
-
-//	Filter_init(cfgEcu.fltSteeringLength, cfgEcu.fltSteeringPeriod, &_ctrlPos);
 	
 	return 0;
 }
 
 
-uint8_t SteeringProc(SteeringData_t *_steeringData, int16_t TargetAngle)
+uint8_t steeringThread(SteeringData_t *_steeringData)
 {
-//	if(data->EndStopLeft_Ack && data->EndStopRight_Ack)
-//		_steeringData.SteeringFuncIsReady = 1;
-//	else
-//		_steeringData.SteeringFuncIsReady = 0;
-
 	if(!_steeringData->SteeringFuncIsReady)
 		return 1;
 
 	_steeringData->DriveCurrent_0p1 = SteeringGetDriveCurrent(_steeringData);
 	_steeringData->FeedBackAngle = interpol(_steeringData->FeedbackVoltageRanges, 2, *(_steeringData->FeedbackVoltage_0p1V));
 
-	SteeringControl(_steeringData, TargetAngle);
+	SteeringControl(_steeringData, _steeringData->UserDemandAngle);
 	
 	return 0;
 }
 
+uint8_t steeringSetAngle(SteeringData_t *_steeringData, int16_t TargetAngle)
+{
+	if(_steeringData == 0)
+		return 1;
+
+	_steeringData->UserDemandAngle = TargetAngle;
+	return 0;
+}
 
 int16_t SteeringControl(SteeringData_t *_steeringData, int16_t TargetAngle)
 {    		
-	EcuConfig_t cfgEcu = GetConfigInstance();
-	
 	int16_t reaction = PID_Controller(_steeringData, _steeringData->FeedBackAngle, TargetAngle);
-    
-	//uint16_t _pwm_cmd = Filter(steering_speed_cmd, &_ctrlPos);
-	
+
 	if(reaction > 20)
 	{		
 		uint8_t val = reaction;
@@ -125,14 +122,6 @@ int16_t SteeringGetFeedBackAngle(const SteeringData_t *_steeringData)
 	return _steeringData->FeedBackAngle;
 }
 
-uint8_t GetSteeringBrakeValue(int16_t ActualSpeed, int16_t* BrakeSpeedTable)
-{
-    int16_t result_brake = interpol((int16_t*)BrakeSpeedTable, 6, ActualSpeed);
-    result_brake = (result_brake > 100)? 100 : (result_brake < 0)? 0: result_brake;
-    
-    return (uint8_t)result_brake;
-}
-
 int16_t SteeringGetState(const SteeringData_t *_steeringData)
 {
 	return _steeringData->Faults.Value;
@@ -156,17 +145,5 @@ int16_t PID_Controller(SteeringData_t *_steeringData, uint16_t feedback_value, u
 	return output;
 }
 
-uint16_t HelmGetTargetAngle(Helm_Data_Rx_t *HelmData)
-{
-	uint16_t result;
 
-	HelmData->HelmIsReady = SendSteeringStartupMsg();
-
-	if(HelmData->HelmIsReady)
-		result = HelmData->TargetAngle;
-	else
-		result = 2048;
-
-	return result;
-}
 

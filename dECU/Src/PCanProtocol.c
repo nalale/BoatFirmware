@@ -1,28 +1,25 @@
-#include "Main.h"
-#include "PCanProtocol.h"
-#include "SkfTypes.h"
-#include "TimerFunc.h"
-#include "../BoardDefinitions/MarineEcu_Board.h"
 #include <string.h>
 
-#include "../Libs/Btn8982.h"
+#include "Main.h"
+#include "PCanProtocol.h"
+#include "TimerFunc.h"
 
-#define EXTERNAL_SEND_MSG_AMOUNT	1
-
+#include "../MolniaLib/DateTime.h"
 
 enum { PM_Msg = 0,} Msgs_e;
 
-static uint32_t extSendTime[EXTERNAL_SEND_MSG_AMOUNT];
-// Периоды отправки сообщений
-static uint16_t extPeriod[EXTERNAL_SEND_MSG_AMOUNT] = {
-								100,
-								 };
 
 uint8_t PCanRx(CanMsg *msg)
-{
-	EcuConfig_t config = GetConfigInstance();		
-	
-	if(msg->ID == PM_CAN_ID)
+{	
+	if (msg->ID == BASE_CAN_ID)		// Date Time
+	{
+		if(!dateTime_IsInit())
+		{
+			dateTime_InitCurrent(((cmTimeServer*)msg->data)->DateTime);
+		}
+
+	}
+	else if(msg->ID == PM_CAN_ID)
 	{
 		OD.PowerManagerCmd = (PowerStates_e)msg->data[0];
 	}
@@ -33,6 +30,7 @@ uint8_t PCanRx(CanMsg *msg)
 	}
 	else if(msg->ID == Main_ECU_CAN_ID + 1)
 	{
+		OD.SB.mEcuMsgReceived = 1;
 		memcpy(&OD.MainEcuData2, msg->data, sizeof(MainEcuStatus2_Msg_t));
 	}
 	else if(msg->ID == Bmu_ECU_CAN_ID)

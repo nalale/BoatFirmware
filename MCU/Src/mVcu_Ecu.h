@@ -2,17 +2,17 @@
 #define _M_ECU_H_
 
 
-#include "FaultsTest.h"
 #include "../MolniaLib/MF_CAN_1v1.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
+#include "FaultTools.h"
 
 #define VER(major, minor)		((major << 8) + minor)
 
 
 #define CLASS_MODEL_ID			MAIN_ECU_DIAG_ID		// Класс и модель устройства.
-#define HARDWARE				MARINE_ECU			// Контроллер
-#define	FW_VERSION				VER(0, 10)			// Версия прошивки. Старший байт - major, младший - minor (0...99)
-#define	HW_VERSION				VER(1, 1)			// Версия железа. Старший байт - major, младший - minor (0...99)
+#define HARDWARE				MARINE_ECU				// Контроллер
+#define	FW_VERSION				VER(0, 10)				// Версия прошивки. Старший байт - major, младший - minor (0...99)
+#define	HW_VERSION				VER(1, 1)				// Версия железа. Старший байт - major, младший - minor (0...99)
 
 
 // Переопределение входов
@@ -65,7 +65,7 @@ extern dtcItem_t* dtcList[];
 
 
 void ecuInit(ObjectDictionary_t *dictionary);
-void ecuProc(void);
+void boardThread(void);
 
 uint16_t EcuGetVoltage(void);
 

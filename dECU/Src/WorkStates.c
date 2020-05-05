@@ -1,8 +1,8 @@
 #include "Main.h"
 #include "User.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
-#include "../MolniaLib/Config.h"
 #include "../MolniaLib/PowerManager.h"
+#include "../MolniaLib/DateTime.h"
 
 #include "FaultTools.h"
 #include "Protocol.h"
@@ -39,7 +39,6 @@ void SetWorkState(StateMachine_t *state_machine, WorkStates_e new_state)
 
 void InitializationState(uint8_t *SubState)
 {
-	EcuConfig_t _config = GetConfigInstance();
     switch(*SubState)
     {
         case 0:
@@ -68,9 +67,7 @@ void InitializationState(uint8_t *SubState)
 			OD.SB.CheckFaults = 1;
 			SetWorkState(&OD.StateMachine, WORKSTATE_OPERATE);		
 		break;
-    }
-    
-    
+    }    
 }
 
 void OperatingState(uint8_t *SubState)
@@ -80,7 +77,7 @@ void OperatingState(uint8_t *SubState)
 
 void ShutdownState(uint8_t *SubState)
 {
-	EcuConfig_t _config = GetConfigInstance();
+	const EcuConfig_t *_config = OD.cfg;
 	switch (*SubState)
 	{
 		// Запомнить время входа в режим, сохранить данные
@@ -99,7 +96,7 @@ void ShutdownState(uint8_t *SubState)
 			break;
 	}
 
-	if((GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= _config.PowerOffDelay_ms) && (OD.LocalPMState == PM_ShutDown))
+	if((GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= _config->PowerOffDelay_ms) && (OD.LocalPMState == PM_ShutDown))
 		*SubState = 2;
 }
 
@@ -113,18 +110,16 @@ void ChargingState(uint8_t *SubState)
 }
 
 void CommonState(void)
-{    
-	EcuConfig_t ecuConfig = GetConfigInstance();
-
+{   
     Protocol();
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1ms) >= OD.DelayValues.Time1_ms)
     {        
-        OD.LogicTimers.Timer_1ms = GetTimeStamp();
+        OD.LogicTimers.Timer_1ms = GetTimeStamp();		
 		
         // Code   
-        ecuProc();
-		OD.ecuPowerSupply_0p1 = EcuGetVoltage();
+        boardMarineECU_Thread();
+		OD.ecuPowerSupply_0p1 = boardMarineECU_GetVoltage();
 		// Power Manager thread
 		PM_Proc(OD.ecuPowerSupply_0p1, 0);
 
@@ -172,7 +167,9 @@ void CommonState(void)
     if(GetTimeFrom(OD.LogicTimers.Timer_1s) >= OD.DelayValues.Time1_s)
     {
         OD.LogicTimers.Timer_1s = GetTimeStamp();
-        
+        OD.IO = boardMarineECU_GetDiscreteIO();
+        OD.SystemTime = dateTime_GetCurrentTotalSeconds();
+
         // Code
         FaultHandler();
     }

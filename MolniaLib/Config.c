@@ -1,4 +1,4 @@
-#include "Main.h"
+#include <stdint.h>
 #include "Config.h"
 #include "MemoryFunc.h"
 #include "../MolniaLib/MF_Tools.h"

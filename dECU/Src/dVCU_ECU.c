@@ -18,10 +18,9 @@
 #define DIAG_ITEM(val)		ARRAY_LEN(val),  (void*)&val
 
 
-FILTER_STRUCT fltVoltage;
 
-// ECU Variables
-static uint16_t _ecuPowerSupply = 0;
+
+
 
 
 // ************************************************************************************************
@@ -51,7 +50,7 @@ const DiagnosticValueFRZF dVal_frzfUnexpectedPowerOff[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfUnexpectedPowerOff) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_UnexpectedPowerOff = { dtc_General_UnexpectedPowerOff, DTC_BIT_NONE, 0, 50, -50, 1, DIAG_ITEM(dVal_frzfUnexpectedPowerOff) };
+dtcProperty_t dtcProp_UnexpectedPowerOff = { dtc_General_UnexpectedPowerOff, DTC_BIT_NONE, 0, 1, -1, 50, DIAG_ITEM(dVal_frzfUnexpectedPowerOff) };
 // Все о неисправности
 dtcItem_t dtcUnexpectedPowerOff = {&dtcProp_UnexpectedPowerOff};
 
@@ -67,7 +66,7 @@ const DiagnosticValueFRZF dVal_frzfBatteryOffline[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfBatteryOffline) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_BatteryOffline = { dtc_CAN_Battery, DTC_BIT_WARNING_ENABLE, 0, 100, -100, 5, DIAG_ITEM(dVal_frzfBatteryOffline) };
+dtcProperty_t dtcProp_BatteryOffline = { dtc_CAN_Battery, DTC_BIT_WARNING_ENABLE, 0, 4, -4, 500, DIAG_ITEM(dVal_frzfBatteryOffline) };
 // Все о неисправности
 dtcItem_t dtcBatteryOffline = {&dtcProp_BatteryOffline};
 
@@ -82,7 +81,7 @@ const DiagnosticValueFRZF dVal_frzfmEcuCanOffline[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfmEcuOffline) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_mEcuOffline = { dtc_CAN_mEcu, DTC_BIT_WARNING_ENABLE, 0, 100, -100, 5, DIAG_ITEM(dVal_frzfmEcuCanOffline) };
+dtcProperty_t dtcProp_mEcuOffline = { dtc_CAN_mEcu, DTC_BIT_WARNING_ENABLE, 0, 4, -4, 500, DIAG_ITEM(dVal_frzfmEcuCanOffline) };
 // Все о неисправности
 dtcItem_t dtcmEcuOffline = {&dtcProp_mEcuOffline};
 
@@ -179,17 +178,15 @@ int dtcListSize = ARRAY_LEN(dtcList);
 
 void ecuInit(ObjectDictionary_t *dictionary)
 {
-	cfgApply();
-	
-	EcuConfig_t _config = GetConfigInstance();
-	
+	cfgApply(&dictionary->cfg);
+
     dictionary->DelayValues.Time1_ms = 1;
     dictionary->DelayValues.Time10_ms = 10;
     dictionary->DelayValues.Time100_ms = 100;
     dictionary->DelayValues.Time1_s = 1000;
     dictionary->DelayValues.MainLoopTime_ms = 10;
 	
-	dictionary->ecuIndex = _config.DiagnosticID + _config.Index;
+	dictionary->ecuIndex = dictionary->cfg->DiagnosticID + dictionary->cfg->Index;
     
 	Max11612_Init();
 	
@@ -197,23 +194,13 @@ void ecuInit(ObjectDictionary_t *dictionary)
 	btnInit(PWM_Channel2, A_OUT2_CSENS, 20);
 	btnInit(PWM_Channel3, A_OUT3_CSENS, 20);
 	btnInit(PWM_Channel4, 0xff, 0xffff);
-
-	// Фильтр питания ECU
-	Filter_init(50, 1, &fltVoltage);
+	
+	dictionary->EcuInfo[0] = CLASS_MODEL_ID;
+	dictionary->EcuInfo[1] = HARDWARE;
+	dictionary->EcuInfo[2] = FW_VERSION;
+	dictionary->EcuInfo[3] = HW_VERSION;
 }
 
-void ecuProc()
-{
-	// 5.7 - делитель напряжения.
-	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY)) * 57 / 10 , &fltVoltage);
-	 _ecuPowerSupply = voltage_mV / 100;
 
-	 OD.IO = GetDiscretIO();
-}
-
-uint16_t EcuGetVoltage()
-{
-	return _ecuPowerSupply;
-}
 
 

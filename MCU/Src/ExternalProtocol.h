@@ -9,8 +9,6 @@
 uint8_t ExternalRx(CanMsg *Msg);
 void ExternalMesGenerate(void);
 
-uint8_t SendSteeringStartupMsg(void);
-
 
 
 

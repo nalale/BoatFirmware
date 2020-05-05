@@ -523,9 +523,13 @@ void TIM_ConfigMatch(LPC_TIM_TypeDef *TIMx, TIM_MATCHCFG_Type *TIM_MatchConfigSt
 void TIM_UpdateMatchValue(LPC_TIM_TypeDef *TIMx,uint8_t MatchChannel, uint32_t MatchValue)
 {
 	CHECK_PARAM(PARAM_TIMx(TIMx));
+	
+	if(MatchValue < TIMx->TC)	
+		TIMx->TCR |= TIM_RESET; //Reset Counter			
+	
 	switch(MatchChannel)
 	{
-	case 0:
+	case 0:		
 		TIMx->MR0 = MatchValue;
 		break;
 	case 1:
@@ -541,7 +545,8 @@ void TIM_UpdateMatchValue(LPC_TIM_TypeDef *TIMx,uint8_t MatchChannel, uint32_t M
 		//Error Loop
 		while(1);
 	}
-
+	
+	TIMx->TCR &= ~TIM_RESET; //release reset
 }
 /*********************************************************************//**
  * @brief 		Configuration for Capture register

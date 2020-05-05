@@ -32,7 +32,8 @@ typedef enum
 	didInOutState,
 	didPwmOutState,
 	
-	didSteeringTargetAngle,
+	didHelmDemandAngle,
+	didHelmStatus,
 	didSteeringFB,
 	didSteeringCurent,
 	didTrimFB,	

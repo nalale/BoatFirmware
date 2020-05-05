@@ -1,7 +1,7 @@
-#ifndef _SKF_PROTOCOL_H
-#define _SKF_PROTOCOL_H
+#ifndef _HELM_DRIVER_H
+#define _HELM_DRIVER_H
 
-//#include <types.h>
+#include <stdint.h>
 
 typedef struct
 {
@@ -96,5 +96,28 @@ typedef struct
     uint8_t C_PCB_TEMP_HIGH;
     uint8_t C_PCB_TEMP_LOW;
 }MSG_ERROR_CODE;
+
+typedef enum{
+	MSG_ABS_ANGLE_VALUE = 0x7d,
+	CAN_MSG_ERROR_CODE = 0x7e,
+	MSG_ESIU_RESP = 0xac,
+	MSG_SET_REGULATED_BRAKE_POS = 0xe5,
+	MSG_SET_STEERING_ENDSTOP_RIGHT = 0xe9,
+	MSG_SET_STEERING_ENDSTOP_LEFT = 0xea,
+	MSG_SET_ZERO_BRAKE_POS = 0xec,
+
+	MSG_HELM_ERROR_ID = -1,
+} HelmParameterTypes_e;
+
+uint8_t helmInit(int16_t DefaultCounterForce, const int16_t* ForceSpeedTable, int8_t TableSize);
+uint16_t HelmGetTargetAngle(void);
+uint8_t helmThread(int16_t ActualSpeed);
+uint8_t HelmGetStatus(void);
+uint8_t HelmGetCausedFault(void);
+// Reset online sign after request
+uint8_t helmGetOnlineSign(void);
+
+HelmParameterTypes_e HelmMessageGenerate(uint8_t *MsgData, uint8_t *MsgDataLen, int32_t MsCounter);
+uint8_t HelmMessageHandler(HelmParameterTypes_e MsgID, uint8_t *MsgData, uint8_t MsgDataLen);
 
 #endif

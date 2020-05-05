@@ -7,15 +7,19 @@
 
 #include "LPC17xx.h"
 #include "lpc_types.h"
-#include "FaultsTest.h"
-#include "Inverter.h"
+#include "FaultTools.h"
 
 #include "../MolniaLib/Config.h"
 #include "../MolniaLib/PowerManager.h"
 
-#include "TrimFunc.h"
-#include "Sim100.h"
-#include "SteeringFunc.h"
+#include "UserApplications/SteeringFunc.h"
+#include "UserApplications/DriveControl.h"
+#include "UserApplications/ObcDriver.h"
+#include "UserApplications/TrimFunc.h"
+#include "UserApplications/Sim100.h"
+#include "UserApplications/HelmDriver.h"
+#include "MotionControllers/Inverter_Rinehart.h"
+
 #include "ObjectsIndex.h"
 
 // Максимальное количество в списке ошибок
@@ -26,8 +30,7 @@ typedef enum {
     WORKSTATE_INIT = 0,
     WORKSTATE_OPERATE,
     WORKSTATE_SHUTDOWN,
-    WORKSTATE_FAULT,    
-    WORKSTATE_CHARGE
+    WORKSTATE_FAULT,
 } WorkStates_e ;
 
 // Конечный автомат имеет двухуровневую структуру
@@ -231,41 +234,6 @@ typedef struct
 
 typedef struct
 {
-    int16_t TargetTorque;
-    int16_t TorqueLimit;
-    uint8_t Direction;
-    
-    uint8_t
-    InverterEnable  :   1,
-    dummy1          :   7;
-    
-} Traction_Cmd_t;
-
-typedef struct
-{
-    uint8_t AccPosition;
-    uint8_t Gear;
-    int16_t ActualSpeed;
-	uint16_t ActualTorque;
-} Mov_Control_Data_Rx_t;
-
-typedef struct
-{
-    uint8_t
-    InverterIsEnable    :   1,
-    LockupIsEnable      :   1,
-    dummy1              :   6;   
-	
-	InverterStates_e InverterState;
-	int16_t InverterTemperature;
-	int16_t MotorTemperature;
-    uint16_t FaultCode;
-	int16_t VoltageDC;
-	int16_t CurrentDC;
-} Invertor_Data_Rx_t;
-
-typedef struct
-{
 	uint32_t CanMod;
 	uint32_t CanGlobalStatus;
 	uint32_t CanInt;
@@ -275,6 +243,7 @@ typedef struct
 // Словарь объектов
 typedef struct
 {
+	const EcuConfig_t *cfgEcu;
 	uint16_t EcuInfo[4];
     StateMachine_t StateMachine;
     Timers_t LogicTimers;
@@ -294,15 +263,12 @@ typedef struct
 	uint8_t PwmTargetLevel[4];
 	
 	uint8_t AccPedalChannels[2];
-
-    Traction_Cmd_t TractionData;
+    
     uint8_t BatteryReqState;
 	
 	BatteryData_t BatteryDataRx;
-    Invertor_Data_Rx_t InvertorDataRx;
-    Mov_Control_Data_Rx_t MovControlDataRx;
+	McuRinehart_t mcHandler;
 
-    Helm_Data_Rx_t HelmData;
     SteeringData_t SteeringData;
 	TrimData_t TrimDataRx;
 	sim100Data_t Sim100DataRx;

@@ -4,7 +4,7 @@
 #include "lpc17xx_gpio.h"
 #include "Main.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
-#include "max11612.h"
+#include "../Libs/max11612.h"
 #include "PwmFunc.h"
 
 #define DISPLAY_SOC_CH 		PWM_Channel1

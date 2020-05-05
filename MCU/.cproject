@@ -30,6 +30,8 @@
 									<listOptionValue builtIn="false" value="&quot;C:\Work\Code\Other\MolniaFoil\BoatFirmware\Drivers&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Libs}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MolniaLib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MCU/Src/MotionControllers}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MCU/Src/UserApplications}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1055974678" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -50,6 +52,26 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.cross.exe.debug.293942993.1585526368" name="User.c" rcbsApplicability="disable" resourcePath="Src/User.c" toolsToInvoke="cdt.managedbuild.tool.gnu.cross.c.compiler.1370040107.1552051267">
+						<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.1370040107.1552051267" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler.1370040107">
+							<option id="gnu.c.compiler.option.include.paths.794993594" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+								<listOptionValue builtIn="false" value="&quot;${workspace_loc:/HardwareDefs_lpc17xx}&quot;"/>
+								<listOptionValue builtIn="false" value="&quot;C:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.5.0\Device\Include&quot;"/>
+								<listOptionValue builtIn="false" value="&quot;C:\Keil_v5\ARM\ARMCC\include&quot;"/>
+								<listOptionValue builtIn="false" value="&quot;C:\Work\Code\Other\MolniaFoil\BoatFirmware\CMSIS\Include&quot;"/>
+								<listOptionValue builtIn="false" value="&quot;C:\Work\Code\Other\MolniaFoil\BoatFirmware\Drivers\include&quot;"/>
+								<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Libs}&quot;"/>
+								<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MolniaLib}&quot;"/>
+							</option>
+							<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1990608919" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+						</tool>
+						<tool customBuildStep="true" id="org.eclipse.cdt.managedbuilder.ui.rcbs.1786969396" name="Resource Custom Build Step">
+							<inputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.inputtype.1792991046" name="Resource Custom Build Step Input Type">
+								<additionalInput kind="additionalinputdependency" paths=""/>
+							</inputType>
+							<outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.499570446" name="Resource Custom Build Step Output Type"/>
+						</tool>
+					</fileInfo>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -65,6 +87,11 @@
 		</scannerConfigBuildInfo>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/MCU"/>
+		</configuration>
+	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

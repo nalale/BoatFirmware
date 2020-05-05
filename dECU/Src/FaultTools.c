@@ -1,7 +1,9 @@
+#include <string.h>
+
 #include "Main.h"
 #include "../Libs/Btn8982.h"
 #include "../Libs/TLE_6368g2.h"
-#include "max11612.h"
+#include "../Libs/max11612.h"
 #include "TimerFunc.h"
 #include "MemoryFunc.h"
 #include "dVCU_ECU.h"
@@ -68,8 +70,8 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 		}
 		else if(dtcFaultDetection(it, &env, 0) == DTC_TEST_RESULT_PASSED)
 		{
-			OD.Faults.mEcuTimeout = 0;
-		}
+			OD.Faults.mEcuTimeout = 0;			
+		}		
 		OD.SB.mEcuMsgReceived = 0;
 	}
 	
@@ -230,35 +232,26 @@ uint8_t FaultHandler()
 }
 
 uint8_t FillFaultsList(uint16_t *Array, uint8_t *FaultNum, uint8_t IsActualFaults)
-{
-	// Перебор по всем актуальным неисправностям
-	// Перебор всех возможных неисправностей
-	// Если неисправность подтверждена
+{	
+	if(Array == 0 || FaultNum == 0)
+		return 1;
+	
+	uint8_t j = 0;
+	memset(Array, 0, sizeof(Array[0]) * MAX_FAULTS_NUM);
 	
 	for(uint8_t i = 0; i < dtcListSize; i++)
 	{	
 		// Выбираем между текущими ошибками и старыми
 		uint8_t TestFailed = (IsActualFaults)? dtcList[i]->Status.TestFailed : 1;
+		uint16_t faultCode = (uint16_t)(dtcList[i]->Property->Code << 8) + (dtcList[i]->Category);			
 		
-		if(dtcList[i]->Status.ConfirmedDTC & TestFailed)
+		if(TestFailed && dtcList[i]->Status.ConfirmedDTC && j < MAX_FAULTS_NUM)
 		{
-			uint16_t faultCode = (uint16_t)(dtcList[i]->Property->Code << 8) + (dtcList[i]->Category);
-			
-			int i = 0;
-			for(i = 0; i < *FaultNum; i++)
-			{
-				// Если в списке уже есть текущий код ошибки - выходим из цикла, 
-				if(Array[i] == faultCode || i >= MAX_FAULTS_NUM)
-					break;			
-			}
-			
-			if(i == *FaultNum)
-			{
-				Array[i] = faultCode;
-				(*FaultNum)++;
-			}
-		}
-	}
+			Array[j++] = faultCode;
+		}				
+	}	
+	
+	*FaultNum = j;
 	
 	return 0;
 }
@@ -323,7 +316,10 @@ uint8_t dtcFaultDetection(dtcItem_t* it, dtcEnvironment_t *env, uint8_t isFault)
 	{
 		if(it->FaultDetectionCounter > it->Property->TestPassedThreshold)
 		{
-			it->FaultDetectionCounter--;
+			if(it->FaultDetectionCounter > 0)
+				it->FaultDetectionCounter = -1;
+			else
+				it->FaultDetectionCounter--;
 		}
 		else
 		{
@@ -348,7 +344,7 @@ uint8_t dtcFaultDetection(dtcItem_t* it, dtcEnvironment_t *env, uint8_t isFault)
 }
 
 
-uint8_t SaveFaults()
+int8_t SaveFaults()
 {
 	// Структура данных DTC в EEPROM:
 	// - Сначала идет список всех возможных неисправностей (см. dtcList), каждый элемент которого содержит только Category и Status.ConfirmedDTC
@@ -411,7 +407,7 @@ uint8_t SaveFaults()
 	return res;
 }
 
-uint8_t ReadFaults()
+int8_t ReadFaults()
 {	
 	dtcItem_t* dtc;
 	uint16_t sum1 = 0, sum2;
@@ -431,6 +427,14 @@ uint8_t ReadFaults()
 		dtc->Category = *(pointer + addr++);
 		uint8_t isConfirmed = *(pointer + addr++);
 		dtc->Status.ConfirmedDTC = isConfirmed;
+		
+		if(!dtc->Status.ConfirmedDTC)
+		{
+			dtc->Status.TestFailed = 0;
+			dtc->Status.TestNotCompletedThisOperationCycle = 0;
+			dtc->Status.WarningIndicatorRequested = 0;			
+		}
+		
 		sum1 += dtc->Category + isConfirmed;
 	}
 	
@@ -469,7 +473,31 @@ uint8_t ReadFaults()
 	return 1;
 }
 
-uint8_t ClearFaults(void)
+int8_t ClearFaults(void)
 {
-	return MemEcuDtcClear();	
+	uint16_t dtc_cnt = 0;	
+	
+	// Clear saved fault
+	int8_t status = MemEcuDtcClear();	
+	
+	// Clear runtime faults
+	for(uint8_t i = 0; i < dtcListSize; i++)
+	{
+		if(dtcList[i]->Status.ConfirmedDTC)
+			dtc_cnt++;
+		
+		dtcList[i]->Status.ConfirmedDTC = 0;
+		dtcList[i]->Status.TestFailed = 0;
+		dtcList[i]->Status.TestFailedThisOperationCycle = 0;
+		dtcList[i]->Status.TestNotCompletedThisOperationCycle = 0;
+		dtcList[i]->Status.WarningIndicatorRequested = 0;		
+	}	
+	
+	FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
+	FillFaultsList(OD.FaultList, &OD.FaultsNumber, 1);
+	
+	if(status == CMD_SUCCESS)	
+		return dtc_cnt;
+	else
+		return -1;
 }

@@ -127,7 +127,7 @@ void CommonState(void)
         OD.LogicTimers.Timer_1ms = GetTimeStamp();
 		
         // Code   
-        ecuProc();
+        boardThread();
 		OD.ecuPowerSupply_0p1 = EcuGetVoltage();
 		// Power Manager thread
 		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig.IsPowerManager);

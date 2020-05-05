@@ -141,7 +141,7 @@ uint8_t FillFaultsList(uint16_t *Array, uint8_t *FaultNum, uint8_t IsActualFault
 
 uint8_t SaveFaults(void);
 uint8_t ReadFaults(void);
-uint8_t ClearFaults(void);
+int8_t ClearFaults(void);
 
 
 

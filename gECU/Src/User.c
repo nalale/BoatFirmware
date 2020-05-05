@@ -101,10 +101,10 @@ void PortInit(void)
 	
     
     FIO_SetDir(2, 0xFFFFFFFF, DIR_OUT);
-    SET_A_OUT1_EN(0);
-	SET_A_OUT2_EN(0);
-	SET_A_OUT3_EN(0);
-	SET_A_OUT4_EN(0);
+    SET_D_OUT1_EN(0);
+	SET_D_OUT2_EN(0);
+	SET_D_OUT3_EN(0);
+	SET_D_OUT4_EN(0);
     
     FIO_SetDir(4, 0xFFFFFFFF, DIR_OUT);
     //FIO_SetValue(4, 0x0);

@@ -12,16 +12,9 @@ void _cfgSetDefaultParams(void)
 	EcuConfig.KeyOffTime_ms = 150;
 	EcuConfig.PowerOffDelay_ms = 1500;
 	EcuConfig.CRC = cfgCRC(&EcuConfig);
-	
-	
-//	if (!cfgRead(&EcuConfig))
-//		SetConfigFault();
-	
-//	if(!cfgCheck(&EcuConfig))
-//		SetConfigFault();		
 }
 
-void cfgApply(void)
+void cfgApply(const EcuConfig_t **pConfig)
 {	
 	if(cfgRead(&EcuConfig))
 	{
@@ -29,6 +22,7 @@ void cfgApply(void)
 		_cfgSetDefaultParams();
 	}		
 	
+	*pConfig = &EcuConfig;
 	EcuConfig.Index = (EcuConfig.Index > 5)? 5 : EcuConfig.Index;
 	EcuConfig.DiagnosticID = DISPLAY_ECU_DIAG_ID;	
 	

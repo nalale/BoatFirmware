@@ -64,17 +64,16 @@ typedef struct
 	uint8_t InvCoolingOn;
 	uint8_t MotorCoolingOn;
 	
-	
 	// Charging
 	uint8_t MaxChargingCurrent_A;
 	uint8_t ChargersNumber;
 	
-	uint8_t addition_3;
+	uint16_t addition_2;
+	uint16_t addition_3;
 	uint16_t addition_4;
 	uint16_t addition_5;
 	uint16_t addition_6;
-	uint16_t addition_7;
-	
+	uint16_t addition_7;	
 	
 	 // Контрольная сумма
     uint16_t CRC;

@@ -3,6 +3,7 @@
 
 #include "EcuConfig.h"
 
+
 #define CONFIG_SIZE sizeof(EcuConfig_t)
 
 // Проверка CRC конфига
@@ -13,7 +14,7 @@ uint8_t cfgRead(EcuConfig_t *EcuConfig);
 uint8_t cfgWrite(const EcuConfig_t *EcuConfig);
 uint16_t cfgCRC(const EcuConfig_t *ecuConfig);
 
-//extern EcuConfig_t EcuConfig;
+
 
 
 

@@ -6,6 +6,10 @@
 #include "AdcFunc.h"
 #include "../Libs/filter.h"
 
+
+void boardThread(void);
+uint16_t boardBMSCombi_GetVoltage(void);
+
 void IO_Init(void);
 void gpio_ltc6804_cs_set(uint32_t cs_num, uint8_t state);
 

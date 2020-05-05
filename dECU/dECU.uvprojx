@@ -397,11 +397,6 @@
               <FilePath>.\Src\WorkStates.c</FilePath>
             </File>
             <File>
-              <FileName>Config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MolniaLib\Config.c</FilePath>
-            </File>
-            <File>
               <FileName>EcuConfig.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Src\EcuConfig.c</FilePath>
@@ -417,11 +412,6 @@
               <FilePath>.\Src\Interrupts.c</FilePath>
             </File>
             <File>
-              <FileName>PowerManager.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MolniaLib\PowerManager.c</FilePath>
-            </File>
-            <File>
               <FileName>dVCU_ECU.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Src\dVCU_ECU.c</FilePath>
@@ -429,7 +419,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Drivers</GroupName>
+          <GroupName>HAL</GroupName>
           <Files>
             <File>
               <FileName>lpc17xx_adc.c</FileName>
@@ -491,6 +481,16 @@
               <FileType>1</FileType>
               <FilePath>..\Drivers\source\lpc17xx_timer.c</FilePath>
             </File>
+            <File>
+              <FileName>lpc17xx_rit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\source\lpc17xx_rit.c</FilePath>
+            </File>
+            <File>
+              <FileName>lpc17xx_libcfg_default.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\source\lpc17xx_libcfg_default.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -542,19 +542,9 @@
               <FilePath>.\Src\Protocol.c</FilePath>
             </File>
             <File>
-              <FileName>ExternalProtocol.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Src\ExternalProtocol.c</FilePath>
-            </File>
-            <File>
               <FileName>PCanProtocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Src\PCanProtocol.c</FilePath>
-            </File>
-            <File>
-              <FileName>N_OBD.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MolniaLib\N_OBD.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -572,11 +562,6 @@
           <GroupName>Libs</GroupName>
           <Files>
             <File>
-              <FileName>max11612.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Src\max11612.c</FilePath>
-            </File>
-            <File>
               <FileName>Btn8982.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libs\Btn8982.c</FilePath>
@@ -587,11 +572,6 @@
               <FilePath>..\MolniaLib\MF_Tools.c</FilePath>
             </File>
             <File>
-              <FileName>DateTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MolniaLib\DateTime.c</FilePath>
-            </File>
-            <File>
               <FileName>TLE_6368g2.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libs\TLE_6368g2.c</FilePath>
@@ -600,6 +580,36 @@
               <FileName>filter.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libs\filter.c</FilePath>
+            </File>
+            <File>
+              <FileName>max11612.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libs\max11612.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>MFCommonFiles</GroupName>
+          <Files>
+            <File>
+              <FileName>Config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MolniaLib\Config.c</FilePath>
+            </File>
+            <File>
+              <FileName>N_OBD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MolniaLib\N_OBD.c</FilePath>
+            </File>
+            <File>
+              <FileName>PowerManager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MolniaLib\PowerManager.c</FilePath>
+            </File>
+            <File>
+              <FileName>DateTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MolniaLib\DateTime.c</FilePath>
             </File>
           </Files>
         </Group>

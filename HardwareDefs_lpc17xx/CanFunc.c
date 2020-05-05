@@ -12,8 +12,7 @@ txBufCAN_t txBufCan1, txBufCan2;
 static void Pin_Configurate(LPC_CAN_TypeDef *CANx);
 
 void Can_Init(uint8_t CanChannel1, uint8_t CanChannel2)
-{
-	
+{	
 	if(CanChannel1)
 	{
 		Pin_Configurate(LPC_CAN1);
@@ -31,7 +30,7 @@ void Can_Init(uint8_t CanChannel1, uint8_t CanChannel2)
 }
 
 
-void Pin_Configurate(LPC_CAN_TypeDef *CANx)
+static void Pin_Configurate(LPC_CAN_TypeDef *CANx)
 {
  /* Pin configuration
  * CAN1: select P0.0 as RD1. P0.1 as TD1

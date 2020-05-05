@@ -8,6 +8,23 @@
 #ifndef SRC_MOTIONCONTROLLERS_INVERTER_RINEHART_H_
 #define SRC_MOTIONCONTROLLERS_INVERTER_RINEHART_H_
 
+#include <stdint.h>
+
+typedef enum
+{
+	mcu_ActualTorque,
+	mcu_ActualSpeed,
+	mcu_TargetTorque,
+	mcu_MaxSpeed,
+	mcu_BoardTemperature,
+	mcu_MotorTemperature,
+	mcu_Status,
+	mcu_EnableCmd,
+	mcu_CausedFault,
+	mcu_CurrentDC,
+	mcu_VoltageDC,
+	mcu_Direction,
+} mcuParameters_e;
 
 typedef enum
 {
@@ -16,6 +33,11 @@ typedef enum
 	mcu_Warning,
 	mcu_Fault,
 } mcuStatus_e;
+
+typedef enum {
+	mcu_DirBW = 0,
+	mcu_DirFW,
+} RotateDirection_e;
 
 /*
     Tx Messages
@@ -173,16 +195,19 @@ typedef struct
 	int16_t EnableCommand;
 	int16_t RequestTorque;
 	int16_t RequestSpeed;
+	int8_t RequestDirection;
 
 	int16_t ConsumtionCurrentLimit;
 	int16_t GenerationCurrentLimit;
+
+	int16_t MaxTorque;
 
 	uint8_t PreparedMsgNumber;
 	int32_t PreparedMsgTimestamp[2];
 
 	mcuStatus_e Status;
 	uint8_t OnlineSign;
-	uint16_t LastError;
+	uint16_t CausedFault;
 
 	// Communication
 	InvCmdMsg_t rmsMsgRx_1;
@@ -202,14 +227,18 @@ typedef struct
 
 
 
-int8_t McuRinehartInit(McuRinehart_t *mcu);
+int8_t McuRinehartInit(McuRinehart_t *mcu, int16_t MaxTorque);
 int8_t McuRinehartThread(McuRinehart_t *mcu);
 
-int8_t McuRinehartSetCmd(McuRinehart_t *mcu, int16_t TorqueCmd, int16_t SpeedCmd, int16_t GenCurrentMax, int16_t ConsCurrentMax);
+int8_t McuRinehartSetCmd(McuRinehart_t *mcu, int16_t TorqueCmd, int16_t GenCurrentMax, int16_t ConsCurrentMax);
 int8_t McuRinehartSetState(McuRinehart_t *mcu, UnitState_e State);
+int8_t McuRinehartSetMaxSpeed(McuRinehart_t *mcu, int16_t MaxSpeed);
+int8_t McuRinehartSetDirection(McuRinehart_t *mcu, RotateDirection_e Direction);
 
 mcuStatus_e McuRinehartGetState(McuRinehart_t *mcu);
-int16_t McuRinehartGetLastError(McuRinehart_t *mcu);
+int16_t McuRinehartGetCausedFault(McuRinehart_t *mcu);
+uint8_t McuRinehartGetOnlineSign(McuRinehart_t *mcu);
+int16_t McuRinegartGetParameter(McuRinehart_t *mcu, mcuParameters_e Param);
 
 /***
  * Function fills MsgData array for transmit message
@@ -222,7 +251,7 @@ int16_t McuRinehartGetLastError(McuRinehart_t *mcu);
  * MsgData - pointer to data buffer
  * MsgDataLen - not used, simplify - all messages have DLC 8 bytes
  */
-int McuRinehartTxMsgGenerate(McuRinehart_t *mcu, uint8_t *MsgData, uint8_t *MsgDataLen);
-int8_t McuRinehartMsgHandle(McuRinehart_t *mcu, int MsgLen, uint8_t *MsgData, uint8_t MsgDataLen);
+int McuRinehartTxMsgGenerate(McuRinehart_t *mcu, uint8_t *MsgData, uint8_t *MsgDataLen, int32_t MsCounter);
+int8_t McuRinehartMsgHandler(McuRinehart_t *mcu, int MsgLen, uint8_t *MsgData, uint8_t MsgDataLen);
 
 #endif /* SRC_MOTIONCONTROLLERS_INVERTER_RINEHART_H_ */

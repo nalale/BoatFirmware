@@ -1,16 +1,15 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
-
-#define DIR_IN      0
-#define DIR_OUT     1
-
 #include "LPC17xx.h"
 #include "lpc_types.h"
+
+#include "lpc17xx_libcfg_default.h"
 
 #include "FaultTools.h"
 #include "ObjectsIndex.h"
 #include "protocol.h"
+#include "EcuConfig.h"
 
 #include "../BoardDefinitions/MarineEcu_Board.h"
 
@@ -101,6 +100,8 @@ typedef struct
     Timers_t LogicTimers;
     TimeValues_t DelayValues;
 	uint32_t SystemTime;
+
+	const EcuConfig_t *cfg;
     
     StateBits_t SB;
     dECU_Fauls_t Faults;
@@ -115,7 +116,10 @@ typedef struct
     
     uint32_t IO;
 	uint8_t A_Out[4];
+	uint8_t A_IN[4];
 	
+	uint16_t CurrentSensorVoltage[4];
+
 	// PM
 	PowerStates_e LocalPMState;
 	PowerStates_e PowerManagerCmd;
@@ -136,7 +140,6 @@ typedef struct
 extern void (*Algorithm)(uint8_t *);
 extern ObjectDictionary_t OD;
 
-uint8_t check_failed(uint8_t *file, uint8_t line);
 uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[]);
 
 

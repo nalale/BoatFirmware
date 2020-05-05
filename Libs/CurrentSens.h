@@ -52,7 +52,7 @@ typedef union
 
 
 
-void csSetCurrentSensorType(CurrentSensorType_e type);
+void csSetCurrentSensorType(CurrentSensorType_e type, uint8_t CWDirection);
 void csCalibrateCurrentSensor(void);
 int16_t csGetAverageCurrent(void);
 uint8_t csGetCircuitState(void);

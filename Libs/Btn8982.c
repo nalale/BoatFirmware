@@ -1,5 +1,3 @@
-#include "Main.h"
-#include "../MolniaLib/Config.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
 #include "Btn8982.h"
 #include "PwmFunc.h"
@@ -45,8 +43,6 @@ static void _resetChannel(uint8_t Channel);
 
 void btnInit(uint8_t Number, uint8_t MeasuringChannel, uint16_t CurrentTreshold_0p1A)
 {
-	EcuConfig_t config = GetConfigInstance();	
-	
     btnData[Number].CurrentThreshold = CurrentTreshold_0p1A;
     btnData[Number].Fault = 0;
     btnData[Number].FaultType = BTN_F_NO_FAULT;
@@ -94,16 +90,16 @@ uint8_t btnCalibrate(uint8_t Channel) {
 void btnInhibit(uint8_t num, uint8_t state) {
     switch (num) {
         case 0:
-            SET_A_OUT1_EN(state);
+            SET_D_OUT1_EN(state);
             break;
         case 1:
-            SET_A_OUT2_EN(state);
+            SET_D_OUT2_EN(state);
             break;
 		case 2:
-			SET_A_OUT3_EN(state);
+			SET_D_OUT3_EN(state);
 			break;
 		case 3:
-			SET_A_OUT4_EN(state);
+			SET_D_OUT4_EN(state);
 			break;
     }
 }

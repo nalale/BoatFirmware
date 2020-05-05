@@ -3,7 +3,7 @@
 #include "stdlib.h"
 
 
-int16_t interpol(int16_t *array, int16_t points_num, int16_t x)
+int16_t interpol(const int16_t *array, int16_t points_num, int16_t x)
 {
 	uint8_t cnt = 1;
 	int16_t y1, y0, x0, x1, dy, ddx, dx;
@@ -62,7 +62,11 @@ uint16_t CRC16(const uint16_t * buf, uint16_t len)
 }
 
 
-// Список
+
+
+
+
+// List
 List_t* ListInit(uint16_t val)
 {
 	List_t * head = NULL;
@@ -79,9 +83,9 @@ List_t* ListInit(uint16_t val)
 
 
 // Добавить элемент в конец списка
-uint8_t ListPush(List_t ** head, uint16_t val) {
-    List_t ** current = head;
-	
+uint8_t ListPush(List_t **head, uint16_t val) 
+{
+    List_t **current = head;
 	
 	if(*head == NULL)
 	{
@@ -97,7 +101,7 @@ uint8_t ListPush(List_t ** head, uint16_t val) {
     (*current)->next = malloc(sizeof(List_t));
 	
 	if((*current)->next == NULL)
-		return NULL;
+		return 0;
 	
     (*current)->next->val = val;
     (*current)->next->next = NULL;
@@ -109,7 +113,7 @@ int ListPop(List_t ** head) {
     List_t * next_node = NULL;
 
     if (*head == NULL) {
-        return NULL;
+        return 0;
     }
 
     next_node = (*head)->next;
@@ -126,7 +130,7 @@ uint16_t ListRemoveByIndex(List_t ** head, uint16_t n) {
     List_t * temp_node = NULL;
 	
 	if(current == NULL)
-		return NULL;
+		return 0;
 
     if (n == 0) {
         return ListPop(head);
@@ -134,7 +138,7 @@ uint16_t ListRemoveByIndex(List_t ** head, uint16_t n) {
 
     for (i = 0; i < n-1; i++) {
         if (current->next == NULL) {
-            return NULL;
+            return 0;
         }
         current = current->next;
     }
@@ -152,7 +156,7 @@ uint16_t ListGetValueByIndex(List_t *head, uint16_t n) {
     List_t current = *head;
 	
 	if(head == NULL)
-		return NULL;
+		return 0;
 
     if (n == 0) {
         return current.val;	
@@ -161,7 +165,7 @@ uint16_t ListGetValueByIndex(List_t *head, uint16_t n) {
     for (i = 0; i < n-1; i++) 
 	{
         if (current.next == NULL) {
-            return NULL;
+            return 0;
         }
         current = *current.next;
     }

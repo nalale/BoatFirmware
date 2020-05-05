@@ -206,13 +206,13 @@ void ecuInit(ObjectDictionary_t *dictionary)
 	Filter_init(50, 1, &fltVoltage);
 }
 
-void ecuProc()
+void boardThread()
 {
 	// 5.7 - делитель напряжения.
 	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY)) * 57 / 10 , &fltVoltage);
 	 _ecuPowerSupply = voltage_mV / 100;
 
-	 OD.IO = GetDiscretIO();
+	 OD.IO = boardMarineECU_GetDiscreteIO();
 }
 
 uint16_t EcuGetVoltage()

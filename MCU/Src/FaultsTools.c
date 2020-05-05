@@ -1,12 +1,15 @@
+#include <string.h>
+
 #include "Main.h"
 #include "../Libs/Btn8982.h"
 #include "../Libs/TLE_6368g2.h"
 #include "../Libs/max11612.h"
 #include "mVCU_ECU.h"
-#include "Inverter.h"
-
 #include "TimerFunc.h"
 #include "MemoryFunc.h"
+
+#include "MotionControllers/Inverter_Rinehart.h"
+#include "UserApplications/HelmDriver.h"
 
 
 static uint8_t pointer[512];
@@ -63,7 +66,7 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;
-		if(GetTimeFrom(OD.LogicTimers.InverterTimer_ms) > 500)
+		if(!McuRinehartGetOnlineSign(&OD.mcHandler))
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -83,7 +86,7 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 		}
 	}
 	
-	//Таймаут инвертор
+	//Таймаут батареи
 	it = &dtcBatteryOffline;
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
@@ -113,7 +116,7 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;
-		if(GetTimeFrom(OD.LogicTimers.SteeringTimer_ms) > 500)
+		if(!helmGetOnlineSign())
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -163,7 +166,7 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;
-		if(OD.InvertorDataRx.InverterState == VSM_FaultState)
+		if(McuRinegartGetParameter(&OD.mcHandler, mcu_Status) == mcu_Fault)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -478,34 +481,25 @@ uint8_t FaultsTest(uint8_t TestIsEnabled)
 
 uint8_t FillFaultsList(uint16_t *Array, uint8_t *FaultNum, uint8_t IsActualFaults)
 {
-	// Перебор по всем актуальным неисправностям
-	// Перебор всех возможных неисправностей
-	// Если неисправность подтверждена
+	if(Array == 0 || FaultNum == 0)
+		return 1;
+
+	uint8_t j = 0;
+	memset(Array, 0, sizeof(Array[0]) * MAX_FAULTS_NUM);
 	
 	for(uint8_t i = 0; i < dtcListSize; i++)
 	{	
 		// Выбираем между текущими ошибками и старыми
 		uint8_t TestFailed = (IsActualFaults)? dtcList[i]->Status.TestFailed : 1;
+		uint16_t faultCode = (uint16_t)(dtcList[i]->Property->Code << 8) + (dtcList[i]->Category);
 		
-		if(dtcList[i]->Status.ConfirmedDTC & TestFailed)
+		if(TestFailed && dtcList[i]->Status.ConfirmedDTC && j < MAX_FAULTS_NUM)
 		{
-			uint16_t faultCode = (uint16_t)(dtcList[i]->Property->Code << 8) + (dtcList[i]->Category);
-			
-			int i = 0;
-			for(i = 0; i < *FaultNum; i++)
-			{
-				// Если в списке уже есть текущий код ошибки - выходим из цикла, 
-				if(Array[i] == faultCode || i >= MAX_FAULTS_NUM)
-					break;			
-			}
-			
-			if(i == *FaultNum)
-			{
-				Array[i] = faultCode;
-				(*FaultNum)++;
-			}
+			Array[j++] = faultCode;
 		}
 	}
+
+	*FaultNum = j;
 	
 	return 0;
 }
@@ -570,7 +564,10 @@ uint8_t dtcFaultDetection(dtcItem_t* it, dtcEnvironment_t *env, uint8_t isFault)
 	{
 		if(it->FaultDetectionCounter > it->Property->TestPassedThreshold)
 		{
-			it->FaultDetectionCounter--;
+			if(it->FaultDetectionCounter > 0)
+				it->FaultDetectionCounter = -1;
+			else
+				it->FaultDetectionCounter--;
 		}
 		else
 		{
@@ -716,8 +713,32 @@ uint8_t ReadFaults()
 	return 1;
 }
 
-uint8_t ClearFaults(void)
+int8_t ClearFaults(void)
 {
-	return MemEcuDtcClear();	
+	uint16_t dtc_cnt = 0;
+
+	// Clear saved fault
+	IAP_STATUS_CODE status = MemEcuDtcClear();
+
+	// Clear runtime faults
+	for(uint8_t i = 0; i < dtcListSize; i++)
+	{
+		if(dtcList[i]->Status.ConfirmedDTC)
+			dtc_cnt++;
+
+		dtcList[i]->Status.ConfirmedDTC = 0;
+		dtcList[i]->Status.TestFailed = 0;
+		dtcList[i]->Status.TestFailedThisOperationCycle = 0;
+		dtcList[i]->Status.TestNotCompletedThisOperationCycle = 0;
+		dtcList[i]->Status.WarningIndicatorRequested = 0;
+	}
+
+	FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
+	FillFaultsList(OD.FaultList, &OD.FaultsNumber, 1);
+
+	if(status == CMD_SUCCESS)
+		return dtc_cnt;
+	else
+		return -1;
 }
 

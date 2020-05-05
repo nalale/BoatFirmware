@@ -1,9 +1,12 @@
-#include "main.h"
+#include <stdint.h>
+
 #include "filter.h"
 #include "CurrentSens.h"
 #include "AdcFunc.h"
 
+#include "Main.h"
 
+int8_t csCWDirection;
 CurrentSensorType_e csType;
 CURRENT_SENS_STR csEnv;
 FILTER_STRUCT csFilter;
@@ -13,9 +16,10 @@ const int16_t csHassIp[] = {0, 500, 1000, 2000, 3000, 4000};		// Номинальный изм
 
 
 
-void csSetCurrentSensorType(CurrentSensorType_e type)
+void csSetCurrentSensorType(CurrentSensorType_e type, uint8_t CWDirection)
 {
 	csType = type;
+	csCWDirection = CWDirection;
 	Filter_init(MAX_FILTER_LENGH, 1, &csFilter);
 }
 
@@ -53,7 +57,6 @@ int16_t csGetCurrent()
 	OD.CurrentSensorVoltage[0] = ((OD.A_IN[0]) * 198) >> 7;
 	OD.CurrentSensorVoltage[1] = ((OD.A_IN[1]) * 198) >> 7;
 	
-	EcuConfig_t ecuConfig = GetConfigInstance();
 
 	if (csType == cstDHAB_S34)
 	{		
@@ -82,7 +85,7 @@ int16_t csGetCurrent()
 		current = 0;
 	
 
-	if(ecuConfig.CurrentSensDirection)
+	if(csCWDirection)
 	{
 		// Если датчик тока расположен наоборот. Надо это учитывать.
 		current = -current;
@@ -102,14 +105,14 @@ uint8_t csGetCircuitState()
 {
 	if (csType == cstDHAB_S34)
 	{
-		if(OD.CurrentSensorVoltage[0] > 4900 || OD.CurrentSensorVoltage[1] > 4900)		// Замыкание на +
-			return dctCat_CircuitShortToBattery;
-		else if(OD.CurrentSensorVoltage[0] < 150 || OD.CurrentSensorVoltage[1] < 150)	// Обрыв или замыкание на -
-			return dctCat_CircuitShortToGroundOrOpen;
-		else if(csEnv.S34.CurSensFineZeroVolt_mV > 2600 || csEnv.S34.CurSensCoarseZeroVolt_mV > 2600)	// Напряжение выше установленного порога
-			return dctCat_CircuitVoltageAboveThreshold;
-		else if(csEnv.S34.CurSensFineZeroVolt_mV < 2400 || csEnv.S34.CurSensCoarseZeroVolt_mV < 2400)	// Напряжение ниже установленного порога
-			return dctCat_CircuitCurrentBelowThreshold;
+//		if(OD.CurrentSensorVoltage[0] > 4900 || OD.CurrentSensorVoltage[1] > 4900)		// Замыкание на +
+//			return dctCat_CircuitShortToBattery;
+//		else if(OD.CurrentSensorVoltage[0] < 150 || OD.CurrentSensorVoltage[1] < 150)	// Обрыв или замыкание на -
+//			return dctCat_CircuitShortToGroundOrOpen;
+//		else if(csEnv.S34.CurSensFineZeroVolt_mV > 2600 || csEnv.S34.CurSensCoarseZeroVolt_mV > 2600)	// Напряжение выше установленного порога
+//			return dctCat_CircuitVoltageAboveThreshold;
+//		else if(csEnv.S34.CurSensFineZeroVolt_mV < 2400 || csEnv.S34.CurSensCoarseZeroVolt_mV < 2400)	// Напряжение ниже установленного порога
+//			return dctCat_CircuitCurrentBelowThreshold;
 	}
 	else
 	{

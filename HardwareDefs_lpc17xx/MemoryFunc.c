@@ -40,7 +40,7 @@ void MemEcuDtcRead(uint8_t *data_pointer, uint16_t DataLength)
         *(data_pointer++) = *((uint8_t*)address);
 }
 
-uint8_t MemEcuDtcClear(void)
+IAP_STATUS_CODE MemEcuDtcClear(void)
 {
 	uint32_t sec;
     IAP_STATUS_CODE status;
@@ -48,6 +48,7 @@ uint8_t MemEcuDtcClear(void)
 	// Prepare sectors
     sec = GetSecNum((uint32_t)SDATA_START_ADDRESS);
    	status = PrepareSector(sec, sec);
+
 	if(status != CMD_SUCCESS)
         return status;
     

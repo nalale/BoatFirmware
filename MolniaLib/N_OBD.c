@@ -5,16 +5,19 @@
 #include <string.h>
 
 #include "Main.h"
-#include "CanFunc.h"
-#include "N_OBD.h"
+#include "FaultTools.h"
+
 #include "Protocol.h"
 #include "WorkStates.h"
 
 #include "TimerFunc.h"
+#include "CanFunc.h"
+#include "MemoryFunc.h"
 
 #include "Config.h"
-#include "MemoryFunc.h"
 #include "DateTime.h"
+
+#include "N_OBD.h"
 
 #define ABORT					-1					// процесс завершён
 #define MAX_REQUEST_AMOUNT		1					// Максимальнрое количество запросов следующей посылки при
@@ -70,6 +73,7 @@ void ObdSendMes(void)
 			
 			ObdMesSend->ID  = 0x580 | OD.ecuIndex;
 			ObdMesSend->DLC = 8;             
+			ObdMesSend->Ext = 0;
 			ObdMesSend->data[0] = ECAN_PROFILE_FUN_WRITE | (UpdateProfileStatus << 4);              
 			ObdMesSend->data[1] = Index2Update;
 			ObdMesSend->data[2] = Index2Update >> 8;             
@@ -96,6 +100,7 @@ void ObdSendMes(void)
 			ReadDataCnt++;
 			ObdMesSend->ID = 0x580 | OD.ecuIndex;
 			ObdMesSend->DLC = 8;             
+			ObdMesSend->Ext = 0;
 			
 			ObdMesSend->data[1] = Index2Read;
 			ObdMesSend->data[2] = Index2Read  >> 8;
@@ -127,7 +132,8 @@ void ObdSendMes(void)
 			EcuConfig_t _config = GetConfigInstance();
 			
 			ObdMesSend->ID = 0x580 | OD.ecuIndex;
-			ObdMesSend->DLC = 8;             
+			ObdMesSend->DLC = 8;       
+			ObdMesSend->Ext = 0;			
 			
 			ObdMesSend->data[1] = Index2Read;
 			ObdMesSend->data[2] = Index2Read  >> 8;
@@ -222,7 +228,7 @@ uint8_t ObdThread (CanMsg * msg )
 uint8_t ecuWriteDiagnosticValue(uint16_t did, uint32_t buf, uint16_t NoteToWrite)
 {
 	static int16_t RequestCnt = 0;		// Счётчик запросов на следующую запись
-	uint8_t result = 0;
+	int8_t result = 0;
 	if(did == didConfigStructIndex)		// Конфигурация
 	{
 		// Запрос в пределах диапазона
@@ -258,20 +264,17 @@ uint8_t ecuWriteDiagnosticValue(uint16_t did, uint32_t buf, uint16_t NoteToWrite
 		uint32_t value = 0;
 		memcpy(&value, &buf, sizeof(value));
 
-		SetDateTimeInt((uint32_t)value);
+		RTC_TIME_Type *time = dateTime_InitCurrent((uint32_t)value);
 		// RTC
-		RTC_SetFullTime(LPC_RTC, &currentRtc);
+		RTC_SetFullTime(LPC_RTC, time);
 
 	}
 	else if(did == didFaults_History)
 	{
-		if(buf != 0 || NoteToWrite != 0)
-			return GENERAL_PROGRAMMING_FAILURE;
+		if(buf != 0 || NoteToWrite > 0)
+			return GENERAL_PROGRAMMING_FAILURE;		
 		
-		result = MemEcuDtcClear();
-		if(result == 0)
-			SetWorkState(&OD.StateMachine, WORKSTATE_INIT);
-		else
+		if(ClearFaults() < 0)		
 			return GENERAL_PROGRAMMING_FAILURE;
 	}
 	else

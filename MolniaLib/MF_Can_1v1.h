@@ -210,7 +210,8 @@ typedef struct
 {
 	uint16_t MaxCellVoltage_mV;
 	uint16_t MinCellVoltage_mV;
-	uint32_t dummy1;
+	uint16_t SystemCCL;
+	uint16_t SystemDCL;
 } BatM_Ext3_t;
 
 typedef struct

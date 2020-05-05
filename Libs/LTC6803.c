@@ -6,7 +6,7 @@
 #include "TimerFunc.h"
 #include "../BoardDefinitions/BmsCombi_Board.h"
 #include "SpiFunc.h"
-#include "sys_utils.h"
+#include "../MolniaLib/sys_utils.h"
 #include "../MolniaLib/MF_Tools.h"
 
 #define MAX_MEASURING_mV	5375

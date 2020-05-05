@@ -1,6 +1,5 @@
 #include "Main.h"
 #include "PwmFunc.h"
-#include "FaultsTest.h"
 #include "../MolniaLib/MF_Tools.h"
 #include "../Libs/max11612.h"
 #include "../Libs/LTC6803.h"
@@ -11,6 +10,7 @@
 #include "mVCU_ECU.h"
 #include "EcuConfig.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
+#include "FaultTools.h"
 
 #define DV_FRZF(val)			sizeof(val), &val
 #define DIAG_ITEM(val)		ARRAY_LEN(val),  (void*)&val
@@ -308,19 +308,26 @@ void ecuInit(ObjectDictionary_t *dictionary)
 {
 	cfgApply();
 	
-	EcuConfig_t cfgEcu = GetConfigInstance();
-	
+	OD.ecuIndex = OD.cfgEcu->DiagnosticID;
+	OD.MaxMotorSpeed = OD.cfgEcu->MaxMotorSpeedD;
+	OD.MaxMotorTorque = OD.cfgEcu->MaxMotorTorque;
+
 	SET_PU_D_IN1(1);
 	SET_PU_D_IN2(1);
 	SET_PU_D_IN3(1);
 	SET_PU_D_IN4(1);
-	
+
     dictionary->DelayValues.Time1_ms = 1;
     dictionary->DelayValues.Time10_ms = 10;
     dictionary->DelayValues.Time100_ms = 100;
     dictionary->DelayValues.Time1_s = 1000;
     dictionary->DelayValues.MainLoopTime_ms = 10;
     
+	dictionary->EcuInfo[0] = CLASS_MODEL_ID;
+	dictionary->EcuInfo[1] = HARDWARE;
+	dictionary->EcuInfo[2] = FW_VERSION;
+	dictionary->EcuInfo[3] = HW_VERSION;
+
     Max11612_Init();
 	
 	btnInit(0, A_OUT1_CSENS, 400);
@@ -331,13 +338,13 @@ void ecuInit(ObjectDictionary_t *dictionary)
 	Filter_init(50, 1, &fltVoltage);
 }
 
-void ecuProc()
+void boardThread()
 {
 	// 5.7 - делитель напряжения.
 	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY)) * 57 / 10 , &fltVoltage);
 	_ecuPowerSupply = voltage_mV / 100;
 	
-	OD.IO = GetDiscretIO();    
+	OD.IO = boardMarineECU_GetDiscreteIO();    
 }
 
 uint16_t EcuGetVoltage()

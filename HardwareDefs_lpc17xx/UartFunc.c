@@ -19,7 +19,7 @@
 LPC_UART_TypeDef *CurrentUART;
 
 
-void Pin_Configurate(uint8_t uart_channel);
+static void Pin_Configurate(uint8_t uart_channel);
 void UART_IntReceive(uint8_t Channel);
 
 static uint16_t receive_cnt = 0;
@@ -102,7 +102,7 @@ void Uart_Init(uint8_t Channel, uint32_t baudrate)
 
 }
 
-void Pin_Configurate(uint8_t uart_channel)
+static void Pin_Configurate(uint8_t uart_channel)
 {
     PINSEL_CFG_Type PinCfg;
 

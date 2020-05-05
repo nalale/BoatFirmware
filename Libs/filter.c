@@ -1,9 +1,9 @@
-#include "main.h"
-#include "filter.h"
 #include <stdint.h>        /* For uint8_t definition */
 #include <stdbool.h>       /* For true/false definition */
 #include <stdlib.h> 
 #include <string.h>
+
+#include "filter.h"
 #include "TimerFunc.h"
 
 

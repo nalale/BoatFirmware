@@ -43,10 +43,8 @@ void cfgApply(void)
 		OD.FaultsBits.ConfigCrc = 1;
 		_cfgSetDefaultParams();
 	}		
-	
-	OD.ecuIndex = EcuConfig.DiagnosticID;
-	OD.MaxMotorSpeed = EcuConfig.MaxMotorSpeedD;
-	OD.MaxMotorTorque = EcuConfig.MaxMotorTorque;
+
+	OD.cfgEcu = &EcuConfig;
 }
 
 EcuConfig_t GetConfigInstance()

@@ -1,7 +1,6 @@
 #include "Main.h"
 #include "Protocol.h"
 #include "PCanProtocol.h"
-#include "ExternalProtocol.h"
 #include "../MolniaLib/N_OBD.h"
 
 CanMsg PCanRxMsg;
@@ -21,13 +20,11 @@ void Protocol(void)
 	if(isNewMsg2)
 		isNewMsg2 = ObdThread(&PCanRxMsg);
 	
-	if(isNewMsg1)
-        isNewMsg1 = ExternalRx(&DCanRxMsg);
 		
     if(isNewMsg2)		
 		isNewMsg2 = PCanRx(&PCanRxMsg);
 	
-	ExternalMesGenerate();
+
     PCanMesGenerate();	
 	ObdSendMes();
     

@@ -1,9 +1,10 @@
+#include "MotionControllers/SevconProtocol.h"
+
 #include "main.h"
 #include "CanFunc.h"
 #include "TimerFunc.h"
 #include "user.h"
 #include "protocol.h"
-#include "SevconProtocol.h"
 
 
 #define LOCAL_SEND_MSG_AMOUNT	3

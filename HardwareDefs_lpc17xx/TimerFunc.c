@@ -3,6 +3,8 @@
 #include "TimerFunc.h"
 #include "../MolniaLib/DateTime.h"
 
+
+
 /* SysTick Counter */
 volatile unsigned long SysTickCnt;
 static unsigned long cnt_1000ms;
@@ -16,10 +18,11 @@ static unsigned long cnt_1000ms;
 void SysTick_Handler (void) {
 	SysTickCnt++;
 	cnt_1000ms++;
+
 	if(cnt_1000ms == 1000)
 	{
 		cnt_1000ms = 0;
-		newSecond();
+		dateTime_newSecond();
 	}
 }
 
@@ -46,6 +49,7 @@ uint32_t GetTimeStamp()
 {
   return SysTickCnt;
 }
+
 uint32_t GetTimeFrom(uint32_t TimeStampLoc)
 {
   uint32_t result, Timer0cnt;
@@ -59,6 +63,5 @@ uint32_t GetTimeFrom(uint32_t TimeStampLoc)
   
   return result;
 }
-
 
 

@@ -1,4 +1,4 @@
-#include "TrimFunc.h"
+#include "UserApplications/TrimFunc.h"
 
 uint8_t TrimInit(TrimData_t *TrimData, uint8_t* pFeedback_0p1V, uint16_t MaxFeedback_0p1V, uint16_t MinFeedback_0p1V)
 {

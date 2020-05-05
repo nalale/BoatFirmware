@@ -1,5 +1,5 @@
 #ifndef _SKF_PROTOCOL_H
-#define _SKF_PROTOCOL_H
+#define _HELM_DRIVER_H
 
 //#include <types.h>
 

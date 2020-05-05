@@ -23,4 +23,31 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>BoardDefinitions</name>
+			<type>2</type>
+			<location>C:/Work/Code/Other/MolniaFoil/BoatFirmware/BoardDefinitions</location>
+		</link>
+		<link>
+			<name>HardwareDefs_lpc17xx</name>
+			<type>2</type>
+			<location>C:/Work/Code/Other/MolniaFoil/BoatFirmware/HardwareDefs_lpc17xx</location>
+		</link>
+		<link>
+			<name>Libs</name>
+			<type>2</type>
+			<location>C:/Work/Code/Other/MolniaFoil/BoatFirmware/Libs</location>
+		</link>
+		<link>
+			<name>MolniaLib</name>
+			<type>2</type>
+			<location>C:/Work/Code/Other/MolniaFoil/BoatFirmware/MolniaLib</location>
+		</link>
+		<link>
+			<name>source</name>
+			<type>2</type>
+			<location>C:/Work/Code/Other/MolniaFoil/BoatFirmware/Drivers/source</location>
+		</link>
+	</linkedResources>
 </projectDescription>

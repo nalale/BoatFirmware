@@ -25,7 +25,7 @@ uint8_t MemEcuCfgWrite(uint8_t *data_pointer);
 
 uint8_t MemEcuDtcWrite(uint8_t *data_pointer, uint16_t DataLength);
 void MemEcuDtcRead(uint8_t *data_pointer, uint16_t DataLength);
-uint8_t MemEcuDtcClear(void);
+IAP_STATUS_CODE MemEcuDtcClear(void);
 
 
 #endif

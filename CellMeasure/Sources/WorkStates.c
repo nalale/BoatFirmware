@@ -216,13 +216,13 @@ void CommonState(void)
         OD.LogicTimers.Timer_1ms = GetTimeStamp();
 		
         // Code      
-        OD.ecuPowerSupply_0p1 = EcuGetVoltage();
+        OD.ecuPowerSupply_0p1 = boardBMSCombi_GetVoltage();
 		OD.A_IN[0] = GetVoltageValue(4);
 		OD.A_IN[1] = GetVoltageValue(5);		
 
 		// Power Manager thread
 		PM_Proc(OD.ecuPowerSupply_0p1, OD.ConfigData->IsPowerManager);
-		ecuProc();
+		boardThread();
 		vs_thread(OD.CellVoltageArray_mV, OD.CellTemperatureArray);
 		packCapacityCalculating(OD.BatteryData, OD.ConfigData, OD.SB.CurrentSensorReady);
 		
@@ -285,13 +285,7 @@ void CommonState(void)
     {
         OD.LogicTimers.Timer_1s = GetTimeStamp();
 		OD.AfterResetTime++;
-		
-		// Code    
-		if (secondsToday >= SECONDS_IN_DAY) // 86400 секунд в одном дне
-		{
-			secondsToday = 0;
-			NewDay();
-		}
+		OD.SystemTime = dateTime_GetCurrentTotalSeconds();
         
         
 		uint16_t discharge_mask1 = ltc6803_GetDischargingMask(0);

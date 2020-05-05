@@ -27,8 +27,7 @@ typedef enum
 	didCurrentSensor1,
 	didCurrentSensor2,
 	didCurrentSensor3,
-	didCurrentSensor4,	
-	
+	didCurrentSensor4,
 	
 	didPwmOutState,
 	

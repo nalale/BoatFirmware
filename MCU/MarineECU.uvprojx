@@ -397,11 +397,6 @@
               <FilePath>.\Src\WorkStates.c</FilePath>
             </File>
             <File>
-              <FileName>FaultsTest.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Src\FaultsTest.c</FilePath>
-            </File>
-            <File>
               <FileName>Config.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\MolniaLib\Config.c</FilePath>
@@ -410,11 +405,6 @@
               <FileName>EcuConfig.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Src\EcuConfig.c</FilePath>
-            </File>
-            <File>
-              <FileName>SteeringFunc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Src\SteeringFunc.c</FilePath>
             </File>
             <File>
               <FileName>Interrupts.c</FileName>
@@ -432,9 +422,9 @@
               <FilePath>..\MolniaLib\PowerManager.c</FilePath>
             </File>
             <File>
-              <FileName>TrimFunc.c</FileName>
+              <FileName>FaultsTools.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Src\TrimFunc.c</FilePath>
+              <FilePath>.\Src\FaultsTools.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -562,11 +552,6 @@
               <FilePath>.\Src\Protocol.c</FilePath>
             </File>
             <File>
-              <FileName>ExternalProtocol.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Src\ExternalProtocol.c</FilePath>
-            </File>
-            <File>
               <FileName>N_OBD.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\MolniaLib\N_OBD.c</FilePath>
@@ -620,6 +605,41 @@
               <FileName>filter.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libs\filter.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>ApplicationTasks</GroupName>
+          <Files>
+            <File>
+              <FileName>DriveControl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\UserApplications\DriveControl.c</FilePath>
+            </File>
+            <File>
+              <FileName>HelmDriver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\UserApplications\HelmDriver.c</FilePath>
+            </File>
+            <File>
+              <FileName>ObcDriver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\UserApplications\ObcDriver.c</FilePath>
+            </File>
+            <File>
+              <FileName>SteeringFunc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\UserApplications\SteeringFunc.c</FilePath>
+            </File>
+            <File>
+              <FileName>TrimFunc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\UserApplications\TrimFunc.c</FilePath>
+            </File>
+            <File>
+              <FileName>Inverter_Rinehart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\MotionControllers\Inverter_Rinehart.c</FilePath>
             </File>
           </Files>
         </Group>

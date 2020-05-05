@@ -74,10 +74,8 @@ void cfgApply(void)
 		_cfgSetDefaultParams();
 	}	
 	
-	OD.ConfigData = &EcuConfig;
-
-	//EcuConfig.DiagnosticID = BMS_ECU_DIAG_ID;
-	csSetCurrentSensorType((CurrentSensorType_e)EcuConfig.CurrentSensType);		// Тип датчика тока
+	OD.ConfigData = &EcuConfig;	
+	csSetCurrentSensorType((CurrentSensorType_e)EcuConfig.CurrentSensType, EcuConfig.CurrentSensDirection);		// CurrentSensor init
 }
 
 EcuConfig_t GetConfigInstance()

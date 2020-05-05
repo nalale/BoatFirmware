@@ -118,7 +118,6 @@ void Max11612_GetResult(uint8_t *Buf, uint8_t V_ref)
 		uint16_t val = max11612Result[i] * V_ref >> 12;
 		Buf[i] = val;
 	}
-	
 }
 
 uint8_t GetMax11612State(void)

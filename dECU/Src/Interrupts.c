@@ -5,7 +5,7 @@
 #include "CanFunc.h"
 #include "AdcFunc.h"
 
-#include "max11612.h"
+#include "../Libs/max11612.h"
 
 
 void I2C2_IRQHandler(void)

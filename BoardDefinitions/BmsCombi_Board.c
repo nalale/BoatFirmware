@@ -46,13 +46,13 @@ void gpio_ltc6804_cs_set(uint32_t cs_num, uint8_t state)
 		GPIO_SetValue(1, cs_num);	
 }
 
-void ecuProc()
+void boardThread()
 {
 	uint16_t voltage_mV = Filter((GetVoltageValue(A_CHNL_KEY) * 11) , &fltVoltage);
 	 _ecuPowerSupply = voltage_mV / 100;
 }
 
-uint16_t EcuGetVoltage()
+uint16_t boardBMSCombi_GetVoltage()
 {
 	return _ecuPowerSupply;
 }
