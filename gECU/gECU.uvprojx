@@ -601,6 +601,11 @@
               <FileType>1</FileType>
               <FilePath>..\Libs\filter.c</FilePath>
             </File>
+            <File>
+              <FileName>FaultsServices.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MolniaLib\FaultsServices.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

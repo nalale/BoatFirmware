@@ -4,8 +4,9 @@
 #include "CanFunc.h"
 #include "TimerFunc.h"
 #include "User.h"
+#include "BatteryMeasuring.h"
 
-#define MASTER_SEND_MSG_AMOUNT	3
+#define MASTER_SEND_MSG_AMOUNT	4
 
 static uint32_t mstSendTime[MASTER_SEND_MSG_AMOUNT];
 // Периоды отправки сообщений
@@ -13,24 +14,14 @@ const uint16_t mstPeriod[MASTER_SEND_MSG_AMOUNT] = {
 								250,
 								100,
 								100,
+								500,
 								 };
 
 
 uint8_t MasterMsgHandler(CanMsg *msg)
 {
-	// Сообщение от мастера
-	if(msg->ID == Bmu_ECU_RX_ID)
-	{
-		EcuConfig_t cfgEcu = GetConfigInstance();
-		if(cfgEcu.IsMaster)
-		{
-			BatM_ExtRx_t *d = (BatM_ExtRx_t*)msg->data;
-
-			OD.SystemOperateEnabled = d->OpEnabled;
-			OD.SB.MsgFromSystem = 1;
-		}
-	}
-	else if (msg->ID == Bmu_ECU_CAN_ID + 1)
+	// Сообщение от мастера	
+	if (msg->ID == Bmu_ECU_CAN_ID + 1)
 	{		
 		BatM_Ext2_t *d = (BatM_Ext2_t*)msg->data;
 				
@@ -106,10 +97,19 @@ void MasterMesGenerate(void)
 
 				d->MaxCellVoltage_mV = OD.MasterData.MaxCellVoltage.Voltage_mv;
 				d->MinCellVoltage_mV = OD.MasterData.MinCellVoltage.Voltage_mv;
-				d->SystemCCL = OD.MasterData.CCL + 35767;
-				d->SystemDCL = OD.MasterData.DCL + 35767;
+				d->SystemCCL = (int32_t)OD.MasterData.CCL + 32767;
+				d->SystemDCL = (int32_t)OD.MasterData.DCL + 32767;
 			}
 			break;
+
+			case 3:
+			{
+				BatM_Ext4_t *d = (BatM_Ext4_t*)msg->data;
+				
+				d->SystemActualEnergy_Ah = OD.MasterData.ActualEnergy_As / 3600;
+				d->SystemTotalEnergy_Ah = OD.MasterData.TotalEnergy_As / 3600;
+				
+			}
         }
 
     }

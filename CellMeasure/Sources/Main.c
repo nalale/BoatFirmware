@@ -13,6 +13,7 @@
 #include "WorkStates.h"
 #include "Protocol.h"
 #include "User.h"
+#include "BatteryMeasuring.h"
 #include "../MolniaLib/DateTime.h"
 
 
@@ -50,6 +51,7 @@ int main(int argc, char** argv) {
 
 uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t **Buf)
 {
+	static int32_t data = 0;
 	uint8_t _size = 0;
 	
 	switch(Index)
@@ -61,7 +63,7 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t **Buf)
 		
 		// Module Parameters
 		case didConfigStructIndex:			
-			*Buf = (uint8_t*)OD.ConfigData; //&_config;
+			*Buf = (uint8_t*)OD.ConfigData;
 			_size = CONFIG_SIZE;
 		break;
 		
@@ -81,8 +83,8 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t **Buf)
 		
 		case didPowerManagmentState:
 		{
-			*Buf = (uint8_t*)&OD.PowerMaganerState;			
-			_size = (subindex < 1)? sizeof(OD.PowerMaganerState) : 0;
+			*Buf = (uint8_t*)&OD.LocalPMState;			
+			_size = (subindex < 1)? sizeof(OD.LocalPMState) : 0;
 		}
 		break;
 		
@@ -191,8 +193,9 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t **Buf)
 		break;
 		
 		case didBatTotalCurrent:
-			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].TotalCurrent;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].TotalCurrent);
+			data = (int32_t)OD.BatteryData[OD.ConfigData->BatteryIndex].TotalCurrent;
+			*Buf = (uint8_t*)&data;
+			_size = (subindex > 0)? 0 : sizeof(int32_t);
 		break;
 		
 		case didBatTotalVoltage:
@@ -206,24 +209,43 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t **Buf)
 		break;
 		
 		case didBatEnergy:
-			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].DischargeEnergy_Ah;
-			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].DischargeEnergy_Ah);
+			*Buf = (uint8_t*)&OD.Energy_As;
+			_size = (subindex > 0)? 0 : sizeof(OD.Energy_As);
+		break;	
+		
+		case didBatTotalEnergy:
+			//data = sysEnergy_EnergyEstimation(OD.Energy_As, OD.BatteryData[OD.ConfigData->BatteryIndex].MaxCellVoltage.Voltage_mv);
+			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].TotalEnergy_As;
+			_size = (subindex > 0)? 0 : sizeof(OD.BatteryData[OD.ConfigData->BatteryIndex].TotalEnergy_As);
 		break;	
 		
 		case didBatCCL:		
-			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].CCL;
-			_size = (subindex > 0)? 0 : sizeof(OD.MasterControl.CCL);
+			data = (int32_t)OD.BatteryData[OD.ConfigData->BatteryIndex].CCL;
+			*Buf = (uint8_t*)&data;
+			_size = (subindex > 0)? 0 : sizeof(int32_t);
 		break;
 		
-		case didBatDCL:		
+		case didBatDCL:
 			*Buf = (uint8_t*)&OD.BatteryData[OD.ConfigData->BatteryIndex].DCL;
 			_size = (subindex > 0)? 0 : sizeof(OD.MasterControl.DCL);
 		break;
 		
+		case didBatLastPrechargeDuration:
+			*Buf = (uint8_t*)&OD.LastPrechargeDuration;
+			_size = (subindex > 0)? 0 : sizeof(uint32_t);
+			break;
+
+		case didBatLastPrechargeCurrent:
+			data = (int32_t)OD.LastPrechargeMaxCurrent_0p1A;
+			*Buf = (uint8_t*)&data;
+			_size = (subindex > 0)? 0 : sizeof(uint32_t);
+			break;
+
 		// Master parameters				
 		case didMstTotalCurrent:
-			*Buf = (uint8_t*)&OD.MasterData.TotalCurrent;
-			_size = (subindex > 0)? 0 : sizeof(OD.MasterData.TotalCurrent);
+			data = (int32_t)OD.MasterData.TotalCurrent;
+			*Buf = (uint8_t*)&data;
+			_size = (subindex > 0)? 0 : sizeof(int32_t);
 		break;
 		
 		case didMstTotalVoltage:
@@ -277,13 +299,19 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t **Buf)
 		break;
 		
 		case didMstEnergy:		
-			*Buf = (uint8_t*)&OD.MasterData.DischargeEnergy_Ah;
-			_size = (subindex > 0)? 0 : sizeof(OD.MasterData.DischargeEnergy_Ah);
+			*Buf = (uint8_t*)&OD.MasterData.ActualEnergy_As;
+			_size = (subindex > 0)? 0 : sizeof(OD.MasterData.ActualEnergy_As);
 		break;
 		
-		case didMstCCL:		
-			*Buf = (uint8_t*)&OD.MasterData.CCL;
-			_size = (subindex > 0)? 0 : sizeof(OD.MasterData.CCL);
+		case didMsgTotalEnergy:
+			*Buf = (uint8_t*)&OD.MasterData.TotalEnergy_As;
+			_size = (subindex > 0)? 0 : sizeof(OD.MasterData.TotalEnergy_As);
+		break;
+		
+		case didMstCCL:
+			data = (int32_t)OD.MasterData.CCL;
+			*Buf = (uint8_t*)&data;
+			_size = (subindex > 0)? 0 : sizeof(int32_t);
 		break;
 		
 		case didMstDCL:		

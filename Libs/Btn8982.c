@@ -11,7 +11,7 @@
 // добавить фильтр на каждый канал измерения тока и калибровки
 // ошибка по превышению тока. сбрасываем ошибку, когда приходит запрос об сбросе команды ШИМ (target = 0).
 
-#define RES_IS  1000      // Ohm 
+#define RES_IS  500//1000      // Ohm 
 #define dK      195       // *100
 #define Iis_lim	5000	//uA
 
@@ -56,7 +56,7 @@ void btnInit(uint8_t Number, uint8_t MeasuringChannel, uint16_t CurrentTreshold_
 	btnInhibit(Number, 1);
 	btnData[Number].MeasuringChannel = MeasuringChannel;
 	
-	Filter_init(50, 1, &csFilter[Number]);
+	Filter_init(100, 5, &csFilter[Number]);
 }
 
 uint8_t btnCalibrate(uint8_t Channel) {
@@ -126,7 +126,7 @@ static void _btnMonitor(uint8_t Channel)
 	if(btnData[Channel].Fault > 0)
 		return;
 
-    if (btnData[Channel].TargetPwm < (uint8_t)30 || btnData[Channel].Current > (uint16_t)10)
+    if (btnData[Channel].TargetPwm > (uint8_t)30 || btnData[Channel].Current < (uint16_t)10)
         circOpenTimeStamp = GetTimeStamp();
 
     // Обработка ошибок

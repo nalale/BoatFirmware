@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "User.h"
 #include "mVcu_Ecu.h"
 
@@ -8,17 +10,19 @@
 #include "AdcFunc.h"
 #include "UartFunc.h"
 #include "SpiFunc.h"
+#include "MemoryFunc.h"
 
 #include "lpc17xx_gpio.h"
 #include "lpc17xx_clkpwr.h"
 #include "lpc17xx_can.h"
 
 #include "../Libs/Btn8982.h"
-#include "../MolniaLib/MF_Tools.h"
 #include "../Libs/filter.h"
 
 #include "../BoardDefinitions/MarineEcu_Board.h"
 
+#include "../MolniaLib/MF_Tools.h"
+#include "../MolniaLib/FaultsServices.h"
 
 
 void ecuInit(ObjectDictionary_t *dictionary);
@@ -69,6 +73,8 @@ void PortInit(void)
 
 	SET_PU_D_IN1(0);
 	SET_PU_D_IN2(0);
+	
+	SET_LED(0);
 
 
     FIO_SetDir(2, 0xFFFFFFFF, DIR_OUT);
@@ -109,21 +115,39 @@ uint8_t ChargersCircuitOn(uint8_t Cmd)
 	return 0;
 }
 
+void TransmissionSetGear(TransmissionGear_e Cmd)
+{
+	switch(Cmd)
+	{
+	case GEAR_NEU:
+		OD.SB.cmdETBackward = 0;
+		OD.SB.cmdETForward = 0;
+		break;
+
+	case GEAR_FW:
+		OD.SB.cmdETBackward = 0;
+		OD.SB.cmdETForward = 1;
+		break;
+
+	case GEAR_BW:
+		OD.SB.cmdETBackward = 1;
+		OD.SB.cmdETForward = 0;
+		break;
+	}
+}
 
 uint8_t SystemThreat(ObjectDictionary_t* OD)
 {
-
 	// Steering Functionality
 	helmThread(McuRinegartGetParameter(&(OD->mcHandler), mcu_ActualSpeed));
 	steeringThread(&(OD->SteeringData));
 
 	// Traction Functionality
 	McuRinehartThread(&OD->mcHandler);
-	driveAccelerationThread(McuRinegartGetParameter(&OD->mcHandler, mcu_ActualSpeed));
-
+	thrHandleControlThread(McuRinegartGetParameter(&OD->mcHandler, mcu_ActualSpeed));
 	obcThread();
-
-	TrimProc(&(OD->TrimDataRx), OD->SB.cmdTrimUp, OD->SB.cmdTrimDown);		// Trim control
+	TrimProc(&(OD->TrimDataRx), McuRinegartGetParameter(&(OD->mcHandler), mcu_ActualSpeed));		// Trim control
+	transmissionThread(McuRinegartGetParameter(&(OD->mcHandler), mcu_ActualSpeed));
 
 	TemperatureControl();
 
@@ -181,5 +205,91 @@ uint8_t DrainSupply()
 		return 0;
 	}
 
+	return 0;
+}
+
+void LedBlink()
+{
+	uint8_t x = LED_STATE;
+	SET_LED(x);
+}
+
+int8_t flashWriteSData(const StorageData_t *sdata)
+{
+	StorageData_t tmp_sdata;
+
+	// write 1st data to 1st and 2nd buffer
+	memcpy(&tmp_sdata.Buf_1st, &sdata->Buf_1st, sizeof(sdata->Buf_1st));
+
+	tmp_sdata.Buf_1st.Crc = 0;
+
+	for(uint8_t i = 0; i < sizeof(sdata->Buf_1st) - sizeof(sdata->Buf_1st.Crc); i++)
+		tmp_sdata.Buf_1st.Crc += *((uint8_t*)&tmp_sdata.Buf_1st + i);
+
+	MemEcuSDataWrite((uint8_t*)&tmp_sdata.Buf_1st, sizeof(sdata->Buf_1st), 0);
+
+	return 0;
+}
+
+int8_t flashReadSData(StorageData_t *sdata)
+{
+	int8_t result = 0;
+	uint16_t crc0 = 0;//, crc1 = 0;
+
+	sdata->Result = 0;
+
+	MemEcuSDataRead((uint8_t*)&sdata->Buf_1st, sizeof(sdata->Buf_1st), 0);
+	for(uint8_t i = 0; i < sizeof(sdata->Buf_1st) - sizeof(sdata->Buf_1st.Crc); i++)
+		crc0 += *((uint8_t*)&sdata->Buf_1st + i);
+
+	// if data from buf is correct
+	if(crc0 == sdata->Buf_1st.Crc)
+	{
+		uint8_t save_poweroff = sdata->Buf_1st.NormalPowerOff;
+		// Reset normal power off sign
+		sdata->Buf_1st.NormalPowerOff = 0;
+
+		if(!save_poweroff)
+			result =  -1;
+		else
+		{
+			result = 0;
+			sdata->DataChanged = 1;
+		}
+
+	}
+	// else restore TotalCapacity from another buffer
+	else
+	{
+
+		memset(&sdata->Buf_1st, 0xff, sizeof(sdata->Buf_1st));
+		result =  -1;
+	}
+
+	sdata->Result = result;
+	return result;
+}
+
+int8_t flashClearFaults(StorageData_t *sdata)
+{
+	ClearFaults(dtcList, dtcListSize);
+	return 0;
+}
+
+int8_t flashStoreData(StorageData_t *sdata)
+{
+	// Prepare for write
+	int16_t Length = sizeof(sdata->Buf_1st) + sizeof(EcuConfig_t) + (dtcListSize * sizeof(dtcItem_t));
+
+	__disable_irq();
+	MemEcuWriteData((uint8_t*)sdata, Length);
+
+	cfgWrite(sdata->cfgData);
+	SaveFaults(dtcList, dtcListSize);
+	flashWriteSData(sdata);
+
+	__enable_irq();
+
+	sdata->DataChanged = 0;
 	return 0;
 }

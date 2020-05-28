@@ -546,6 +546,11 @@
               <FileType>1</FileType>
               <FilePath>.\Src\PCanProtocol.c</FilePath>
             </File>
+            <File>
+              <FileName>External_CAN.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\External_CAN.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

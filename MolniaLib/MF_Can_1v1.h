@@ -32,6 +32,9 @@ typedef enum
 	Module_ECUx_CAN_ID_LEN = 2,
 	Module_ECU_CAN_ID_LEN = (Module_ECUx_CAN_ID_LEN * MaxModuleNum) * MaxBatteryNum,
 
+	Main_ECU_CAN_ID_LEN = 10,
+	Display_ECU_CAN_ID_LEN = 5,
+
 } EcuIdsLen_e;
 
 typedef enum
@@ -51,6 +54,10 @@ typedef enum
 	
 	Main_ECU_CAN_ID = Bmu_ECU_RX_ID + Bmu_ECU_RX_ID_LEN,			//0x15a + 0x02 = 0x15c
 	
+	Display_ECU_CAN_ID = Main_ECU_CAN_ID + Main_ECU_CAN_ID_LEN,
+
+	GPS_ECU_CAN_ID = Display_ECU_CAN_ID + Display_ECU_CAN_ID_LEN,
+
 } SystemIds_e;
 
 #pragma anon_unions
@@ -182,6 +189,12 @@ typedef struct
 
 typedef struct
 {
+	uint32_t ActualEnergy_As;
+	uint32_t TotalEnergy_As;
+} smPack_Tx2;
+
+typedef struct
+{
 	uint8_t
 	MainState	:	4,
 	SubState	:	4;	
@@ -216,6 +229,12 @@ typedef struct
 
 typedef struct
 {
+	uint16_t SystemTotalEnergy_Ah;
+	uint16_t SystemActualEnergy_Ah;
+} BatM_Ext4_t;
+
+typedef struct
+{
 	uint8_t
 	OpEnabled		:	1,
 	dummy1			:	7;	
@@ -236,18 +255,26 @@ typedef struct
 	uint8_t InverterTemperature;
 	uint8_t TargetTorque;
 	uint8_t ActualTorque;
-	uint8_t SteeringAngle;
-	uint8_t FeedbackAngle;
+	uint8_t TrimPosition;
+	uint8_t SpecPowerCons;
 } MainEcuStatus1_Msg_t;
 
 typedef struct
 {
-	uint8_t TrimPosition;
-	uint16_t SpecPowerCons;
+	int8_t HelmAngle;
+	int8_t ThrottlePos;
+	int8_t SteeringAngle;
+	uint8_t dummy;
 	uint16_t dummy1;
 	uint16_t dummy2;
-	uint8_t dummy3;
+
 } MainEcuStatus2_Msg_t;
+
+typedef struct
+{
+	uint16_t Velocity_Kmph;
+	uint32_t GpsTime;
+} GpsStatus1_Msg_t;
 
 #pragma pack(4)
 

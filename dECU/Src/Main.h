@@ -22,6 +22,9 @@
 // Максимальное количество в списке ошибок
 #define MAX_FAULTS_NUM				10
 
+#define GET_IN_STATE(x, y) (((x) >> (y)) & 0x01)
+#define SET_OUT_STATE(x, y) ((x) << (y))
+
 // Состояния конечного автомата
 typedef enum {
     WORKSTATE_INIT = 0,
@@ -92,6 +95,35 @@ typedef struct
 	uint16_t MotorRpm;
 } DisplayData_t;
 
+typedef struct
+{
+	uint32_t SystemTime;
+	uint32_t TotalActualEnergy_As;
+	uint32_t ActualEnergy_As;
+
+	uint32_t dummy;
+	uint32_t dumm1;
+	uint32_t dummy2;
+	uint32_t dummy3;
+	uint32_t dummy4;
+	uint16_t NormalPowerOff;
+
+	uint16_t Crc;
+} sDataBuf_t;
+
+typedef struct
+{
+	sDataBuf_t Buf_1st;
+	//sDataBuf_t Buf_2nd;
+
+	//const dtcItem_t* dtcListData;
+	const EcuConfig_t *cfgData;
+
+	//struct Data_st Data;
+	uint8_t Result;
+	uint8_t DataChanged;
+} StorageData_t;
+
 // Словарь объектов
 typedef struct
 {
@@ -102,6 +134,7 @@ typedef struct
 	uint32_t SystemTime;
 
 	const EcuConfig_t *cfg;
+	StorageData_t SData;
     
     StateBits_t SB;
     dECU_Fauls_t Faults;
@@ -124,9 +157,15 @@ typedef struct
 	PowerStates_e LocalPMState;
 	PowerStates_e PowerManagerCmd;
 	
+	uint16_t Isolation;
 	BatM_Ext1_t BmuData1;
+	BatM_Ext3_t BmuData2;
+	BatM_Ext4_t BmuData4;
+	BatBatteryStatus1Msg_t PackData1;
+	BatBatteryStatus1Msg_t PackData2;
 	MainEcuStatus1_Msg_t MainEcuData1;
 	MainEcuStatus2_Msg_t MainEcuData2;
+	GpsStatus1_Msg_t GpsData1;
 
 	uint8_t FaultsNumber;		
 	uint16_t FaultList[MAX_FAULTS_NUM];

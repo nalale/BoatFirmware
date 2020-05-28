@@ -37,6 +37,7 @@ typedef enum
 typedef enum {
 	mcu_DirBW = 0,
 	mcu_DirFW,
+
 } RotateDirection_e;
 
 /*
@@ -201,12 +202,14 @@ typedef struct
 	int16_t GenerationCurrentLimit;
 
 	int16_t MaxTorque;
+	int16_t MaxSpeed;
 
 	uint8_t PreparedMsgNumber;
 	int32_t PreparedMsgTimestamp[2];
 
 	mcuStatus_e Status;
 	uint8_t OnlineSign;
+	uint8_t IsSpeedControl;
 	uint16_t CausedFault;
 
 	// Communication
@@ -227,7 +230,7 @@ typedef struct
 
 
 
-int8_t McuRinehartInit(McuRinehart_t *mcu, int16_t MaxTorque);
+int8_t McuRinehartInit(McuRinehart_t *mcu, int16_t MaxTorque, uint8_t SpeedControl);
 int8_t McuRinehartThread(McuRinehart_t *mcu);
 
 int8_t McuRinehartSetCmd(McuRinehart_t *mcu, int16_t TorqueCmd, int16_t GenCurrentMax, int16_t ConsCurrentMax);

@@ -4,6 +4,7 @@
 #include "protocol.h"
 #include "CanFunc.h"
 #include "TimerFunc.h"
+#include "BatteryMeasuring.h"
 
 static uint32_t extSendTime[Bat_ECUx_CAN_ID_LEN];
 // Периоды отправки сообщений
@@ -11,7 +12,7 @@ const uint16_t slvPeriod[Bat_ECUx_CAN_ID_LEN] = {
 								100,
 								250,
 								500,
-								UINT16_MAX
+								500
 								 };
 
 uint8_t packMsgHandler(CanMsg *msg)
@@ -33,14 +34,12 @@ uint8_t packMsgHandler(CanMsg *msg)
 		return 1;	
 
 	uint16_t msg_id = (msg->ID & 0x01)? msg->ID - 1 : msg->ID;
-	uint8_t bat_id = (msg_id - Bat_ECU_CAN_ID) / Bat_ECUx_CAN_ID_LEN;
-	
-	
+	uint8_t bat_id = (msg_id - Bat_ECU_CAN_ID) / Bat_ECUx_CAN_ID_LEN;	
 	
 	if((bat_id == ecuConfig->BatteryIndex) || (bat_id >= MAX_BATTERY_AMOUNT))
 		return 1;
-
-	uint8_t mes_num = msg->ID & 0x01;	
+	
+	uint8_t mes_num = msg->ID - Bat_ECU_CAN_ID - (Bat_ECUx_CAN_ID_LEN * bat_id);	 
 	
 	switch(mes_num)
 	{
@@ -79,6 +78,14 @@ uint8_t packMsgHandler(CanMsg *msg)
 			}
 		}
 		break;
+		
+		case 3:
+		{
+			smPack_Tx2 *d = (smPack_Tx2*)msg->data;
+			
+			OD.BatteryData[bat_id].ActualEnergy_As = d->ActualEnergy_As;
+			OD.BatteryData[bat_id].TotalEnergy_As = d->TotalEnergy_As;
+		}
 
 		default:
 			return 1;
@@ -152,6 +159,14 @@ void SlaveMesGenerate(void)
 
 				d->BalancingEnabled = OD.PackControl.BalancingEnabled;
 				d->TargetBalancingVoltage = OD.PackControl.TargetVoltage_mV;
+			}
+			
+			case 3:
+			{
+				smPack_Tx2 *d = (smPack_Tx2*)msg->data;
+				
+				d->ActualEnergy_As = OD.BatteryData[ecuConfig->BatteryIndex].ActualEnergy_As;
+				d->TotalEnergy_As = OD.BatteryData[ecuConfig->BatteryIndex].TotalEnergy_As;
 			}
         }
 

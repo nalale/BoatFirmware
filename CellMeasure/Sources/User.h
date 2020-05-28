@@ -34,4 +34,12 @@ uint8_t packIsReady(const BatteryData_t* Handle, const BatteryData_t *ModulesDat
 
 uint8_t MasterIsReady(const BatteryData_t* Handle, const BatteryData_t *BatteriesData, const EcuConfig_t *config, uint32_t *ReadyConditionTimeStamp);
 
+
+int8_t flashWriteSData(const StorageData_t *sdata);
+// Return 0 if success, otherwise return nonzero
+int8_t flashReadSData(StorageData_t *sdata);
+
+int8_t flashStoreData(StorageData_t *sdata);
+int8_t flashClearFaults(StorageData_t *sdata);
+
 #endif

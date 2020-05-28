@@ -47,8 +47,12 @@ void InitializationState(uint8_t *SubState)
 			// Инициализация устройства питания
 			TLE_GoToPowerSupply();
 		
-			if(ReadFaults())
-				FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
+			if(ReadFaults(dtcList, dtcListSize))
+				OD.OldFaultsNumber = FillFaultsList(dtcList, dtcListSize, OD.OldFaultList, 0);
+
+			flashReadSData(&OD.SData);
+
+			OD.SB.PowerOff_SaveParams = 1;
 
 			*SubState = 1;
             break;
@@ -67,6 +71,11 @@ void InitializationState(uint8_t *SubState)
 			
 		case 3:
 			OD.SB.CheckFaults = 1;
+
+			// If flash data isn't actual
+			if(OD.SData.Result != 0)
+				OD.SB.PowerOff_SaveParams = 0;
+
 			SetWorkState(&OD.StateMachine, WORKSTATE_OPERATE);		
 		break;
     }
@@ -87,7 +96,11 @@ void ShutdownState(uint8_t *SubState)
 		// Запомнить время входа в режим, сохранить данные
 		case 0:
 			OD.LogicTimers.PowerOffTimer_ms = GetTimeStamp();
-			SaveFaults();
+			OD.SData.Buf_1st.SystemTime = OD.SystemTime;
+			OD.SData.Buf_1st.NormalPowerOff = 1;
+
+			flashStoreData(&OD.SData);
+			OD.SB.PowerOn = 0;
 			*SubState = 1;
 		break;
 		
@@ -103,7 +116,7 @@ void ShutdownState(uint8_t *SubState)
 			break;
 	}
 
-	if((GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= _config.PowerOffDelay_ms) && (OD.LocalPMState == PM_ShutDown))
+	if((GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= _config.PowerOffDelay_ms) && (OD.LocalPMState == PM_ShutDown || OD.PowerManagerCmd == PM_ShutDown))
 		*SubState = 2;
 }
 
@@ -147,38 +160,36 @@ void CommonState(void)
 		btnProc();
 		TLE_Proc();
 		Max11612_StartConversion();
-
-		OD.LocalPMState = PM_GetPowerState();
-
-		if(OD.LocalPMState == PM_PowerOn1)
-		{
-			OD.SB.PowerOn = 1;
-		}
-		if(OD.LocalPMState == PM_ShutDown || OD.PowerManagerCmd == PM_ShutDown)
-			SetWorkState(&OD.StateMachine, WORKSTATE_SHUTDOWN);
 		
+		OD.LocalPMState = (ecuConfig.IsPowerManager)? PM_GetPowerState() : OD.PowerManagerCmd;
+
 		// Если устройство управляет питание, то
 		// 1. Контролируем состояние зажигания через дискретный вход
 		// 2. Управляем поддержанием питания 12V всей системы
 		if(ecuConfig.IsPowerManager)
 		{
 			static uint8_t cnt = 0;
-			if(D_IN1)
+			if(D_IN1 && OD.LocalPMState == PM_PowerOn1)
 			{
 				cnt = 0;
-				OD.PowerManagerCmd = OD.LocalPMState;
+				OD.PowerManagerCmd = PM_PowerOn1;
+				if(!OD.Faults.ConfigCrc)
+					btnSetOutputLevel(1, 255);
+				else
+					btnSetOutputLevel(1, 0);
 			}
-			else
+			else if(!D_IN1)
 			{
 				if(++cnt > 5)
 					OD.PowerManagerCmd = PM_ShutDown;
 			}
-
-			if(OD.SB.PowerOn == 1)			
-				btnSetOutputLevel(1, 255);
-			
 		}
 
+		if(OD.LocalPMState == PM_PowerOn1 && OD.PowerManagerCmd == PM_PowerOn1)
+			OD.SB.PowerOn = 1;
+		else if((OD.LocalPMState == PM_ShutDown || OD.PowerManagerCmd == PM_ShutDown) &&
+				(OD.SB.PowerOn == 1 && OD.StateMachine.MainState != WORKSTATE_SHUTDOWN))
+			SetWorkState(&OD.StateMachine, WORKSTATE_SHUTDOWN);
 	}
     if(GetTimeFrom(OD.LogicTimers.Timer_100ms) >= OD.DelayValues.Time100_ms)
     {       
@@ -193,10 +204,13 @@ void CommonState(void)
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1s) >= OD.DelayValues.Time1_s)
     {
-        OD.LogicTimers.Timer_1s = GetTimeStamp();
+        OD.LogicTimers.Timer_1s = GetTimeStamp();       
         
         // Code
-        
+        LedBlink();
+		
+		if(OD.SData.DataChanged > 0 && OD.SB.PowerOn)
+			flashStoreData(&OD.SData);
     }
 }
 

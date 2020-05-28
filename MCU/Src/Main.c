@@ -1,15 +1,10 @@
 #include "lpc17xx_pinsel.h"
 
 #include "WorkStates.h"
-#include "Main.h"
 #include "User.h"
 #include "TimerFunc.h"
 
-#include "UserApplications/SteeringFunc.h"
-#include "UserApplications/ObcDriver.h"
-#include "UserApplications/HelmDriver.h"
-#include "UserApplications/DriveControl.h"
-
+#include "Main.h"
 
 void CommonState(void);
 
@@ -153,8 +148,9 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 		break;
 		
 		case didSteeringFB:
-			*Buf = (uint8_t*)OD.SteeringData.FeedbackVoltage_0p1V;
-			_size = (subindex > 0)? 0: sizeof(OD.SteeringData.FeedbackVoltage_0p1V);
+			_data = SteeringGetFeedBackVoltage(&OD.SteeringData);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
 		break;
 		
 		case didSteeringCurent:
@@ -163,11 +159,37 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			_size = (subindex > 0)? 0: 2;
 		break;
 		
-		case didTrimFB:
-			*Buf = (uint8_t*)OD.TrimDataRx.FeedBack_mV;
-			_size = (subindex > 0)? 0: sizeof(OD.TrimDataRx.FeedBack_mV);
+		case didSteeringStatus:
+			_data = SteeringGetStatus(&OD.SteeringData);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
 		break;
 		
+		case didTrimFB:
+			_data = TrimGetParameter(&OD.TrimDataRx, paramTrim_VoltageFB_0p1V);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
+		break;
+		
+		case didTrimMovCmd:
+			_data = TrimGetParameter(&OD.TrimDataRx, paramTrim_Cmd);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
+		break;
+
+		case didTrimPosition:
+			_data = TrimGetParameter(&OD.TrimDataRx, paramTrim_Position);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
+		break;
+
+		case didTrimStatus:
+			_data = TrimGetParameter(&OD.TrimDataRx, paramTrim_Status);
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
+		break;
+
+		// Acceleration demand unit
 		case didAccCh1:
 			*Buf = (uint8_t*)&OD.AccPedalChannels[0];
 			_size = (subindex > 0)? 0: sizeof(OD.AccPedalChannels[0]);
@@ -178,6 +200,19 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			_size = (subindex > 0)? 0: sizeof(OD.AccPedalChannels[1]);
 		break;
 		
+		case didAccPosition:
+			_data = thrHandleGetDemandAcceleration();
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
+		break;
+
+		case didAccDemandDirection:
+			_data = thrHandleGetDirection();
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: 2;
+			break;
+
+		// Inverter
 		case didMotorTemp:
 			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature);
 			*Buf = (uint8_t*)&_data;
@@ -206,11 +241,6 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			*Buf = (uint8_t*)&OD.BatteryDataRx.TotalCurrent;
 			_size = (subindex > 0)? 0: sizeof(OD.BatteryDataRx.TotalCurrent);
 			break;
-				
-		case didTrimMovCmd:
-			*Buf = (uint8_t*)&OD.TrimDataRx.MovCmd;
-			_size = (subindex > 0)? 0: sizeof(OD.TrimDataRx.MovCmd);
-		break;
 		
 		case didActualGear:
 			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_Direction);
@@ -224,22 +254,11 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			_size = (subindex > 0)? 0: 2;
 		break;
 		
-		case didAccPosition:
-			_data = driveGetDemandAcceleration();
-			*Buf = (uint8_t*)&_data;
-			_size = (subindex > 0)? 0: 2;
-		break;
-		
 		case didInverterVoltage:
 			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_VoltageDC);
 			*Buf = (uint8_t*)&_data;
 			_size = (subindex > 0)? 0: 2;
 			break;
-		
-		case didBatteryCmd:
-			*Buf = (uint8_t*)&OD.BatteryReqState;
-			_size = (subindex > 0)? 0: sizeof(OD.BatteryReqState);
-		break;
 		
 		case didInverterEnable:
 			_data = McuRinegartGetParameter(&OD.mcHandler, mcu_EnableCmd);
@@ -253,6 +272,12 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			_size = (subindex > 0)? 0: 2;
 		break;
 		
+		// Battery system
+		case didBatteryCmd:
+			*Buf = (uint8_t*)&OD.BatteryReqState;
+			_size = (subindex > 0)? 0: sizeof(OD.BatteryReqState);
+		break;
+
 		case didWaterSwitches:
 			_data = OD.SB.stWaterSwitch1 | (OD.SB.stWaterSwitch2 << 1) | (OD.SB.stManualDrainSwitch << 2);
 			*Buf = (uint8_t*)&_data;	
@@ -264,6 +289,48 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			*Buf = (uint8_t*)&_data;	
 			_size = (subindex > 0)? 0: sizeof(uint16_t);
 		break;
+		
+		case didObcStatus:
+			_data = obcGetStatus();
+			*Buf = (uint8_t*)&_data;	
+			_size = (subindex > 0)? 0: sizeof(uint8_t);
+		break;
+		
+		case didObcOnlineNumber:
+			_data = obcGetOnlineUnitsNumber();
+			*Buf = (uint8_t*)&_data;	
+			_size = (subindex > 0)? 0: sizeof(uint8_t);
+		break;
+		
+		case didObcTotalCurrent:
+			_data = obcGetOutputCurrent();
+			*Buf = (uint8_t*)&_data;	
+			_size = (subindex > 0)? 0: sizeof(uint16_t);
+		break;
+		
+		case didObcDemandTotalCurrent:
+			_data = obcGetDemandCurrent();
+			*Buf = (uint8_t*)&_data;	
+			_size = (subindex > 0)? 0: sizeof(uint16_t);
+			break;
+
+		case didGearActualDirection:
+			_data = transmissionGetActualGear();
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: sizeof(uint16_t);
+			break;
+
+		case didGearIsShifting:
+			_data = transmissionShiftInProcess();
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: sizeof(uint16_t);
+			break;
+
+		case didGearActuatorState:
+			_data = transmissionMovementPermission();
+			*Buf = (uint8_t*)&_data;
+			_size = (subindex > 0)? 0: sizeof(uint16_t);
+			break;
 		
 		// Faults parameters
 		case didFaults_Actual:
@@ -284,7 +351,7 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 }
 
 
-uint8_t check_failed(uint8_t *file, uint8_t line)
-{
-	return 0;
-}
+//uint8_t check_failed(uint8_t *file, uint8_t line)
+//{
+//	return 0;
+//}

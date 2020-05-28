@@ -14,6 +14,7 @@
 
 #include "../MolniaLib/MF_Tools.h"
 #include "../MolniaLib/PowerManager.h"
+#include "../MOlniaLib/FaultsServices.h"
 
 #define MASTER
 //#define MODULE
@@ -27,8 +28,7 @@
 #define MAX_MODULE_NUM				4
 // Количество термодатчиков в модуле
 #define TMP_SENSOR_IN_MODULE		4
-// Максимальное количество в списке ошибок
-#define MAX_FAULTS_NUM				10
+
 
 typedef enum
 {
@@ -105,6 +105,35 @@ typedef struct
     
 } TimeValues_t;
 
+typedef struct
+{
+	uint32_t SystemTime;
+	uint32_t TotalActualEnergy_As;
+	uint32_t ActualEnergy_As;
+
+	uint32_t dummy;
+	uint32_t dumm1;
+	uint32_t dummy2;
+	uint32_t dummy3;
+	uint32_t dummy4;
+	uint16_t NormalPowerOff;
+
+	uint16_t Crc;
+} sDataBuf_t;
+
+typedef struct
+{	
+	sDataBuf_t Buf_1st;
+	//sDataBuf_t Buf_2nd;
+
+	//const dtcItem_t* dtcListData;
+	const EcuConfig_t *cfgData;
+
+	//struct Data_st Data;
+	uint8_t Result;
+	uint8_t DataChanged;
+} StorageData_t;
+
 // Напряжение на ячейке
 typedef struct
 {
@@ -161,7 +190,8 @@ typedef struct
     // Уровень заряда в % * 10
     uint16_t SoC;
 	// Для подсчета отданной энергии в Ампер-секундах
-    uint16_t DischargeEnergy_Ah;
+    uint32_t ActualEnergy_As;
+	uint32_t TotalEnergy_As;
     // Ограничение тока заряда в амперах
     int16_t CCL;
     // Ограничение тока разряда в амперах
@@ -248,7 +278,8 @@ typedef union
 		
 		// Battery Faults
 		uint8_t		
-		Mod_dummy2					:	4,
+		Mod_EmergencyPowerOff		:	1,
+		Mod_dummy2					:	3,
 		Bat_ModuleWrongCount		:	1,
 		Bat_ModuleFault				:	1,
 		Bat_OverLoad				:	1,
@@ -289,6 +320,8 @@ typedef struct
 	uint32_t SystemTime;
 	uint32_t AfterResetTime;
 	
+	StorageData_t SData;
+
     Timers_t LogicTimers;
     TimeValues_t DelayValues;
 	
@@ -325,7 +358,8 @@ typedef struct
 	
 	DebugData_t DebugData;
 	
-	PowerStates_e PowerMaganerState;
+	PowerStates_e LocalPMState;
+	PowerStates_e PowerMaganerCmd;
 	uint16_t ecuPowerSupply_0p1;
 
 	const EcuConfig_t *ConfigData;

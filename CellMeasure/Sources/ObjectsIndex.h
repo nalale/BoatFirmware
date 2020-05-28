@@ -25,7 +25,7 @@ typedef enum
 	didVoltageSensor8,
 	
 	// Параметры модуля батареи
-	didModMachineState,
+	didModMachineState = 30,
 	didModMachineSubState,
 	didCellsVoltages,
 	didModuleTemperatures,		
@@ -38,7 +38,7 @@ typedef enum
 	didModInOutState,
 	
 	// Battery parameters
-	didBatTotalCurrent,
+	didBatTotalCurrent = 50,
 	didBatTotalVoltage,
 	didBatMaxVoltage,
 	didBatMinVoltage,
@@ -48,11 +48,14 @@ typedef enum
 	didBatMinCellVoltage,
 	didBatStateOfCharge,
 	didBatEnergy,
+	didBatTotalEnergy,
 	didBatCCL,
 	didBatDCL,
+	didBatLastPrechargeDuration,
+	didBatLastPrechargeCurrent,
 	
 	// Master Parameters
-	didMstTotalCurrent,
+	didMstTotalCurrent = 70,
 	didMstTotalVoltage,
 	didMstMaxCurrent,
 	didMstMinCurrent,
@@ -64,6 +67,7 @@ typedef enum
 	didMstCellMinVoltage,
 	didMstStateOfCharge,
 	didMstEnergy,
+	didMsgTotalEnergy,
 	didMstCCL,
 	didMstDCL,
 	

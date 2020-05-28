@@ -91,6 +91,7 @@ typedef struct
 	uint8_t m_tmp_code_arr[TMP_ARRAY_SZ];
 	int16_t m_tmp_arr[EXT_TMP_SENSOR_NUM];
 	
+	uint8_t is_ready;
 	uint8_t open_conncetion_cell;
 	uint16_t m_ref_volt;
 	uint32_t discharge_cell_mask;

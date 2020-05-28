@@ -3,6 +3,8 @@
 #include "FaultTools.h"
 
 #include "../MolniaLib/MF_Tools.h"
+#include "../MolniaLib/FaultsServices.h"
+
 #include "../Libs/max11612.h"
 #include "../Libs/LTC6803.h"
 #include "../Libs/Btn8982.h"
@@ -50,7 +52,7 @@ const DiagnosticValueFRZF dVal_frzfUnexpectedPowerOff[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfUnexpectedPowerOff) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_UnexpectedPowerOff = { dtc_General_UnexpectedPowerOff, DTC_BIT_NONE, 0, 50, -50, 1, DIAG_ITEM(dVal_frzfUnexpectedPowerOff) };
+dtcProperty_t dtcProp_UnexpectedPowerOff = { dtc_General_UnexpectedPowerOff, DTC_BIT_NONE, 0, 1, -1, 10, DIAG_ITEM(dVal_frzfUnexpectedPowerOff) };
 // Все о неисправности
 dtcItem_t dtcUnexpectedPowerOff = {&dtcProp_UnexpectedPowerOff};
 
@@ -66,7 +68,7 @@ const DiagnosticValueFRZF dVal_frzfExtCanOffline[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfExtCanOffline) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_ExtCanOffline = { dtc_CAN_ExtCan, DTC_BIT_WARNING_ENABLE, 0, 50, -50, 20, DIAG_ITEM(dVal_frzfExtCanOffline) };
+dtcProperty_t dtcProp_ExtCanOffline = { dtc_CAN_ExtCan, DTC_BIT_WARNING_ENABLE, 0, 4, -1, 500, DIAG_ITEM(dVal_frzfExtCanOffline) };
 // Все о неисправности
 dtcItem_t dtcExtCanOffline = {&dtcProp_ExtCanOffline};
 
@@ -81,7 +83,7 @@ const DiagnosticValueFRZF dVal_frzfPCanOffline[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfExtCanOffline) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_PCanOffline = { dtc_CAN_PCAN, DTC_BIT_WARNING_ENABLE, 0, 50, -50, 20, DIAG_ITEM(dVal_frzfPCanOffline) };
+dtcProperty_t dtcProp_PCanOffline = { dtc_CAN_PCAN, DTC_BIT_WARNING_ENABLE, 0, 4, -1, 500, DIAG_ITEM(dVal_frzfPCanOffline) };
 // Все о неисправности
 dtcItem_t dtcPCanOffline = {&dtcProp_PCanOffline};
 
@@ -187,6 +189,7 @@ void ecuInit(ObjectDictionary_t *dictionary)
 	SET_PU_D_IN3(_config.PU_IN3);
 	SET_PU_D_IN4(_config.PU_IN4);
 	
+	dictionary->SData.cfgData = dictionary->ConfigData;
     dictionary->DelayValues.Time1_ms = 1;
     dictionary->DelayValues.Time10_ms = 10;
     dictionary->DelayValues.Time100_ms = 100;

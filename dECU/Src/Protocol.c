@@ -1,6 +1,7 @@
 #include "Main.h"
 #include "Protocol.h"
 #include "PCanProtocol.h"
+#include "Extarnal_CAN.h"
 #include "../MolniaLib/N_OBD.h"
 
 CanMsg PCanRxMsg;
@@ -27,6 +28,7 @@ void Protocol(void)
 
     PCanMesGenerate();	
 	ObdSendMes();
+	ExternalMesGenerate();
     
     if (GetBufferAvailable(P_CAN_CH) && ecanGetTxMsg(&PCanTxMsg, P_CAN_CH))
     { 	

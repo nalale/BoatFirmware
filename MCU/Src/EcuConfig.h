@@ -22,6 +22,7 @@ typedef struct
 	uint8_t AccPedalFstCh_MaxV;
 	uint8_t AccPedalFstCh_0V;
 	uint8_t AccPedalSndCh_MaxV;
+	uint8_t AccPedalTable[12];
 	
 	// Motor Data
 	uint16_t MaxMotorSpeedD;
@@ -36,14 +37,14 @@ typedef struct
 	
     int16_t SteeringBrakeSpeedTable[12];
 	
-	uint8_t SteeringKp;
-	uint8_t SteeringKi;
-	uint8_t SteeringKd;
+	uint16_t SteeringKp;
+	uint16_t SteeringKi;
+	uint16_t SteeringKd;
 	
 	// Trim
 	uint8_t TrimMinVal_0p1V;
 	uint8_t TrimMaxVal_0p1V;
-    int16_t TrimMaxCurrent_0p1A;
+    int16_t DriveUpperLimitFB_0p1V;
 		
 	// Power
 	uint16_t PowerOffDelay_ms;
@@ -68,12 +69,12 @@ typedef struct
 	uint8_t MaxChargingCurrent_A;
 	uint8_t ChargersNumber;
 	
-	uint16_t addition_2;
+	uint16_t RateMotorTorque;
 	uint16_t addition_3;
 	uint16_t addition_4;
 	uint16_t addition_5;
 	uint16_t addition_6;
-	uint16_t addition_7;	
+	//uint16_t addition_7;	
 	
 	 // Контрольная сумма
     uint16_t CRC;

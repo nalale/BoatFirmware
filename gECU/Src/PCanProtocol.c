@@ -1,9 +1,12 @@
+#include <string.h>
+
 #include "Main.h"
 #include "PCanProtocol.h"
 #include "SkfTypes.h"
 #include "TimerFunc.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
-#include <string.h>
+#include "../MolniaLib/DateTime.h"
+
 
 #include "../Libs/Btn8982.h"
 
@@ -26,7 +29,14 @@ uint8_t PCanRx(CanMsg *msg)
 	EcuConfig_t config = GetConfigInstance();		
 	OD.SB.PCanMsgReceived = 1;
 	
-	if(msg->ID == PM_CAN_ID)
+	if(msg->ID == BASE_CAN_ID)
+	{
+		if(!dateTime_IsInit())
+		{
+			dateTime_InitCurrent(((cmTimeServer*)msg->data)->DateTime);
+		}
+	}
+	else if(msg->ID == PM_CAN_ID)
 	{
 		OD.PowerManagerCmd = msg->data[0];
 	}
@@ -207,7 +217,7 @@ void PCanMesGenerate(void)
 				msg->ID = PM_CAN_ID;
 				msg->DLC = 1;
 				
-				msg->data[0] = OD.LocalPMState;
+				msg->data[0] = OD.PowerManagerCmd;
 			}
 			break;
         }

@@ -9,8 +9,10 @@
 
 #include "mVCU_ECU.h"
 #include "EcuConfig.h"
-#include "../BoardDefinitions/MarineEcu_Board.h"
 #include "FaultTools.h"
+
+#include "../BoardDefinitions/MarineEcu_Board.h"
+
 
 #define DV_FRZF(val)			sizeof(val), &val
 #define DIAG_ITEM(val)		ARRAY_LEN(val),  (void*)&val
@@ -33,7 +35,7 @@ const DiagnosticValueFRZF dVal_frzfEcuConfigMemory[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfEcuConfigMemory) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_EcuConfigMemory = { dtc_General_EcuConfig, DTC_BIT_WARNING_ENABLE + DTC_BIT_OPERATION_DISABLE, 0, 50, -50, 1, DIAG_ITEM(dVal_frzfEcuConfigMemory) };
+dtcProperty_t dtcProp_EcuConfigMemory = { dtc_General_EcuConfig, DTC_BIT_WARNING_ENABLE + DTC_BIT_OPERATION_DISABLE, 0, 1, -1, 10, DIAG_ITEM(dVal_frzfEcuConfigMemory) };
 // Все о неисправности
 dtcItem_t dtcEcuConfigMemory = {&dtcProp_EcuConfigMemory};
 
@@ -49,7 +51,7 @@ const DiagnosticValueFRZF dVal_frzfUnexpectedPowerOff[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfUnexpectedPowerOff) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_UnexpectedPowerOff = { dtc_General_UnexpectedPowerOff, DTC_BIT_NONE, 0, 50, -50, 1, DIAG_ITEM(dVal_frzfUnexpectedPowerOff) };
+dtcProperty_t dtcProp_UnexpectedPowerOff = { dtc_General_UnexpectedPowerOff, DTC_BIT_NONE, 0, 1, -1, 10, DIAG_ITEM(dVal_frzfUnexpectedPowerOff) };
 // Все о неисправности
 dtcItem_t dtcUnexpectedPowerOff = {&dtcProp_UnexpectedPowerOff};
 
@@ -65,7 +67,7 @@ const DiagnosticValueFRZF dVal_frzfInverterOffline[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfInverterOffline) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_InverterOffline = { dtc_CAN_Inverter, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 100, DIAG_ITEM(dVal_frzfInverterOffline) };
+dtcProperty_t dtcProp_InverterOffline = { dtc_CAN_Inverter, DTC_BIT_WARNING_ENABLE, 0, 1, -1, 1000, DIAG_ITEM(dVal_frzfInverterOffline) };
 // Все о неисправности
 dtcItem_t dtcInverterOffline = {&dtcProp_InverterOffline};
 
@@ -80,7 +82,7 @@ const DiagnosticValueFRZF dVal_frzfSkfOffline[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfSkfOffline) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_SkfOffline = { dtc_CAN_Skf, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 100, DIAG_ITEM(dVal_frzfSkfOffline) };
+dtcProperty_t dtcProp_SkfOffline = { dtc_CAN_Skf, DTC_BIT_WARNING_ENABLE, 0, 1, -1, 1000, DIAG_ITEM(dVal_frzfSkfOffline) };
 // Все о неисправности
 dtcItem_t dtcSkfOffline = {&dtcProp_SkfOffline};
 
@@ -95,7 +97,7 @@ const DiagnosticValueFRZF dVal_frzfBatteryOffline[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfBatteryOffline) },
 };
 // Статические параметры неисправности
-dtcProperty_t dtcProp_BatteryOffline = { dtc_CAN_Battery, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 100, DIAG_ITEM(dVal_frzfBatteryOffline) };
+dtcProperty_t dtcProp_BatteryOffline = { dtc_CAN_Battery, DTC_BIT_WARNING_ENABLE, 0, 5, -1, 1000, DIAG_ITEM(dVal_frzfBatteryOffline) };
 // Все о неисправности
 dtcItem_t dtcBatteryOffline = {&dtcProp_BatteryOffline};
 
@@ -286,7 +288,7 @@ const DiagnosticValueFRZF dVal_frzfPowerSupplyCircuit[] =
 // Статические параметры неисправности
 dtcProperty_t dtcProp_PowerSupplyCircuit = { dtc_PowerSupplyCircuit, DTC_BIT_WARNING_ENABLE, 0, 10, -1, 5, DIAG_ITEM(dVal_frzfPowerSupplyCircuit) };
 // Все о неисправности
-dtcItem_t dtcPowerSupplyCircuit = {&dtcProp_MeasuringCircuit};
+dtcItem_t dtcPowerSupplyCircuit = {&dtcProp_PowerSupplyCircuit};
 
 
 
@@ -308,6 +310,7 @@ void ecuInit(ObjectDictionary_t *dictionary)
 {
 	cfgApply();
 	
+	dictionary->SData.cfgData = OD.cfgEcu;
 	OD.ecuIndex = OD.cfgEcu->DiagnosticID;
 	OD.MaxMotorSpeed = OD.cfgEcu->MaxMotorSpeedD;
 	OD.MaxMotorTorque = OD.cfgEcu->MaxMotorTorque;

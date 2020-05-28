@@ -63,23 +63,29 @@ void InitializationState(uint8_t *SubState)
 			TLE_GoToPowerSupply();
 
 			// Init Obc driver
-			obcInit(OD.cfgEcu->ChargersNumber, OD.cfgEcu->MaxChargingCurrent_A, 115);
+			obcInit(OD.cfgEcu->ChargersNumber, OD.cfgEcu->MaxChargingCurrent_A, 400);
 
 			// Init accelerator parameters
-			driveAccelerationUnitInit(OD.cfgEcu->AccPedalFstCh_MaxV, OD.cfgEcu->AccPedalFstCh_0V, OD.cfgEcu->AccPedalSndCh_MaxV,
+			thrHandleControlInit(OD.cfgEcu->AccPedalFstCh_0V, OD.cfgEcu->AccPedalFstCh_MaxV, OD.cfgEcu->AccPedalTable,
 					&OD.AccPedalChannels[0], &OD.AccPedalChannels[1]);
 
 			// Init trim parameters
-			TrimInit(&OD.TrimDataRx, &OD.A_CH_Voltage_0p1[0], OD.cfgEcu->TrimMaxVal_0p1V, OD.cfgEcu->TrimMinVal_0p1V);
+			TrimInit(&OD.TrimDataRx, &OD.A_CH_Voltage_0p1[0], OD.cfgEcu->TrimMaxVal_0p1V, OD.cfgEcu->TrimMinVal_0p1V, OD.cfgEcu->DriveUpperLimitFB_0p1V);
 
 			// Init motor control unit
-			McuRinehartInit(&OD.mcHandler, OD.MaxMotorTorque);
+			McuRinehartInit(&OD.mcHandler, OD.cfgEcu->RateMotorTorque, 0);
 
 			// Init helm
-			helmInit(50, OD.cfgEcu->SteeringBrakeSpeedTable, sizeof(OD.cfgEcu->SteeringBrakeSpeedTable));
+			helmInit(OD.cfgEcu->SteeringBrakeSpeedTable, NELEMENTS(OD.cfgEcu->SteeringBrakeSpeedTable));
 
-			if(ReadFaults())
-				FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
+			transmissionInit(1000, TransmissionSetGear);
+
+			if(ReadFaults(dtcList, dtcListSize))
+							OD.OldFaultsNumber = FillFaultsList(dtcList, dtcListSize, OD.OldFaultList, 0);
+
+			flashReadSData(&OD.SData);
+
+			OD.SB.PowerOff_SaveParams = 1;
 
 			*SubState = 1;
 		}
@@ -87,21 +93,26 @@ void InitializationState(uint8_t *SubState)
 		// Waiting for power supply
         case 1:
         	if(OD.SB.PowerOn == 1)
-			{
+			{				
+				timeStamp = GetTimeStamp();				
+				OD.SB.CheckFaults = 1;
+
+				// If flash data isn't actual
+				if(OD.SData.Result != 0)
+					OD.SB.PowerOff_SaveParams = 0;
+
 				*SubState = 2;
-				timeStamp = GetTimeStamp();
 			}
 
             break;		
 			
 		// Waiting for battery and helm init 
-		case 2:
-			if(OD.SB.BatteryIsOperate && (HelmGetStatus() != mcu_Disabled))
+		case 2:			
+			if((HelmGetStatus() != mcu_Disabled) && OD.SB.BatteryIsOperate)
 			{				
 				McuRinehartSetState(&OD.mcHandler, stateCmd_Enable);
-				InverterPower(1);							
+				InverterPower(1);					
 				
-				OD.SB.CheckFaults = 1;
 				*SubState = 3;
 			}
 		break;
@@ -111,16 +122,22 @@ void InitializationState(uint8_t *SubState)
             if(btnCalibrate(0) && btnCalibrate(1) && btnCalibrate(2))
             {                
 				PID_Struct_t steeringPID;
+				SteeringDependencies_t steeringDependency;
+
 				steeringPID.Kp = OD.cfgEcu->SteeringKp;
 				steeringPID.Ki = OD.cfgEcu->SteeringKi;
 				steeringPID.Kd = OD.cfgEcu->SteeringKd;
 				
+				steeringDependency.PositionVoltageFB_0p1V = &OD.A_CH_Voltage_0p1[1];
+				steeringDependency.fstChannelCurrentFB_0p1A = &OD.PwmLoadCurrent[0];
+				steeringDependency.sndChannelCurrentFB_0p1A =  &OD.PwmLoadCurrent[1];
+				steeringDependency.PumpControlFunc = SteeringPumpPower;
+
 				// Init steering parameters
-				SteeringInit(&OD.SteeringData, &steeringPID,
-						&OD.A_CH_Voltage_0p1[1], OD.cfgEcu->SteeringMinVal_0p1V, OD.cfgEcu->SteeringMaxVal_0p1V,
-						&OD.PwmLoadCurrent[0], &OD.PwmLoadCurrent[1], OD.cfgEcu->SteeringMaxCurrent_0p1A);
+				SteeringInit(&OD.SteeringData, &steeringPID, &steeringDependency,
+						OD.cfgEcu->SteeringMinVal_0p1V, OD.cfgEcu->SteeringMaxVal_0p1V, OD.cfgEcu->SteeringMaxCurrent_0p1A);
 				
-				SteeringPumpPower(1);	
+				//SteeringPumpPower(1);
 				
 				OD.BatteryReqState = 1;				
                 *SubState = 4;
@@ -150,31 +167,65 @@ void OperatingState(uint8_t *SubState)
 		{
 			steeringSetAngle(&OD.SteeringData, HelmGetTargetAngle());
 
-			switch(driveGetDirection())
+			switch(thrHandleGetDirection())
 			{
 				case dr_NeuDirect: {
 					TargetTorque = 0;
-
+					transmissionSetGear(GEAR_NEU);
 					// Go to charge substate
 					if(OD.SB.stChargingTerminal)
 						*SubState = 1;
+
+					if((OD.SB.BoostModeRequest && !OD.SB.stBoostMode) &&
+							((McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) < OD.cfgEcu->MaxMotorT - 10) ||
+							(McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) < OD.cfgEcu->MotorCoolingOn)))
+					{
+						OD.SB.stBoostMode = 1;
+						McuRinehartInit(&OD.mcHandler, OD.cfgEcu->MaxMotorTorque, 0);
+						McuRinehartSetState(&OD.mcHandler, stateCmd_Enable);
+					}
+					else if((!OD.SB.BoostModeRequest && OD.SB.stBoostMode) ||
+							(McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) > OD.cfgEcu->MaxMotorT - 10))
+					{
+						OD.SB.stBoostMode = 0;
+						McuRinehartInit(&OD.mcHandler, OD.cfgEcu->RateMotorTorque, 0);
+						McuRinehartSetState(&OD.mcHandler, stateCmd_Enable);
+					}
 				}
 					break;
 				case dr_FwDirect: {
-					TargetTorque = driveGetDemandAcceleration();
+					TargetTorque = thrHandleGetDemandAcceleration();
 					McuRinehartSetMaxSpeed(&OD.mcHandler, OD.cfgEcu->MaxMotorSpeedD);
-					McuRinehartSetDirection(&OD.mcHandler, mcu_DirFW);
+					transmissionSetGear(GEAR_FW);
 				}
 					break;
 				case dr_BwDirect: {
 					// Max R direct speed,
 					// TODO: add to cfg
-					TargetTorque = -driveGetDemandAcceleration();
+					TargetTorque = thrHandleGetDemandAcceleration();
 					McuRinehartSetMaxSpeed(&OD.mcHandler, 1500);
-					McuRinehartSetDirection(&OD.mcHandler, mcu_DirBW);
+					transmissionSetGear(GEAR_BW);
 				}
 					break;
 			}
+
+			if((OD.SB.stBoostMode) ||
+					(McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) > OD.cfgEcu->MaxMotorT - 10))
+			{
+				OD.SB.stBoostMode = 0;
+				McuRinehartInit(&OD.mcHandler, OD.cfgEcu->RateMotorTorque, 0);
+				McuRinehartSetState(&OD.mcHandler, stateCmd_Enable);
+			}
+
+
+			if((TrimGetParameter(&OD.TrimDataRx, paramTrim_Status) == stTrim_Warning))
+				TargetTorque = 0;
+			else if(transmissionMovementPermission() || transmissionShiftInProcess())
+				TargetTorque = 2;
+
+
+			McuRinehartSetDirection(&OD.mcHandler, mcu_DirFW);
+			McuRinehartSetCmd(&OD.mcHandler, TargetTorque, OD.BatteryDataRx.CCL, OD.BatteryDataRx.DCL);
 		}
 		break;
 
@@ -191,6 +242,7 @@ void OperatingState(uint8_t *SubState)
 					case st_OBC_DISABLE:
 					{
 						obcSetState(1);
+						obcSetCurrentLimit(10);
 					}
 						break;
 
@@ -204,7 +256,7 @@ void OperatingState(uint8_t *SubState)
 
 					case st_OBC_STOP:
 					{
-						obcSetState(0);
+						obcSetCurrentLimit(0);
 					}
 						break;
 				}
@@ -222,8 +274,6 @@ void OperatingState(uint8_t *SubState)
 		}
 		break;
 	}
-
-	McuRinehartSetCmd(&OD.mcHandler, TargetTorque, OD.BatteryDataRx.CCL, OD.BatteryDataRx.DCL);
 }
 
 
@@ -236,14 +286,17 @@ void ShutdownState(uint8_t *SubState)
 		// Запомнить время входа в режим, сохранить данные
 		case 0:
 			OD.LogicTimers.PowerOffTimer_ms = GetTimeStamp();
-			SaveFaults();
+			OD.SData.Buf_1st.SystemTime = OD.SystemTime;
+			OD.SData.Buf_1st.NormalPowerOff = 1;
+
+			flashStoreData(&OD.SData);
 			*SubState = 1;
 		break;
 		
 		// Idle
 		case 1:
 			InverterPower(0);
-			SteeringPumpPower(0);
+			//SteeringPumpPower(0);
 		break;
 		
 		case 2:
@@ -258,7 +311,7 @@ void ShutdownState(uint8_t *SubState)
 void FaultState(uint8_t *SubState)
 {
 	InverterPower(0);
-	SteeringPumpPower(0);
+	//SteeringPumpPower(0);
 
 	McuRinehartSetCmd(&OD.mcHandler, 0, 0, 0);
 	// faults handle
@@ -308,17 +361,23 @@ void CommonState(void)
 		Max11612_GetResult(OD.A_CH_Voltage_0p1, V_AN);
 
 		SystemThreat(&OD);
+		transmissionSetEndSwithPosition(D_IN_ET_ACT_POS);
 
 		btnProc();
 		TLE_Proc();
 		PM_Proc(OD.ecuPowerSupply_0p1, ecuConfig->IsPowerManager);
 		Max11612_StartConversion();
 
-		if((OD.LocalPMState = PM_GetPowerState()) == PM_PowerOn1)
-			OD.SB.PowerOn = 1;
+		OD.LocalPMState = (OD.cfgEcu->IsPowerManager)? PM_GetPowerState() : OD.PowerManagerCmd;
 
-		if(OD.LocalPMState == PM_ShutDown || OD.PowerManagerCmd == PM_ShutDown)
+		if(OD.LocalPMState == PM_PowerOn1)
+			OD.SB.PowerOn = 1;
+		else if((OD.LocalPMState == PM_ShutDown) &&
+						(OD.SB.PowerOn == 1 && OD.StateMachine.MainState != WORKSTATE_SHUTDOWN))
+		{
+			OD.SB.PowerOn = 0;
 			SetWorkState(&OD.StateMachine, WORKSTATE_SHUTDOWN);
+		}
 	}
 	
 	
@@ -331,12 +390,18 @@ void CommonState(void)
 		OD.PwmTargetLevel[1] = btnGetOutputLevel(1);
 		OD.PwmTargetLevel[2] = btnGetOutputLevel(2);
 		OD.PwmTargetLevel[3] = btnGetOutputLevel(3);
+		
+		TrimSetCmd(&OD.TrimDataRx, OD.SB.cmdTrimUp, OD.SB.cmdTrimDown);
     }
     
     if(GetTimeFrom(OD.LogicTimers.Timer_1s) >= OD.DelayValues.Time1_s)
     {
         OD.LogicTimers.Timer_1s = GetTimeStamp();
-		
+
+        if(OD.SData.DataChanged && OD.SB.PowerOn)
+        	flashStoreData(&OD.SData);
+        
+		LedBlink();
         OD.SystemTime = dateTime_GetCurrentTotalSeconds();
         OD.SB.cmdDrainPumpOn = DrainSupply();								// Drain pump
 		OD.SB.InverterIsOperate = (McuRinehartGetState(&OD.mcHandler) == mcu_Enabled || McuRinehartGetState(&OD.mcHandler) == mcu_Warning);

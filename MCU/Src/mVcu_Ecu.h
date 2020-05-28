@@ -3,6 +3,7 @@
 
 
 #include "../MolniaLib/MF_CAN_1v1.h"
+#include "../MolniaLib/FaultsServices.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
 #include "FaultTools.h"
 
@@ -16,10 +17,16 @@
 
 
 // Переопределение входов
-//#define KL15		D_IN1
-//#define KL15_CHARGE	D_IN2
-//#define MDRAIN_SW	D_IN3
-//#define 
+#define D_IN_ET_ACT_POS		D_IN1
+#define D_IN_COOLANT		D_IN2
+#define D_IN_INPUT3			D_IN3
+#define D_IN_MANUAL_SW		D_IN4
+#define D_IN_MANUAL_FW		D_IN5
+#define D_IN_MANUAL_BW		D_IN6
+#define D_IN_HV_CONT_FB		D_IN7
+#define D_IN_HV_IL			D_IN8
+
+
 
 
 extern dtcItem_t dtcEcuConfigMemory;

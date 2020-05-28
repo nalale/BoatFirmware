@@ -3,6 +3,7 @@
 
 
 #include "FaultTools.h"
+#include "../MolniaLib/FaultsServices.h"
 #include "../MolniaLib/MF_CAN_1v1.h"
 
 #define VER(major, minor)		((major << 8) + minor)
@@ -31,7 +32,6 @@ extern dtcItem_t dtcBat_CurrentSensor;
 extern dtcItem_t dtcMst_BatNumber;
 extern dtcItem_t dtcMst_BatState;
 extern dtcItem_t dtcMst_BatVoltageDiff;
-extern dtcItem_t dtcBat_BmsTimeout;
 extern dtcItem_t dtcPMOffline;
 
 
@@ -52,7 +52,6 @@ extern dtcFRZF_General frzfBatNumber;
 extern dtcFRZF_General frzfBatState;
 extern dtcFRZF_General frzfBatVoltageDiff;
 extern dtcFRZF_General frzfBatCurrentSensor;
-extern dtcFRZF_General frzfBatBmsTimeout;
 extern dtcFRZF_General frzfPMOffline;
 
 

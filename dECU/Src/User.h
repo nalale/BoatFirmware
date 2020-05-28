@@ -19,6 +19,8 @@ void CalibrateOutCurrentSens(A_OUT_CSENS_t *csens);
 void DisplaySoc(uint16_t Value);
 void DisplayTrim(uint16_t Value);
 void DisplayEnergy(uint16_t Value);
-void DisplayMotorRpm(uint16_t Value);
+void DisplayMotorRpm(int16_t Value);
+
+int8_t flashStoreData(StorageData_t *sdata);
 
 #endif

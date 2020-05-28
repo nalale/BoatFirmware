@@ -40,6 +40,20 @@ extern dtcFRZF_General frzfPowerSupplyCircuit;
 extern int dtcListSize;
 extern dtcItem_t* dtcList[];
 
+// Display ECU
+typedef enum {
+	D_IN_D_ECU_LIGHT_SWITCH_1 = 0,
+	D_IN_PADDING_15,
+	D_IN_D_ECU_LIGHT_SWITCH_2,
+	D_IN_PADDING_16,
+	D_IN_D_ECU_LIGHT_SWITCH_3,
+	D_IN_PADDING_17,
+	D_IN_PADDING_18,
+	D_IN_PADDING_19,
+	D_IN_D_ECU_BOOST_SWITCH,
+	D_IN_PADDING_21,
+} D_ECU_INPUTS_e;
+
 
 void ecuInit(ObjectDictionary_t *dictionary);
 

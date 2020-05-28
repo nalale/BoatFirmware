@@ -159,8 +159,8 @@ void CommonState(void)
 		OD.A_Out[3] = btnGetOutputLevel(3);
 		
 		DisplaySoc(OD.BmuData1.SOC);
-		DisplayTrim(OD.MainEcuData2.TrimPosition);
-		DisplayEnergy(OD.MainEcuData2.SpecPowerCons);
+		DisplayTrim(OD.MainEcuData1.TrimPosition);
+		DisplayEnergy(OD.MainEcuData1.SpecPowerCons);
 		DisplayMotorRpm(OD.MainEcuData1.MotorRpm);
     }
     
@@ -169,6 +169,9 @@ void CommonState(void)
         OD.LogicTimers.Timer_1s = GetTimeStamp();
         OD.IO = boardMarineECU_GetDiscreteIO();
         OD.SystemTime = dateTime_GetCurrentTotalSeconds();
+
+        if(OD.SData.DataChanged && OD.SB.PowerOn)
+        	flashStoreData(&OD.SData);
 
         // Code
         FaultHandler();

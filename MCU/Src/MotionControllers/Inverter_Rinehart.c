@@ -21,7 +21,7 @@ static const uint16_t msgPeriod[tx_msg_cnt] = {
 
 // Tx Msgs
 #define InvCmdMsg_ID            0x0c0 + ID_Offset
-#define BMSCurrentLimitMsg_ID   0x0ca + ID_Offset
+#define BMSCurrentLimitMsg_ID   0x202
 
 // Rx Msgs
 #define TempSet1Msg_ID          0x0a0 + ID_Offset
@@ -34,9 +34,10 @@ static const uint16_t msgPeriod[tx_msg_cnt] = {
 #define InvFaultCodesMsg_ID     0x0ab + ID_Offset
 #define TorqueAndTimerMsg_ID    0x0ac + ID_Offset
 
-int8_t McuRinehartInit(McuRinehart_t *mcu, int16_t MaxTorque)
+int8_t McuRinehartInit(McuRinehart_t *mcu, int16_t MaxTorque, uint8_t SpeedControl)
 {
 	mcu->MaxTorque = MaxTorque;
+	mcu->IsSpeedControl = SpeedControl;
 	mcu->RequestTorque = 0;
 	mcu->EnableCommand = 0;
 	mcu->OnlineSign = 0;
@@ -52,19 +53,6 @@ int8_t McuRinehartThread(McuRinehart_t *mcu)
 	// Clear error if inverter is reinitialized
 	if(mcu->EnableCommand == stateCmd_Enable)
 	{
-		// Direction changing process
-		if((mcu->rmsMsgRx_1.DirCmd != mcu->RequestDirection) &&
-					(mcu->rmsMsgTx_3.MotorSpeed == 0))
-		{
-			if(mcu->rmsMsgTx_1.InvEnableState)
-				mcu->rmsMsgRx_1.InvEnable = 0;
-			else
-			{
-				mcu->rmsMsgRx_1.InvEnable = 1;
-				mcu->rmsMsgRx_1.DirCmd = mcu->RequestDirection;
-			}
-		}
-
 		switch(mcu->rmsMsgTx_1.VSMState)
 		{
 		case VSMst_Start:
@@ -110,6 +98,23 @@ int8_t McuRinehartThread(McuRinehart_t *mcu)
 			mcu->Status = mcu_Disabled;
 			break;
 		}
+		
+				// Direction changing process
+		if((mcu->rmsMsgRx_1.DirCmd != mcu->RequestDirection))
+		{
+			mcu->RequestTorque = 0;
+
+			if(mcu->rmsMsgTx_3.MotorSpeed < 100 && mcu->rmsMsgTx_3.MotorSpeed > -100)
+			{
+				if(mcu->rmsMsgTx_1.InvEnableState)
+					mcu->rmsMsgRx_1.InvEnable = 0;
+				else
+				{
+					mcu->rmsMsgRx_1.InvEnable = 1;
+					mcu->rmsMsgRx_1.DirCmd = mcu->RequestDirection;
+				}
+			}
+		}
 	}
 	else if(mcu->EnableCommand == stateCmd_Disable)
 		mcu->rmsMsgRx_1.InvEnable = 0;
@@ -117,7 +122,7 @@ int8_t McuRinehartThread(McuRinehart_t *mcu)
 	mcu->CausedFault = (mcu->CausedFault == 0)? mcu->rmsMsgTx_2.PostCode : mcu->CausedFault;
 
 
-	mcu->rmsMsgRx_1.TorqueCmd_0p1 = (mcu->rmsMsgRx_1.InvEnable == 1 && (mcu->rmsMsgRx_1.DirCmd == mcu->RequestDirection))? mcu->RequestTorque : 0;
+	mcu->rmsMsgRx_1.TorqueCmd_0p1 = (mcu->rmsMsgRx_1.InvEnable == 1)? mcu->RequestTorque : 0;
 	mcu->rmsMsgRx_1.SpeedCmd = (mcu->rmsMsgRx_1.InvEnable == 1)? mcu->RequestSpeed : 0;
 	mcu->rmsMsgRx_2.MaxChargeCurrent = mcu->GenerationCurrentLimit;
 	mcu->rmsMsgRx_2.MaxDischargeCurrent = mcu->ConsumtionCurrentLimit;
@@ -130,12 +135,20 @@ int8_t McuRinehartSetCmd(McuRinehart_t *mcu, int16_t TorqueCmd, int16_t GenCurre
 	if(mcu == 0)
 		return -1;
 
-	int16_t tmp = mcu->MaxTorque * TorqueCmd / 100;
+	if(mcu->IsSpeedControl)
+	{
+		int16_t tmp = mcu->MaxSpeed * TorqueCmd / 100;
+		mcu->RequestSpeed = tmp;
+	}
+	else
+	{
+		int16_t tmp = mcu->MaxTorque * TorqueCmd / 100;
+		mcu->RequestTorque = tmp;
+	}
 
-	mcu->RequestTorque = tmp;
 
-	mcu->ConsumtionCurrentLimit = ConsCurrentMax;
-	mcu->GenerationCurrentLimit = GenCurrentMax;
+	mcu->ConsumtionCurrentLimit = (ConsCurrentMax < 0)? -ConsCurrentMax : ConsCurrentMax;
+	mcu->GenerationCurrentLimit = (GenCurrentMax < 0)? -GenCurrentMax : GenCurrentMax;
 
 	return 0;
 }
@@ -154,7 +167,11 @@ int8_t McuRinehartSetMaxSpeed(McuRinehart_t *mcu, int16_t MaxSpeed)
 	if(mcu == 0)
 		return -1;
 
-	mcu->RequestSpeed = MaxSpeed;
+	if(mcu->IsSpeedControl)
+		mcu->MaxSpeed = MaxSpeed;
+	else
+		mcu->RequestSpeed = MaxSpeed;
+
 	return 0;
 }
 
@@ -222,7 +239,7 @@ int16_t McuRinegartGetParameter(McuRinehart_t *mcu, mcuParameters_e Param)
 		case mcu_VoltageDC:
 			return mcu->rmsMsgTx_6.DCBusVoltage_0p1 / 10;
 		case mcu_Direction:
-			return mcu->rmsMsgRx_1.DirCmd;
+			return mcu->rmsMsgTx_1.DirCmd;
 		default:
 			return 0;
 	}
@@ -259,7 +276,7 @@ int McuRinehartTxMsgGenerate(McuRinehart_t *mcu, uint8_t *MsgData, uint8_t *MsgD
 				msg->DirCmd = mcu->rmsMsgRx_1.DirCmd;				
 				msg->InvEnable = mcu->rmsMsgRx_1.InvEnable;
 				msg->SpeedCmd = mcu->rmsMsgRx_1.SpeedCmd;
-				msg->SpeedModeEnable = 0;
+				msg->SpeedModeEnable = mcu->IsSpeedControl;
 				msg->InvDischarge = 0;
 				msg->TorqueLimitCmd_0p1 = 0;
 

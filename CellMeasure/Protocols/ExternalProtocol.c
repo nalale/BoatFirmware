@@ -13,9 +13,7 @@ const uint16_t extPeriod[EXTERNAL_SEND_MSG_AMOUNT] = {
 								 };
 
 uint8_t ExternalRx(CanMsg *msg)
-{   
-	OD.SB.MsgFromPM = 0;
-	
+{
 	if(msg->Ext)
 		return 1;	
 	
@@ -38,11 +36,22 @@ uint8_t ExternalRx(CanMsg *msg)
 
 		return 0;
 	}
+	else if(msg->ID == Bmu_ECU_RX_ID)
+	{
+		EcuConfig_t cfgEcu = GetConfigInstance();
+		if(cfgEcu.IsMaster)
+		{
+			BatM_ExtRx_t *d = (BatM_ExtRx_t*)msg->data;
+
+			OD.SystemOperateEnabled = d->OpEnabled;
+			OD.SB.MsgFromSystem = 1;
+		}
+	}
 	else if(msg->ID == PM_CAN_ID)
 	{
 		cmPowerManager *d = (cmPowerManager*)msg->data;
 		
-		//OD.PowerMaganerState = d->PowerState;
+		OD.PowerMaganerCmd = d->PowerState;
 		OD.SB.MsgFromPM = 1;
 
 //		if(d->PowerState == PS_PowerOff)

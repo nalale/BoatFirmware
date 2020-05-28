@@ -13,11 +13,12 @@
 #include "../MolniaLib/PowerManager.h"
 
 #include "UserApplications/SteeringFunc.h"
-#include "UserApplications/DriveControl.h"
+#include "UserApplications/ThrottleControl.h"
 #include "UserApplications/ObcDriver.h"
 #include "UserApplications/TrimFunc.h"
 #include "UserApplications/Sim100.h"
 #include "UserApplications/HelmDriver.h"
+#include "UserApplications/TransmissionDriver.h"
 #include "MotionControllers/Inverter_Rinehart.h"
 
 #include "ObjectsIndex.h"
@@ -76,7 +77,7 @@ typedef struct
     uint8_t
     CheckFaults                 :   1,
     PowerOff_SaveParams         :   1,
-    ReceiveTestRequest          :   1,
+    BoostModeRequest          	:   1,
 	InverterIsOperate			:	1,
 	BatteryIsOperate			:	1,
 	BatMsgReceived				:	1,
@@ -91,7 +92,7 @@ typedef struct
 	cmdSteeringPump				:	1,
 	cmdTrimUp					:	1,
 	cmdTrimDown					:	1,
-	cmddummy1					:	1;
+	cmdLightAll					:	1;
 
 
 	uint8_t
@@ -109,7 +110,15 @@ typedef struct
 	Ecu1MeasDataActual			:	1,
 	Ecu2MeasDataActual			:	1,
 	Ecu4MeasDataActual			:	1,
-	dummy1						:	4;
+	cmdLightNavi				:	1,
+	cmdLightCockPit				:	1,
+	cmdETForward				:	1,
+	cmdETBackward				:	1;
+
+	uint8_t
+	stETActuatorSwitch			:	1,
+	stBoostMode					:	1,
+	dummy2						:	6;
 } StateBits_t;
 
 typedef union
@@ -175,6 +184,18 @@ typedef enum
 	D_IN_PADDING_12,
 	D_IN_PADDING_13,
 	D_IN_PADDING_14,
+
+	// Display ECU
+	D_IN_D_ECU_LIGHT_SWITCH_1 = 0,
+	D_IN_PADDING_15,
+	D_IN_D_ECU_LIGHT_SWITCH_2,
+	D_IN_PADDING_16,
+	D_IN_D_ECU_LIGHT_SWITCH_3,
+	D_IN_PADDING_17,
+	D_IN_PADDING_18,
+	D_IN_PADDING_19,
+	D_IN_D_ECU_BOOST_SWITCH,
+	D_IN_PADDING_21,
 } D_Inputs;
 
 typedef enum
@@ -240,6 +261,35 @@ typedef struct
 	uint32_t StartSign;
 } DebugData_t;
 
+typedef struct
+{
+	uint32_t SystemTime;
+	uint32_t TotalActualEnergy_As;
+	uint32_t ActualEnergy_As;
+
+	uint32_t dummy;
+	uint32_t dumm1;
+	uint32_t dummy2;
+	uint32_t dummy3;
+	uint32_t dummy4;
+	uint16_t NormalPowerOff;
+
+	uint16_t Crc;
+} sDataBuf_t;
+
+typedef struct
+{
+	sDataBuf_t Buf_1st;
+	//sDataBuf_t Buf_2nd;
+
+	//const dtcItem_t* dtcListData;
+	const EcuConfig_t *cfgData;
+
+	//struct Data_st Data;
+	uint8_t Result;
+	uint8_t DataChanged;
+} StorageData_t;
+
 // Словарь объектов
 typedef struct
 {
@@ -279,6 +329,7 @@ typedef struct
 	int16_t steeringFeedbackAngle;
 	
 	DebugData_t DebugData;
+	StorageData_t SData;
 	
 	uint16_t TargetSteeringAngle;
 	uint8_t TargetChargingCurrent_A;
@@ -299,7 +350,7 @@ extern void (*Algorithm)(uint8_t *);
 extern ObjectDictionary_t OD;
 
 uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[]);
-uint8_t check_failed(uint8_t *file, uint8_t line);
+//uint8_t check_failed(uint8_t *file, uint8_t line);
 
 
 

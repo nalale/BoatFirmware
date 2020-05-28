@@ -98,6 +98,7 @@ static void boardPortInit(void)
 	SET_C_OUT8(1);
 	SET_C_OUT9(1);
 	SET_C_OUT10(1);
+	SET_LED(1);
 
 	SET_PU_D_IN1(0);
 	SET_PU_D_IN2(0);

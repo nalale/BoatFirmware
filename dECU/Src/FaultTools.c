@@ -224,8 +224,8 @@ uint8_t FaultHandler()
 	if(OD.Faults.mEcuTimeout)
 	{
 		OD.MainEcuData1.MotorRpm = 0;
-		OD.MainEcuData2.SpecPowerCons = 0;
-		OD.MainEcuData2.TrimPosition = 0;
+		OD.MainEcuData1.SpecPowerCons = 0;
+		OD.MainEcuData1.TrimPosition = 0;
 	}
 	
 	return 0;
@@ -475,28 +475,28 @@ int8_t ReadFaults()
 
 int8_t ClearFaults(void)
 {
-	uint16_t dtc_cnt = 0;	
-	
-	// Clear saved fault
-	int8_t status = MemEcuDtcClear();	
-	
+	int8_t status = 0;
+	uint16_t dtc_cnt = 0;
+
 	// Clear runtime faults
 	for(uint8_t i = 0; i < dtcListSize; i++)
 	{
 		if(dtcList[i]->Status.ConfirmedDTC)
 			dtc_cnt++;
-		
+
 		dtcList[i]->Status.ConfirmedDTC = 0;
 		dtcList[i]->Status.TestFailed = 0;
 		dtcList[i]->Status.TestFailedThisOperationCycle = 0;
 		dtcList[i]->Status.TestNotCompletedThisOperationCycle = 0;
-		dtcList[i]->Status.WarningIndicatorRequested = 0;		
-	}	
-	
+		dtcList[i]->Status.WarningIndicatorRequested = 0;
+	}
+
 	FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
 	FillFaultsList(OD.FaultList, &OD.FaultsNumber, 1);
-	
-	if(status == CMD_SUCCESS)	
+
+	OD.SData.DataChanged = 1;
+
+	if(status == 0)
 		return dtc_cnt;
 	else
 		return -1;

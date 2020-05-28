@@ -31,6 +31,11 @@ typedef enum
 	
 	didPwmOutState,
 	
+	didDisplaySOC,
+	didDisplayRpm,
+	didDisplayTrim,
+	didDisplayConsumption,
+
 	// Диагностика ошибок
 	didFaults_Actual = 100,
 	didFaults_History,

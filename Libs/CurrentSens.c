@@ -123,9 +123,9 @@ uint8_t csGetCircuitState()
 			return dctCat_CircuitShortToBattery;
 		else if(csEnv.HASS.Vout < 400 || csEnv.HASS.Vref < 400)		// ќбрыв или замыкание на -
 			return dctCat_CircuitShortToGroundOrOpen;
-		else if(csEnv.HASS.Vref > 3600)								// Ќапр€жение выше установленного порога
+		else if(csEnv.HASS.Vref > 4000)								// Ќапр€жение выше установленного порога
 			return dctCat_CircuitVoltageAboveThreshold;
-		else if(csEnv.HASS.Vref < 1400)								// Ќапр€жение ниже установленного порога
+		else if(csEnv.HASS.Vref < 1000)								// Ќапр€жение ниже установленного порога
 			return dctCat_CircuitVoltageBelowThreshold;
 	}
 	

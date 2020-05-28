@@ -17,11 +17,9 @@
 #include "../MolniaLib/Config.h"
 #include "../MolniaLib/MF_CAN_1v1.h"
 #include "../MolniaLib/PowerManager.h"
+#include "../MolniaLib/FaultsServices.h"
 
 #pragma anon_unions
-
-// Максимальное количество в списке ошибок
-#define MAX_FAULTS_NUM				10
 
 // Состояния конечного автомата
 typedef enum {
@@ -98,16 +96,46 @@ typedef struct
 	uint8_t RepCount;
 } canSendItem_t;
 
+typedef struct
+{
+	uint32_t SystemTime;
+
+	uint32_t dummy;
+	uint32_t dumm1;
+	uint32_t dummy2;
+	uint32_t dummy3;
+	uint32_t dummy4;
+	uint32_t dummy5;
+	uint32_t dummy6;
+	uint16_t NormalPowerOff;
+
+	uint16_t Crc;
+} sDataBuf_t;
+
+typedef struct
+{	
+	sDataBuf_t Buf_1st;
+	//sDataBuf_t Buf_2nd;
+
+	//const dtcItem_t* dtcListData;
+	const EcuConfig_t *cfgData;
+
+	//struct Data_st Data;
+	uint8_t Result;
+	uint8_t DataChanged;
+} StorageData_t;
+
 
 // Словарь объектов
 typedef struct
 {
 	uint16_t EcuInfo[4];
+	const EcuConfig_t *ConfigData;
     StateMachine_t StateMachine;
     Timers_t LogicTimers;
     TimeValues_t DelayValues;
 	uint32_t SystemTime;
-    
+    StorageData_t SData;
     StateBits_t SB;
     gECU_Fauls_t Faults;
 	

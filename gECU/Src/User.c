@@ -1,4 +1,4 @@
-#include "User.h"
+#include <string.h>
 
 #include "TimerFunc.h"
 #include "CanFunc.h"
@@ -7,11 +7,15 @@
 #include "AdcFunc.h"
 #include "UartFunc.h"
 #include "SpiFunc.h"
+#include "MemoryFunc.h"
 
 #include "lpc17xx_gpio.h"
 #include "lpc17xx_clkpwr.h"
 
 #include "../MolniaLib/MF_Tools.h"
+#include "../MolniaLib/FaultsServices.h"
+
+#include "User.h"
 
 #include "gVCU_ECU.h"
 
@@ -99,6 +103,7 @@ void PortInit(void)
 	SET_PU_D_IN1(0);
 	SET_PU_D_IN2(0);
 	
+	SET_LED(0);	
     
     FIO_SetDir(2, 0xFFFFFFFF, DIR_OUT);
     SET_D_OUT1_EN(0);
@@ -113,18 +118,90 @@ void PortInit(void)
 	
 	FIO_SetDir(1, 0xC713, DIR_IN);
 	FIO_SetDir(0, (1 << 30) | (1 << 29), DIR_IN);
+}
+
+void LedBlink()
+{
+	uint8_t x = LED_STATE;
+	SET_LED(x);
+}
+
+int8_t flashWriteSData(const StorageData_t *sdata)
+{
+	StorageData_t tmp_sdata;
+
+	// write 1st data to 1st and 2nd buffer
+	memcpy(&tmp_sdata.Buf_1st, &sdata->Buf_1st, sizeof(sdata->Buf_1st));
+
+	tmp_sdata.Buf_1st.Crc = 0;
+
+	for(uint8_t i = 0; i < sizeof(sdata->Buf_1st) - sizeof(sdata->Buf_1st.Crc); i++)
+		tmp_sdata.Buf_1st.Crc += *((uint8_t*)&tmp_sdata.Buf_1st + i);
+
+	MemEcuSDataWrite((uint8_t*)&tmp_sdata.Buf_1st, sizeof(sdata->Buf_1st), 0);
+
+	return 0;
+}
+
+int8_t flashReadSData(StorageData_t *sdata)
+{
+	int8_t result = 0;
+	uint16_t crc0 = 0;//, crc1 = 0;
+
+	sdata->Result = 0;
+
+	MemEcuSDataRead((uint8_t*)&sdata->Buf_1st, sizeof(sdata->Buf_1st), 0);
+	for(uint8_t i = 0; i < sizeof(sdata->Buf_1st) - sizeof(sdata->Buf_1st.Crc); i++)
+		crc0 += *((uint8_t*)&sdata->Buf_1st + i);
+
+	// if data from buf is correct
+	if(crc0 == sdata->Buf_1st.Crc)
+	{
+		uint8_t save_poweroff = sdata->Buf_1st.NormalPowerOff;
+		// Reset normal power off sign
+		sdata->Buf_1st.NormalPowerOff = 0;
+
+		if(!save_poweroff)
+			result =  -1;
+		else
+		{
+			result = 0;
+			sdata->DataChanged = 1;
+		}
+
+	}
+	// else restore TotalCapacity from another buffer
+	else
+	{
+
+		memset(&sdata->Buf_1st, 0xff, sizeof(sdata->Buf_1st));
+		result =  -1;
+	}
+
+	sdata->Result = result;
+	return result;
+}
+
+int8_t flashClearFaults(StorageData_t *sdata)
+{
+	ClearFaults(dtcList, dtcListSize);
+	return 0;
+}
+
+int8_t flashStoreData(StorageData_t *sdata)
+{	
+	// Prepare for write
+	int16_t Length = sizeof(sdata->Buf_1st) + sizeof(EcuConfig_t) + (dtcListSize * sizeof(dtcItem_t));
 	
-//	FIO_SetDir(0, 0x40, DIR_OUT);
-//	
-//    FIO_SetDir(1, 0xFFFFFFFF, DIR_OUT);		//(1 << 18) | (1 << 19) | (1 << 23) | (1 << 24) | (1 << 25) | (1 << 26) | (1 << 28) | (1 << 29)/*
-//    FIO_SetValue(1, 0xFFFFFFFF);
-//    
-//    FIO_SetDir(2, 0xFFFFFFFF, DIR_OUT);			//0x27F/*
-//    FIO_SetValue(2, 0x00000000);
-//    
-//    FIO_SetDir(4, 0xFFFFFFFF, DIR_OUT);		//(1 << 28) | (1 << 29)/*
-//    FIO_SetValue(4, 0xFFFFFFFF);
-//	
-//	FIO_SetDir(1, 0xC713, DIR_IN);
-//	FIO_SetDir(0, (1 << 30) | (1 << 29), DIR_IN);
+	__disable_irq();
+	MemEcuWriteData((uint8_t*)sdata, Length);
+
+	cfgWrite(sdata->cfgData);
+	SaveFaults(dtcList, dtcListSize);
+	flashWriteSData(sdata);
+	
+	__enable_irq();
+	
+	sdata->DataChanged = 0;	
+	return 0;
 }

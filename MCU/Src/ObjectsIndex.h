@@ -34,33 +34,48 @@ typedef enum
 	
 	didHelmDemandAngle,
 	didHelmStatus,
+	
 	didSteeringFB,
 	didSteeringCurent,
+	didSteeringFBAngle,
+	didSteeringStatus,
+	
 	didTrimFB,	
+	didTrimMovCmd,
+	didTrimPosition,
+	didTrimStatus,
+
 	didAccCh1,
 	didAccCh2,
+	didAccPosition,
+	didAccDemandDirection,
+
 	didMotorTemp,
 	didInvTemp,
 	didActualRpm,
 	didInverterCurrent,
 	didBatteryCurrent,
-	
-	didTrimMovCmd,
 	didActualGear,
 	didTargetSpeed,
-	didAccPosition,
 	didInverterVoltage,
+	didInverterEnable,
+	didInverterState,
+
+	didWaterSwitches,
 	
 	didBatteryCmd,
 	
-	didInverterEnable,
-	didInverterState,
-	didWaterSwitches,
-	
-	didSteeringFBAngle,
-	
 	didIsoIsolation,
 	
+	didObcStatus,
+	didObcOnlineNumber,
+	didObcTotalCurrent,
+	didObcDemandTotalCurrent,
+	
+	didGearActualDirection,
+	didGearIsShifting,
+	didGearActuatorState,
+
 	// Диагностика ошибок
 	didFaults_Actual = 100,
 	didFaults_History,

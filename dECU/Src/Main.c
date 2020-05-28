@@ -142,6 +142,23 @@ uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
 			_size = (subindex > 3)? 0 : sizeof(OD.A_Out[subindex]);
 		break;
 
+		case didDisplaySOC:
+			*Buf = (uint8_t*)&OD.BmuData1.SOC;
+			_size = (subindex > 3)? 0 : 1;
+			break;
+		case didDisplayRpm:
+			*Buf = (uint8_t*)&OD.MainEcuData1.MotorRpm;
+			_size = (subindex > 3)? 0 : 2;
+			break;
+		case didDisplayTrim:
+			*Buf = (uint8_t*)&OD.MainEcuData1.TrimPosition;
+			_size = (subindex > 3)? 0 : 1;
+			break;
+		case didDisplayConsumption:
+			*Buf = (uint8_t*)&OD.MainEcuData1.SpecPowerCons;
+			_size = (subindex > 3)? 0 : 1;
+			break;
+
 		// Faults parameters
 		case didFaults_Actual:
 		{

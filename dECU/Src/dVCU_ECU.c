@@ -185,9 +185,14 @@ void ecuInit(ObjectDictionary_t *dictionary)
     dictionary->DelayValues.Time100_ms = 100;
     dictionary->DelayValues.Time1_s = 1000;
     dictionary->DelayValues.MainLoopTime_ms = 10;
+
+    SET_PU_D_IN1(1);
+	SET_PU_D_IN2(1);
+	SET_PU_D_IN3(1);
+	SET_PU_D_IN4(1);
 	
 	dictionary->ecuIndex = dictionary->cfg->DiagnosticID + dictionary->cfg->Index;
-    
+    dictionary->SData.cfgData = dictionary->cfg;
 	Max11612_Init();
 	
 	btnInit(PWM_Channel1, A_OUT1_CSENS, 20);

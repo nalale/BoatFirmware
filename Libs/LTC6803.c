@@ -478,11 +478,12 @@ bool vs_thread(int16_t *cell_voltage_array, int16_t *cell_temp_array)
 				{
 					lts_cmd_send(vs_num, RDCFG);
 
-					if(vs_num == 0)
+					vs[vs_num].discharge_cell_mask = (uint16_t)vs[vs_num].rx_cfg[1] + ((uint16_t)(vs[vs_num].rx_cfg[2] & 0x0f) << 8);
+					/*if(vs_num == 0)
 						dummy1 |= (uint16_t)vs[vs_num].rx_cfg[1] + ((uint16_t)(vs[vs_num].rx_cfg[2] & 0x0f) << 8);
 					else
 						vs[vs_num].discharge_cell_mask = dummy1 + (uint32_t)(((uint16_t)vs[vs_num].rx_cfg[1] + ((uint16_t)(vs[vs_num].rx_cfg[2] & 0x0f) << 8)) << 12);
-
+					*/
 					vs[vs_num].IsFault = vs_faults_check(vs_num);
 				}
 				step = 8;
@@ -527,13 +528,16 @@ bool vs_thread(int16_t *cell_voltage_array, int16_t *cell_temp_array)
 		case 9:
 				m_timestamp = GetTimeStamp();
 				for(vs_num = 0; vs_num < sens_cnt; vs_num++)
+				{
 					lts_cmd_send(vs_num, WRCFG);
+					vs[vs_num].is_ready = 1;
+				}
 
 				meas_step = 0;
 				// Open connection detection produce every 1 sec
 				step = (GetTimeFrom(open_connect_timestamp) >= 1000)? 0 : 2;
 				// If balancing is active don't measure cell voltage
-				step = (balanc_flag)? 4 : step;
+				step = (balanc_flag)? 4 : step;					
 		break;
 	}
 		
@@ -580,7 +584,7 @@ uint32_t ltc6803_GetDischargingMask(uint8_t vs_num)
 	
 	discharge_mask = (uint16_t)vs[vs_num].rx_cfg[1] + ((uint16_t)(vs[vs_num].rx_cfg[2] & 0x0f) << 8);	
 	
-	return discharge_mask;
+	return vs[vs_num].discharge_cell_mask;//discharge_mask;
 }
 
 uint8_t ltc6803_GetError(uint8_t vs_num)
@@ -635,6 +639,9 @@ uint8_t pec8_calc(uint8_t len, uint8_t *data)
 uint8_t vs_faults_check(uint8_t vs_num)
 {
 	uint8_t result = 0;
+	if(!vs[vs_num].is_ready)
+		return result;
+	
 	// Faults check
 	if(vs[vs_num].open_conncetion_cell < 0xff)
 	{

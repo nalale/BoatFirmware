@@ -1,5 +1,5 @@
 #include <stdint.h>
-
+#include <string.h>
 #include "Main.h"
 #include "User.h"
 #include "BatteryMeasuring.h"
@@ -10,6 +10,8 @@
 #include "PwmFunc.h"
 #include "SpiFunc.h"
 #include "UartFunc.h"
+#include "MemoryFunc.h"
+
 #include "BMS_Combi_ECU.h"
 
 #include "lpc17xx_gpio.h"
@@ -20,6 +22,8 @@
 #include "../MolniaLib/DateTime.h"
 #include "../MolniaLib/MF_Tools.h"
 #include "../Libs/CurrentSens.h"
+
+#define MIN_AVAIL_CELL_VOLTAGE_MV	200
 
 void HardwareInit(void);
 void PortInit(void);
@@ -226,7 +230,37 @@ void ModuleStatisticCalculating(BatteryData_t* Handle, const EcuConfig_t *ecuCon
 
 	Handle->MinCellVoltage.Voltage_mv = INT16_MAX;
 	Handle->MinCellVoltage.CellNumber = cellsCount;
-	Handle->MaxCellVoltage.ModuleNumber = ecuConfig->ModuleIndex;
+	Handle->MinCellVoltage.ModuleNumber = ecuConfig->ModuleIndex;
+
+	// Рассчёт Max/Min напряжения
+	for (uint8_t cellInd = 0; cellInd < cellsCount; cellInd++)
+	{
+		nv++;
+		SumVoltage += CellsVoltageArray[cellInd];
+
+		// Поиск максимльного напряжения
+		if (CellsVoltageArray[cellInd] > Handle->MaxCellVoltage.Voltage_mv && CellsVoltageArray[cellInd] > MIN_AVAIL_CELL_VOLTAGE_MV)
+		{
+			Handle->MaxCellVoltage.Voltage_mv = CellsVoltageArray[cellInd];
+			Handle->MaxCellVoltage.CellNumber = cellInd;
+		}
+		// Поиск минимального напряжения
+		if (CellsVoltageArray[cellInd] < Handle->MinCellVoltage.Voltage_mv && CellsVoltageArray[cellInd] > MIN_AVAIL_CELL_VOLTAGE_MV)
+		{
+			Handle->MinCellVoltage.Voltage_mv = CellsVoltageArray[cellInd];
+			Handle->MinCellVoltage.CellNumber = cellInd;
+		}
+	}
+
+
+    Handle->TotalVoltage = SumVoltage / 100;
+
+    // Среднее значение напряжений на ячейках
+	if(nv > 0)
+		Handle->AvgCellVoltage = SumVoltage / nv;
+
+
+	// Рассчёт Max/Min температуры
 
 	Handle->MaxModuleTemperature.Temperature = INT8_MIN;
 	Handle->MaxModuleTemperature.SensorNum = TMP_SENSOR_IN_MODULE;
@@ -236,33 +270,6 @@ void ModuleStatisticCalculating(BatteryData_t* Handle, const EcuConfig_t *ecuCon
 	Handle->MinModuleTemperature.SensorNum = TMP_SENSOR_IN_MODULE;
 	Handle->MinModuleTemperature.ModuleNumber = ecuConfig->ModuleIndex;
 
-    // Рассчёт Max/Min напряжения
-    for (uint8_t cellInd = 0; cellInd < cellsCount; cellInd++)
-    {
-        nv++;
-        SumVoltage += CellsVoltageArray[cellInd];
-
-        // Поиск максимльного напряжения
-        if (CellsVoltageArray[cellInd] > Handle->MaxCellVoltage.Voltage_mv)
-        {
-            Handle->MaxCellVoltage.Voltage_mv = CellsVoltageArray[cellInd];
-            Handle->MaxCellVoltage.CellNumber = cellInd;
-        }
-        // Поиск минимального напряжения
-        if (CellsVoltageArray[cellInd] < Handle->MinCellVoltage.Voltage_mv)
-        {
-            Handle->MinCellVoltage.Voltage_mv = CellsVoltageArray[cellInd];
-            Handle->MinCellVoltage.CellNumber = cellInd;
-        }
-    }
-
-    Handle->TotalVoltage = SumVoltage / 100;
-
-    // Среднее значение напряжений на ячейках
-	if(nv > 0)
-		Handle->AvgCellVoltage = SumVoltage / nv;
-
-    // Рассчёт Max/Min температуры
 	for (uint8_t TempSensCnt = 0; TempSensCnt < TMP_SENSOR_IN_MODULE; TempSensCnt++)
     {
         int8_t t = CellsTempArray[TempSensCnt];
@@ -376,8 +383,9 @@ uint8_t packCapacityCalculating(BatteryData_t* Handle, const EcuConfig_t *config
 
 	if(StartMeasuringPermission && ModuleIsPackHeader(config))
 	{
+		uint32_t totalEnergy_As = sysEnergy_EnergyEstimation(&OD.Energy_As, OD.BatteryData[OD.ConfigData->BatteryIndex].MaxCellVoltage.Voltage_mv, OD.BatteryData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv);
 		Handle[config->BatteryIndex].TotalCurrent = csGetAverageCurrent();
-		Handle[config->BatteryIndex].SoC = StateOfChargeCalculation(Handle[config->BatteryIndex].TotalCurrent, &OD.Energy_As, config->ModuleCapacity);
+		Handle[config->BatteryIndex].SoC = sysEnergy_CoulombCounting(Handle[config->BatteryIndex].TotalCurrent, &OD.Energy_As, totalEnergy_As);
 
 		return 1;
 	}
@@ -399,6 +407,7 @@ void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *Sou
 	uint32_t SumAvgCellVoltage = 0;
 	uint32_t SumCurrentTmp = 0;
 	uint32_t SumEnergyTmp = 0;	
+	uint32_t SumTotalEnergyTmp = 0;
 	uint16_t minSoc = UINT16_MAX;
 	uint8_t n = 0;
 	uint8_t isModulesData = (Handle->Type == type_Pack)? 1 : 0;
@@ -442,7 +451,8 @@ void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *Sou
 		// Рассчёт Max/Min напряжения
 		SumVoltageTemp += SourceData[i].TotalVoltage;
 		SumCurrentTmp += SourceData[i].TotalCurrent;
-		SumEnergyTmp += SourceData[i].DischargeEnergy_Ah;
+		SumEnergyTmp += SourceData[i].ActualEnergy_As;
+		SumTotalEnergyTmp += SourceData[i].TotalEnergy_As;
 
 		// Поиск максимльного напряжяения
 		if (SourceData[i].MaxCellVoltage.Voltage_mv > Handle->MaxCellVoltage.Voltage_mv)
@@ -513,7 +523,8 @@ void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *Sou
 	Handle->SoC = (isModulesData)?	Handle->SoC : minSoc;
 	Handle->TotalVoltage = (isModulesData)? SumVoltageTemp : SumVoltageTemp / n;
 	Handle->TotalCurrent = (isModulesData)? Handle->TotalCurrent : SumCurrentTmp;
-	Handle->DischargeEnergy_Ah = (isModulesData)? Handle->DischargeEnergy_Ah : SumEnergyTmp;
+	Handle->ActualEnergy_As = (isModulesData)? Handle->ActualEnergy_As : SumEnergyTmp;
+	Handle->TotalEnergy_As = (isModulesData)? Handle->TotalEnergy_As : SumTotalEnergyTmp;
 }
 
 uint8_t packGetBalancingPermission(const BatteryData_t *PackHandle, const PackControl_t *PackControl, const EcuConfig_t *ecuConfig)
@@ -583,5 +594,102 @@ uint8_t MasterIsReady(const BatteryData_t* Handle, const BatteryData_t *Batterie
 	else
 		*ReadyConditionTimeStamp = GetTimeStamp();
 
+	return 0;
+}
+
+int8_t flashWriteSData(const StorageData_t *sdata)
+{	
+	StorageData_t tmp_sdata;
+	
+	// write 1st data to 1st and 2nd buffer
+	memcpy(&tmp_sdata.Buf_1st, &sdata->Buf_1st, sizeof(sdata->Buf_1st));
+	//memcpy(&tmp_sdata.Buf_2nd, &sdata->Buf_1st, sizeof(sdata->Buf_2nd));
+	
+	tmp_sdata.Buf_1st.Crc = 0;
+	//tmp_sdata.Buf_2nd.Crc = 0;
+	
+	for(uint8_t i = 0; i < sizeof(sdata->Buf_1st) - sizeof(sdata->Buf_1st.Crc); i++)
+		tmp_sdata.Buf_1st.Crc += *((uint8_t*)&tmp_sdata.Buf_1st + i);
+
+	MemEcuSDataWrite((uint8_t*)&tmp_sdata.Buf_1st, sizeof(sdata->Buf_1st), 0);
+	
+//	for(uint8_t i = 0; i < sizeof(sdata->Buf_2nd) - sizeof(sdata->Buf_2nd.Crc); i++)
+//		tmp_sdata.Buf_2nd.Crc += *((uint8_t*)&tmp_sdata.Buf_2nd + i);
+
+	
+	//MemEcuSDataWrite((uint8_t*)&tmp_sdata.Buf_2nd, sizeof(sdata->Buf_2nd), 1);
+
+	return 0;
+}
+
+int8_t flashReadSData(StorageData_t *sdata)
+{
+	int8_t result = 0;
+	uint16_t crc0 = 0;//, crc1 = 0;
+
+	sdata->Result = 0;
+
+	MemEcuSDataRead((uint8_t*)&sdata->Buf_1st, sizeof(sdata->Buf_1st), 0);
+	for(uint8_t i = 0; i < sizeof(sdata->Buf_1st) - sizeof(sdata->Buf_1st.Crc); i++)
+		crc0 += *((uint8_t*)&sdata->Buf_1st + i);
+
+	/*MemEcuSDataRead((uint8_t*)&sdata->Buf_2nd, sizeof(sdata->Buf_2nd), 1);
+	for(uint8_t i = 0; i < sizeof(sdata->Buf_2nd) - sizeof(sdata->Buf_2nd.Crc); i++)
+		crc1 += *((uint8_t*)&sdata->Buf_2nd + i);
+
+	if(sdata->Buf_1st.SystemTime >= sdata->Buf_2nd.SystemTime)
+	{
+	*/
+		// if data from buf is correct
+		if(crc0 == sdata->Buf_1st.Crc)
+		{			
+			uint8_t save_poweroff = sdata->Buf_1st.NormalPowerOff;
+			// Reset normal power off sign
+			sdata->Buf_1st.NormalPowerOff = 0;
+			// rewrite current and previous note
+			//memcpy(&sdata->Buf_2nd, &sdata->Buf_1st, sizeof(sdata->Buf_2nd));
+
+			if(!save_poweroff)
+				result =  -1;
+			else
+			{
+				result = 0;
+				sdata->DataChanged = 1;
+			}
+
+		}
+		// else restore TotalCapacity from another buffer
+		else
+		{
+
+			memset(&sdata->Buf_1st, 0xff, sizeof(sdata->Buf_1st));
+			result =  -1;
+		}
+	
+	sdata->Result = result;
+	return result;
+}
+
+int8_t flashClearFaults(StorageData_t *sdata)
+{
+	ClearFaults(dtcList, dtcListSize);
+	return 0;
+}
+
+int8_t flashStoreData(StorageData_t *sdata)
+{	
+	// Prepare for write
+	int16_t Length = sizeof(sdata->Buf_1st) + sizeof(EcuConfig_t) + (dtcListSize * sizeof(dtcItem_t));
+	
+	__disable_irq();
+	MemEcuWriteData((uint8_t*)sdata, Length);
+
+	cfgWrite(sdata->cfgData);
+	SaveFaults(dtcList, dtcListSize);
+	flashWriteSData(sdata);
+	
+	__enable_irq();
+	
+	sdata->DataChanged = 0;	
 	return 0;
 }

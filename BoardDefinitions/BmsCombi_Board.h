@@ -9,6 +9,7 @@
 
 void boardThread(void);
 uint16_t boardBMSCombi_GetVoltage(void);
+uint32_t boardBMSCombi_GetDiscreteIO(void);
 
 void IO_Init(void);
 void gpio_ltc6804_cs_set(uint32_t cs_num, uint8_t state);
@@ -69,10 +70,10 @@ extern FILTER_STRUCT fltVoltage;
 #define GET_D_OUT4_STATUS		((GPIO_ReadValue(0) & P0_22) >> 22)
 
 
-#define GET_D_IN4			(GPIO_ReadValue(2) & P2_0)
-#define GET_D_IN3			((GPIO_ReadValue(2) & P2_1) >> 1)
-#define GET_D_IN2			((GPIO_ReadValue(2) & P2_2) >> 2)
-#define GET_D_IN1			((GPIO_ReadValue(2) & P2_5) >> 5)
+#define GET_D_IN4			(!(GPIO_ReadValue(2) & P2_0))
+#define GET_D_IN3			(!((GPIO_ReadValue(2) & P2_1) >> 1))
+#define GET_D_IN2			(!((GPIO_ReadValue(2) & P2_2) >> 2))
+#define GET_D_IN1			(!((GPIO_ReadValue(2) & P2_5) >> 5))
 
 #define CS1_OUT	(1 << 1)
 #define CS2_OUT	(1 << 14)
@@ -96,9 +97,9 @@ extern FILTER_STRUCT fltVoltage;
 #define LED(x)              (SET_D_OUT1(x))
 #define GET_LED          	(GET_D_OUT1)
 
-#define FB_PLUS             (!GET_D_IN1)
-#define FB_MINUS            (!GET_D_IN2)
-#define IL                  (!GET_D_IN3)
+#define FB_PLUS             (GET_D_IN1)
+#define FB_MINUS            (GET_D_IN2)
+#define IL                  (GET_D_IN3)
 #define RESERVE             (GET_D_IN4)
 
 

@@ -8,8 +8,14 @@ EcuConfig_t EcuConfig;
 void _cfgSetDefaultParams(void)
 {
 	EcuConfig.DiagnosticID = GENERAL_ECU_DIAG_ID;	
-	EcuConfig.Index = 0;
-	EcuConfig.DigitalOutput[4] = 1;
+	EcuConfig.Index = 8;
+	EcuConfig.PU_IN1 = 0;
+	EcuConfig.PU_IN2 = 0;
+	EcuConfig.PU_IN3 = 0;
+	EcuConfig.PU_IN4 = 0;
+	EcuConfig.KeyOffTime_ms = 250;
+	EcuConfig.PowerOffDelay_ms = 1500;
+	EcuConfig.IsPowerManager = 1;
 	EcuConfig.CRC = cfgCRC(&EcuConfig);
 	
 	
@@ -27,7 +33,10 @@ void cfgApply(void)
 		OD.Faults.ConfigCrc = 1;
 		_cfgSetDefaultParams();
 	}		
-	EcuConfig.Index = (EcuConfig.Index > 3)? 3 : EcuConfig.Index;
+	
+	OD.ConfigData = &EcuConfig;	
+	
+	EcuConfig.Index = (EcuConfig.Index > 8)? 8 : EcuConfig.Index;
 	EcuConfig.DiagnosticID = GENERAL_ECU_DIAG_ID;	
 	OD.RepItemCount = 0;
 	

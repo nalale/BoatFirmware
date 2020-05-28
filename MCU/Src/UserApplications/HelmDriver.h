@@ -109,11 +109,12 @@ typedef enum{
 	MSG_HELM_ERROR_ID = -1,
 } HelmParameterTypes_e;
 
-uint8_t helmInit(int16_t DefaultCounterForce, const int16_t* ForceSpeedTable, int8_t TableSize);
+uint8_t helmInit(const int16_t* ForceSpeedTable, int8_t TableSize);
 uint16_t HelmGetTargetAngle(void);
 uint8_t helmThread(int16_t ActualSpeed);
 uint8_t HelmGetStatus(void);
 uint8_t HelmGetCausedFault(void);
+int8_t HelmGetAnglePercent(void);
 // Reset online sign after request
 uint8_t helmGetOnlineSign(void);
 

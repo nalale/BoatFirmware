@@ -107,20 +107,22 @@ IAP_STATUS_CODE CopyRAM2Flash(uint8_t * dest, uint8_t* source, IAP_WRITE_SIZE si
 	if(status != CMD_SUCCESS)
         return status;
     
-    status = EraseSector(sec, sec);
-    
-    status = PrepareSector(sec, sec);
-	if(status != CMD_SUCCESS)
-        return status;
-	
-	// write
-	command.cmd    = IAP_COPY_RAM2FLASH;             // Copy RAM to Flash
-    command.param[0] = (uint32_t)dest;                 // Destination Flash Address
-    command.param[1] = (uint32_t)source;               // Source RAM Address
-    command.param[2] =  size;                          // Number of bytes
-    command.param[3] =  SystemCoreClock / 1000;         // CCLK in kHz
-    IAP_Call (&command.cmd, &command.status);              // Call IAP Command
-	  
+	if(source == 0)
+		status = EraseSector(sec, sec);
+//    
+//    status = PrepareSector(sec, sec);
+//	if(status != CMD_SUCCESS)
+//        return status;
+	else
+	{
+		// write
+		command.cmd    = IAP_COPY_RAM2FLASH;             // Copy RAM to Flash
+		command.param[0] = (uint32_t)dest;                 // Destination Flash Address
+		command.param[1] = (uint32_t)source;               // Source RAM Address
+		command.param[2] =  size;                          // Number of bytes
+		command.param[3] =  SystemCoreClock / 1000;         // CCLK in kHz
+		IAP_Call (&command.cmd, &command.status);              // Call IAP Command
+	}
     return (IAP_STATUS_CODE)command.status;             // Finished without Errors	  
 }
 

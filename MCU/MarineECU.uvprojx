@@ -417,14 +417,14 @@
               <FilePath>.\Src\mVcu_Ecu.c</FilePath>
             </File>
             <File>
-              <FileName>PowerManager.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MolniaLib\PowerManager.c</FilePath>
-            </File>
-            <File>
               <FileName>FaultsTools.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Src\FaultsTools.c</FilePath>
+            </File>
+            <File>
+              <FileName>PowerManager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MolniaLib\PowerManager.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -495,6 +495,11 @@
               <FileName>lpc17xx_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\source\lpc17xx_rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>lpc17xx_libcfg_default.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\source\lpc17xx_libcfg_default.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -606,16 +611,16 @@
               <FileType>1</FileType>
               <FilePath>..\Libs\filter.c</FilePath>
             </File>
+            <File>
+              <FileName>FaultsServices.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MolniaLib\FaultsServices.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>ApplicationTasks</GroupName>
           <Files>
-            <File>
-              <FileName>DriveControl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Src\UserApplications\DriveControl.c</FilePath>
-            </File>
             <File>
               <FileName>HelmDriver.c</FileName>
               <FileType>1</FileType>
@@ -640,6 +645,16 @@
               <FileName>Inverter_Rinehart.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Src\MotionControllers\Inverter_Rinehart.c</FilePath>
+            </File>
+            <File>
+              <FileName>ThrottleControl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\UserApplications\ThrottleControl.c</FilePath>
+            </File>
+            <File>
+              <FileName>TransmissionDriver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\UserApplications\TransmissionDriver.c</FilePath>
             </File>
           </Files>
         </Group>

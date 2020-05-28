@@ -22,6 +22,7 @@
 
 #define SET_CS_OUT(x)		((x) == 1)? GPIO_SetValue(SPI_CS) : GPIO_ClearValue(SPI_CS)
 
+
 // D_OUT 
 #define P1_29	(1 << 29)
 #define P1_28	(1 << 28)
@@ -31,6 +32,7 @@
 #define P1_23	(1 << 23)
 #define P1_18	(1 << 18)
 #define P1_19	(1 << 19)
+#define P1_22	(1 << 22)
 #define P4_28	(1 << 28)
 #define P4_29	(1 << 29)
 
@@ -40,6 +42,8 @@
 #define D_OUT8				1, P1_23
 #define D_OUT9				1, P1_26
 #define D_OUT10				1, P1_25
+#define LED_OUT				1, P1_22
+
 
 #define PU_D_IN1			1, P1_19
 #define PU_D_IN2			1, P1_18
@@ -59,6 +63,8 @@
 #define C_OUT9_STATE            ((GPIO_ReadValue(1) & P1_26) != 0)
 #define SET_C_OUT10(x)			((x) == 0)? GPIO_SetValue(D_OUT10) : GPIO_ClearValue(D_OUT10)
 #define C_OUT10_STATE            ((GPIO_ReadValue(1) & P1_25) != 0)
+#define SET_LED(x)				((x) == 0)? GPIO_SetValue(LED_OUT) : GPIO_ClearValue(LED_OUT)
+#define LED_STATE            	((GPIO_ReadValue(1) & P1_22) != 0)
 
 #define SET_PU_D_IN1(x)			((x) == 1)? GPIO_SetValue(PU_D_IN1) : GPIO_ClearValue(PU_D_IN1)
 #define PU_D_IN1_STATE          ((GPIO_ReadValue(1) & P1_19) != 0)

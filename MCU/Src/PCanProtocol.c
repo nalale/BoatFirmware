@@ -11,15 +11,17 @@
 
 #include "PCanProtocol.h"
 
-#define EXTERNAL_SEND_MSG_AMOUNT	4
+#define EXTERNAL_SEND_MSG_AMOUNT	6
 
 static uint32_t extSendTime[EXTERNAL_SEND_MSG_AMOUNT];
 // Периоды отправки сообщений
 static uint16_t extPeriod[EXTERNAL_SEND_MSG_AMOUNT] = {
-                                250,
+                                250,		// cmGen1
 								100,
 								50,			// sim100
 								250,		// Status 1	
+								100,		// cmGen2
+								250,
 								 };
 
 uint8_t PCanRx(CanMsg *msg)
@@ -64,7 +66,7 @@ uint8_t PCanRx(CanMsg *msg)
 		smEcuStatus1* d = (smEcuStatus1*)msg->data;
 
 		OD.SB.cmdTrimUp = GET_IN_STATE(d->LogicInputsOutputs, D_IN_TRIM_JOY_1);//d->LogicInputsOutputs & 3;
-		OD.SB.cmdTrimUp = (GET_IN_STATE(d->LogicInputsOutputs, D_IN_TRIM_JOY_2));
+		OD.SB.cmdTrimDown = GET_IN_STATE(d->LogicInputsOutputs, D_IN_TRIM_JOY_2);
 		
 		return 0;	
     }
@@ -90,6 +92,15 @@ uint8_t PCanRx(CanMsg *msg)
 		f.Faults = d->Faults;
 		OD.SB.Ecu4MeasDataActual = !f.MeasuringCircuit;
 	}
+	else if(msg->ID == Display_ECU_CAN_ID)
+	{
+		smEcuStatus1* d = (smEcuStatus1*)msg->data;
+
+		OD.SB.cmdLightNavi = GET_IN_STATE(d->LogicInputsOutputs, D_IN_D_ECU_LIGHT_SWITCH_1);
+		OD.SB.cmdLightAll = GET_IN_STATE(d->LogicInputsOutputs, D_IN_D_ECU_LIGHT_SWITCH_2);
+		OD.SB.cmdLightCockPit = GET_IN_STATE(d->LogicInputsOutputs, D_IN_D_ECU_LIGHT_SWITCH_3);
+		OD.SB.BoostModeRequest = GET_IN_STATE(d->LogicInputsOutputs, D_IN_D_ECU_BOOST_SWITCH);
+	}
 	else if(msg->ID == Bmu_ECU_CAN_ID)
 	{
 		BatM_Ext1_t *d = (BatM_Ext1_t*)msg->data;
@@ -106,8 +117,8 @@ uint8_t PCanRx(CanMsg *msg)
 	{
 		BatM_Ext3_t *d = (BatM_Ext3_t*)msg->data;
 		
-		OD.BatteryDataRx.CCL = d->SystemCCL - 35767;
-		OD.BatteryDataRx.DCL = d->SystemDCL - 35767;
+		OD.BatteryDataRx.CCL = d->SystemCCL - 32767;
+		OD.BatteryDataRx.DCL = d->SystemDCL - 32767;
 	}
 	if (msg->ID == 0xA100100)
 	{
@@ -187,8 +198,12 @@ void PCanMesGenerate(void)
 				
 				d->LogicOutput = SET_OUT_STATE(OD.SB.cmdHeatsinkPump, D_OUT_CPUMP_0) |
 								SET_OUT_STATE(OD.SB.cmdMotorPumpCooling, D_OUT_CPUMP_1) |
-								SET_OUT_STATE(OD.SB.cmdDrainPumpOn, D_OUT_DRAIN_1);
-				//(OD.SB.InvPumpCooling) | (OD.SB.MotorPumpCooling << 1) | (OD.SB.HeatsinkPump << 2) | (OD.SB.DrainOn << 3);
+								SET_OUT_STATE(OD.SB.cmdDrainPumpOn, D_OUT_DRAIN_1) |
+								SET_OUT_STATE(OD.SB.cmdLightAll, D_OUT_LAMP_1) |
+								SET_OUT_STATE(OD.SB.cmdLightAll, D_OUT_LAMP_2) |
+								SET_OUT_STATE(OD.SB.cmdLightAll | OD.SB.cmdLightNavi, D_OUT_LAMP_3) |
+								SET_OUT_STATE(OD.SB.cmdLightCockPit, D_OUT_LAMP_4) |
+								SET_OUT_STATE(OD.SB.cmdLightCockPit, D_OUT_LAMP_5);
 			}
 			break;
 			
@@ -210,6 +225,8 @@ void PCanMesGenerate(void)
 			{
 				static uint8_t sim_100_msg_num = 0;
 				
+				sim_100_msg_num = (++sim_100_msg_num > 4)? 0 : sim_100_msg_num;
+
 				msg->ID = 0xA100101;
 				msg->DLC = 1;
 				msg->Ext = 1;
@@ -232,29 +249,58 @@ void PCanMesGenerate(void)
 						msg->data[0] = opCode_ReadError;
 						break;
 				}
-				
-				sim_100_msg_num = (sim_100_msg_num >= 5)? 0 : sim_100_msg_num + 1;
 			}
 			break;
 			
 			case 3:
 			{
+				uint16_t current_val = (OD.BatteryDataRx.TotalCurrent < 0)? -OD.BatteryDataRx.TotalCurrent >> 4
+						: OD.BatteryDataRx.TotalCurrent >> 4;
+
 				msg->ID = Main_ECU_CAN_ID;
 				msg->DLC = 8;
 				msg->Ext = 0;
 				
 				MainEcuStatus1_Msg_t* d = (MainEcuStatus1_Msg_t*)msg->data;
 				
-//				d->MotorRpm = OD.MovControlDataRx.ActualSpeed;
-//				d->MotorTemperature = OD.InvertorDataRx.MotorTemperature + 40;
-//				d->InverterTemperature = OD.InvertorDataRx.InverterTemperature + 40;
-//				d->TargetTorque = OD.MovControlDataRx.AccPosition;
-//				d->ActualTorque = OD.MovControlDataRx.ActualTorque * 100 / config.MaxMotorTorque;
-//				d->SteeringAngle = (((uint32_t)OD.HelmData.TargetAngle << 7) - 1) >> 11;	// angle_value * 255 / 4095
-//				d->FeedbackAngle = (((uint32_t)SteeringGetFeedBackAngle(&OD.SteeringData) << 7) - 1) >> 11;			// angle_value * 255 / 4095
+				d->MotorRpm = McuRinegartGetParameter(&OD.mcHandler, mcu_ActualSpeed);
+				d->MotorTemperature = McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) + 40;
+				d->InverterTemperature = McuRinegartGetParameter(&OD.mcHandler, mcu_BoardTemperature) + 40;
+				d->TargetTorque = McuRinegartGetParameter(&OD.mcHandler, mcu_TargetTorque);
+				d->ActualTorque = McuRinegartGetParameter(&OD.mcHandler, mcu_ActualTorque);
+				d->TrimPosition = TrimGetParameter(&OD.TrimDataRx, paramTrim_Position);
+				d->SpecPowerCons = (current_val > 255)? 255 : current_val;
 				
 			}
 			break;
+
+			case 4:
+			{
+				msg->ID = General_Control2_CAN_ID;
+				msg->DLC = 8;
+				msg->Ext = 0;
+
+				memset(msg->data, 0, msg->DLC);
+
+				cmGeneralControl2 *d = (cmGeneralControl2*)msg->data;
+
+				d->AnalogOutput[0] = (OD.SB.cmdETForward)? 255 : 0;
+				d->AnalogOutput[1] = (OD.SB.cmdETBackward)? 255 : 0;
+			}
+			break;
+
+			case 5:
+			{
+				msg->ID = Main_ECU_CAN_ID + 1;
+				msg->DLC = 8;
+				msg->Ext = 0;
+
+				MainEcuStatus2_Msg_t* d = (MainEcuStatus2_Msg_t*)msg->data;
+
+				d->HelmAngle = HelmGetAnglePercent();
+				d->SteeringAngle = SteeringGetFeedBackPercent(&OD.SteeringData);
+				d->ThrottlePos = (thrHandleGetDirection() == dr_FwDirect)? thrHandleGetDemandAcceleration() : -thrHandleGetDemandAcceleration();
+			}
         }
     }
     

@@ -6,6 +6,7 @@
 
 #include "Main.h"
 #include "FaultTools.h"
+#include "User.h"
 
 #include "Protocol.h"
 #include "WorkStates.h"
@@ -18,6 +19,7 @@
 #include "DateTime.h"
 
 #include "N_OBD.h"
+#include "../MolniaLib/FaultsServices.h"
 
 #define ABORT					-1					// процесс завершён
 #define MAX_REQUEST_AMOUNT		1					// Максимальнрое количество запросов следующей посылки при
@@ -251,9 +253,11 @@ uint8_t ecuWriteDiagnosticValue(uint16_t did, uint32_t buf, uint16_t NoteToWrite
 		
 		// Если профиль обновлен успешно, программная перезагрузка
 		if(result == UPDATE_PROFILE_FINISIHED && RequestCnt == 1)			
-		{											
-			cfgWrite(&TempProfile);						
-			SetWorkState(&OD.StateMachine, WORKSTATE_INIT);
+		{		
+			OD.SData.cfgData = &TempProfile;
+			OD.SData.DataChanged = 1;
+			//cfgWrite(&TempProfile);						
+			//SetWorkState(&OD.StateMachine, WORKSTATE_INIT);
 		}			
 	}
 	else if(did == didDateTime)		// Дата и время
@@ -271,11 +275,11 @@ uint8_t ecuWriteDiagnosticValue(uint16_t did, uint32_t buf, uint16_t NoteToWrite
 	}
 	else if(did == didFaults_History)
 	{
-		if(buf != 0 || NoteToWrite > 0)
+		if(NoteToWrite > 0)
 			return GENERAL_PROGRAMMING_FAILURE;		
 		
-		if(ClearFaults() < 0)		
-			return GENERAL_PROGRAMMING_FAILURE;
+		flashClearFaults(&OD.SData);
+		OD.SData.DataChanged = 1;
 	}
 	else
 	{

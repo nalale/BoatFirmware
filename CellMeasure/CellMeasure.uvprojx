@@ -546,6 +546,11 @@
               <FileType>1</FileType>
               <FilePath>..\MolniaLib\DateTime.c</FilePath>
             </File>
+            <File>
+              <FileName>FaultsServices.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MolniaLib\FaultsServices.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
