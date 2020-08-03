@@ -171,50 +171,74 @@ void OperatingState(uint8_t *SubState)
 			{
 				case dr_NeuDirect: {
 					TargetTorque = 0;
-					transmissionSetGear(GEAR_NEU);
-					// Go to charge substate
-					if(OD.SB.stChargingTerminal)
-						*SubState = 1;
 
-					if((OD.SB.BoostModeRequest && !OD.SB.stBoostMode) &&
-							((McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) < OD.cfgEcu->MaxMotorT - 10) ||
-							(McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) < OD.cfgEcu->MotorCoolingOn)))
+					if(GetTimeFrom(timeStamp) > 3000)
 					{
-						OD.SB.stBoostMode = 1;
-						McuRinehartInit(&OD.mcHandler, OD.cfgEcu->MaxMotorTorque, 0);
-						McuRinehartSetState(&OD.mcHandler, stateCmd_Enable);
-					}
-					else if((!OD.SB.BoostModeRequest && OD.SB.stBoostMode) ||
-							(McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) > OD.cfgEcu->MaxMotorT - 10))
-					{
-						OD.SB.stBoostMode = 0;
-						McuRinehartInit(&OD.mcHandler, OD.cfgEcu->RateMotorTorque, 0);
-						McuRinehartSetState(&OD.mcHandler, stateCmd_Enable);
+						SteeringSetState(&OD.SteeringData, 0);
+						McuRinehartSetState(&OD.mcHandler, stateCmd_Disable);
+
+						transmissionSetGear(GEAR_NEU);
+						// Go to charge substate
+						if(OD.SB.stChargingTerminal)
+							*SubState = 1;
+
+						// If driver requested boost mode and temperatures are in operation range then enable boost mode
+						if((OD.SB.BoostModeRequest && !OD.SB.stBoostMode) &&
+								((McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) < OD.cfgEcu->MaxMotorT - 10)))
+						{
+							OD.SB.stBoostMode = 1;
+							McuRinehartInit(&OD.mcHandler, OD.cfgEcu->MaxMotorTorque, 0);
+							//McuRinehartSetState(&OD.mcHandler, stateCmd_Enable);
+						}
+						// If driver doesn't request boost mode disable boost mode
+						else if((!OD.SB.BoostModeRequest && OD.SB.stBoostMode))
+						{
+							OD.SB.stBoostMode = 0;
+							McuRinehartInit(&OD.mcHandler, OD.cfgEcu->RateMotorTorque, 0);
+							//McuRinehartSetState(&OD.mcHandler, stateCmd_Enable);
+						}
 					}
 				}
 					break;
 				case dr_FwDirect: {
+					// Disable Boost mode if motor temp is too high
+					if((!OD.SB.BoostModeRequest && OD.SB.stBoostMode) ||
+							(OD.SB.stBoostMode && (McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) > OD.cfgEcu->MaxMotorT - 10)))
+					{
+						OD.SB.stBoostMode = 0;
+						McuRinehartInit(&OD.mcHandler, OD.cfgEcu->RateMotorTorque, 0);
+					}
+
+					SteeringSetState(&OD.SteeringData, 1);
+					McuRinehartSetState(&OD.mcHandler, stateCmd_Enable);
+
+
+
 					TargetTorque = thrHandleGetDemandAcceleration();
 					McuRinehartSetMaxSpeed(&OD.mcHandler, OD.cfgEcu->MaxMotorSpeedD);
 					transmissionSetGear(GEAR_FW);
+					timeStamp = GetTimeStamp();
 				}
 					break;
 				case dr_BwDirect: {
 					// Max R direct speed,
 					// TODO: add to cfg
+					// Disable boost mode if it was enabled
+					if((!OD.SB.BoostModeRequest && OD.SB.stBoostMode))
+					{
+						OD.SB.stBoostMode = 0;
+						McuRinehartInit(&OD.mcHandler, OD.cfgEcu->RateMotorTorque, 0);
+					}
+
+					SteeringSetState(&OD.SteeringData, 1);
+					McuRinehartSetState(&OD.mcHandler, stateCmd_Enable);
+
 					TargetTorque = thrHandleGetDemandAcceleration();
 					McuRinehartSetMaxSpeed(&OD.mcHandler, 1500);
 					transmissionSetGear(GEAR_BW);
+					timeStamp = GetTimeStamp();
 				}
 					break;
-			}
-
-			if((OD.SB.stBoostMode) ||
-					(McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) > OD.cfgEcu->MaxMotorT - 10))
-			{
-				OD.SB.stBoostMode = 0;
-				McuRinehartInit(&OD.mcHandler, OD.cfgEcu->RateMotorTorque, 0);
-				McuRinehartSetState(&OD.mcHandler, stateCmd_Enable);
 			}
 
 
@@ -285,6 +309,7 @@ void OperatingState(uint8_t *SubState)
 void ShutdownState(uint8_t *SubState)
 {	
 	McuRinehartSetCmd(&OD.mcHandler, 0, 0, 0);
+	McuRinehartSetState(&OD.mcHandler, stateCmd_Disable);
 
 	switch (*SubState)
 	{

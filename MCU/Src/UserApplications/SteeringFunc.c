@@ -36,7 +36,7 @@ uint8_t SteeringInit(SteeringData_t *_steeringData, const PID_Struct_t *PID, con
 	_steeringData->ki = PID->Ki;
 	_steeringData->kd = PID->Kd;
 
-	_steeringData->SteeringFuncIsReady = 1;
+	_steeringData->SteeringFuncIsReady = 0;
 	
 	return 0;
 }
@@ -119,6 +119,17 @@ int16_t SteeringControl(SteeringData_t *_steeringData, int16_t TargetAngle)
 	}
     
     return 0;
+}
+
+uint8_t SteeringSetState(SteeringData_t *_steeringData, uint8_t State)
+{
+	if(_steeringData == 0)
+		return 1;
+	else
+	{
+		_steeringData->SteeringFuncIsReady = State;
+		return 0;
+	}
 }
 
 uint16_t SteeringGetStatus(const SteeringData_t *_steeringData)

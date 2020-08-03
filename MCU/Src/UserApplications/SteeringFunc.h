@@ -61,12 +61,12 @@ typedef struct
 	void (*PumpControlFunc)(uint8_t Cmd);
 
 	SteeringFaults_t Faults;
-
+	uint8_t TurnOnDemand;
 } SteeringData_t;
 
 uint8_t SteeringInit(SteeringData_t *_steeringData, const PID_Struct_t *PID, const SteeringDependencies_t* Dependencies, uint8_t MinPosLimit_V, uint8_t MaxPosLimit_V, uint16_t CurrentLimit);
 uint8_t steeringThread(SteeringData_t *_steeringData);
-
+uint8_t SteeringSetState(SteeringData_t *_steeringData, uint8_t State);
 uint8_t steeringSetAngle(SteeringData_t *_steeringData, int16_t TargetAngle);
 
 uint16_t SteeringGetStatus(const SteeringData_t *_steeringData);

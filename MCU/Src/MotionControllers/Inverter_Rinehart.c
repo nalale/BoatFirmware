@@ -117,7 +117,10 @@ int8_t McuRinehartThread(McuRinehart_t *mcu)
 		}
 	}
 	else if(mcu->EnableCommand == stateCmd_Disable)
+	{
 		mcu->rmsMsgRx_1.InvEnable = 0;
+		mcu->Status = mcu_Disabled;
+	}
 
 	mcu->CausedFault = (mcu->CausedFault == 0)? mcu->rmsMsgTx_2.PostCode : mcu->CausedFault;
 
