@@ -422,10 +422,12 @@ bool vs_thread(int16_t *cell_voltage_array, int16_t *cell_temp_array)
 					lts_cmd_send(vs_num, RDCV);
 					vs[vs_num].volt_fault = volt_code_parse(vs_num, vs[vs_num].Parameters.CellNumber, vs[vs_num].m_code_arr, vs[vs_num].m_voltage_array);
 					memcpy((void*)(cell_voltage_array + vs_num * CELL_VOLT_ARRAY_SZ), (void*)vs[vs_num].m_voltage_array, sizeof(vs[vs_num].m_voltage_array));
+					vs[vs_num].results_is_available = 1;
 				}
 				step = 4;
 			}
 			break;
+
 		case 4:
 			for(vs_num = 0; vs_num < sens_cnt; vs_num++)
 				lts_cmd_send(vs_num, DAGN);
@@ -679,3 +681,7 @@ void vs_ban_balancing(uint8_t cmd)
 		vs[i].BanBalancing = cmd;	
 }
 
+uint8_t vs_is_available(uint8_t num)
+{
+	return vs[num].results_is_available;
+}

@@ -3,8 +3,9 @@
 
 #include "main.h"
 #include "FaultTools.h"
-#include "../MolniaLib/MF_CAN_1v1.h"
 
+#include "../MolniaLib/MF_CAN_1v1.h"
+#include "../MolniaLib/FaultsServices.h"
 
 #define VER(major, minor)		((major << 8) + minor)
 

@@ -6,15 +6,19 @@
 
 #include "Main.h"
 
-int8_t csCWDirection;
-CurrentSensorType_e csType;
-CURRENT_SENS_STR csEnv;
-FILTER_STRUCT csFilter;
+static int8_t csCWDirection = 0;
+static int8_t csIsReady = 0;
+static CurrentSensorType_e csType;
+static CURRENT_SENS_STR csEnv;
+static FILTER_STRUCT csFilter;
 
 // NOTE: Порядок как в CurrentSensorType_e
 const int16_t csHassIp[] = {0, 500, 1000, 2000, 3000, 4000};		// Номинальный измеряемый ток в HASS * 10
 
-
+CurrentSensorType_e csGetCurrentSensorType()
+{
+	return csType;
+}
 
 void csSetCurrentSensorType(CurrentSensorType_e type, uint8_t CWDirection)
 {
@@ -45,6 +49,10 @@ void csCalibrateCurrentSensor()
 	}
 }
 
+void csCalibrateIsDone()
+{
+	csIsReady = 1;
+}
 
 /* Получить значение тока
  * Возвращает
@@ -57,6 +65,8 @@ int16_t csGetCurrent()
 	OD.CurrentSensorVoltage[0] = ((OD.A_IN[0]) * 198) >> 7;
 	OD.CurrentSensorVoltage[1] = ((OD.A_IN[1]) * 198) >> 7;
 	
+	if(csIsReady == 0 || csType == cstNone)
+		return 0;
 
 	if (csType == cstDHAB_S34)
 	{		
@@ -114,7 +124,7 @@ uint8_t csGetCircuitState()
 //		else if(csEnv.S34.CurSensFineZeroVolt_mV < 2400 || csEnv.S34.CurSensCoarseZeroVolt_mV < 2400)	// Напряжение ниже установленного порога
 //			return dctCat_CircuitCurrentBelowThreshold;
 	}
-	else
+	else if(csType != cstNone)
 	{
 		// HASS:
 		// Vout_max = 4,6V, Vout_min = 0,4V

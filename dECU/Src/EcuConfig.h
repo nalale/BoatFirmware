@@ -21,7 +21,8 @@ typedef struct
 	uint16_t PowerOffDelay_ms;
 	uint16_t KeyOffTime_ms;
 	
-	uint16_t addition_1;
+	uint8_t IsPowerManager;
+	uint8_t addition_1;
 	uint16_t addition_2;
 	uint16_t addition_3;
 	uint16_t addition_4;

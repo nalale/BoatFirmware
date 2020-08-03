@@ -313,7 +313,7 @@ typedef struct
 	uint8_t PwmTargetLevel[4];
 	
 	uint8_t AccPedalChannels[2];
-    
+    uint8_t MaxChargingCurrentRequest;
     uint8_t BatteryReqState;
 	
 	BatteryData_t BatteryDataRx;

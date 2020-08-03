@@ -128,7 +128,7 @@ uint8_t MasterFaultTest(EcuConfig_t *ecuConfig)
 		it->SamplePeriodCounter = 0;
 		for(uint8_t i = 0; i < ecuConfig->Sys_ModulesCountP; i++)
 		{
-			if(OD.BatteryData[i].StateMachine.MainState != OD.MasterControl.RequestState)
+			if(OD.PackData[i].MainState != OD.MasterControl.RequestState)
 			{
 				flag = 1;
 				TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
@@ -222,7 +222,7 @@ uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;
-		if(OD.BatteryData[ecuConfig->BatteryIndex].OnlineNumber != ecuConfig->Sys_ModulesCountS)
+		if(OD.PackData[ecuConfig->BatteryIndex].OnlineNumber != ecuConfig->Sys_ModulesCountS)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -259,7 +259,7 @@ uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig)
 			// В режиме инициализации ждем включения всех модулей
 			if(OD.StateMachine.MainState == WORKSTATE_INIT && OD.StateMachine.SubState > 3)
 			{
-				if(OD.ModuleData[i].StateMachine.MainState != WORKSTATE_OPERATE)
+				if(OD.ModuleData[i].MainState != WORKSTATE_OPERATE)
 				{
 					flag = 1;
 					TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
@@ -278,7 +278,7 @@ uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig)
 			// В режиме работы сразу фиксируем ошибку если один из модулей перешел в некорректное состояние
 			else if(OD.StateMachine.MainState == WORKSTATE_OPERATE)
 			{
-				if(OD.ModuleData[i].StateMachine.MainState != WORKSTATE_OPERATE)
+				if(OD.ModuleData[i].MainState != WORKSTATE_OPERATE)
 				{
 					flag = 1;
 					TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
@@ -311,9 +311,9 @@ uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig)
 	{
 		it->SamplePeriodCounter = 0;		
 		
-		int16_t _system_current = OD.BatteryData[ecuConfig->BatteryIndex].TotalCurrent / 10;
+		int16_t _system_current = OD.PackData[ecuConfig->BatteryIndex].TotalCurrent / 10;
 		
-		if(_system_current > OD.BatteryData[ecuConfig->BatteryIndex].DCL)
+		if(_system_current > OD.PackData[ecuConfig->BatteryIndex].DCL)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -327,7 +327,7 @@ uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig)
 				}
 			}			
 		}
-		else if(_system_current < OD.BatteryData[ecuConfig->BatteryIndex].CCL)
+		else if(_system_current < OD.PackData[ecuConfig->BatteryIndex].CCL)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -352,7 +352,7 @@ uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;		
-		if(OD.BatteryData[ecuConfig->BatteryIndex].MaxBatteryVoltage.Voltage - OD.BatteryData[ecuConfig->BatteryIndex].MinBatteryVoltage.Voltage > (ecuConfig->Sys_MaxVoltageDisbalanceS * 10))
+		if(OD.PackData[ecuConfig->BatteryIndex].MaxBatteryVoltage.Voltage - OD.PackData[ecuConfig->BatteryIndex].MinBatteryVoltage.Voltage > (ecuConfig->Sys_MaxVoltageDisbalanceS * 10))
 		{			
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -395,8 +395,8 @@ uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig)
 			}
 			
 			// Если длительность предзаряда больше заданной 
-			if ((OD.BatteryData[ecuConfig->BatteryIndex].TotalCurrent > ((uint16_t)ecuConfig->PreZeroCurrent * 10)) || 
-				(OD.BatteryData[ecuConfig->BatteryIndex].TotalCurrent < -((int16_t)ecuConfig->PreZeroCurrent * 10)))
+			if ((OD.PackData[ecuConfig->BatteryIndex].TotalCurrent > ((uint16_t)ecuConfig->PreZeroCurrent * 10)) || 
+				(OD.PackData[ecuConfig->BatteryIndex].TotalCurrent < -((int16_t)ecuConfig->PreZeroCurrent * 10)))
 			{
 				TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 				if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)

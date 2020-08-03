@@ -250,7 +250,12 @@ void OperatingState(uint8_t *SubState)
 					case st_OBC_FAULT:
 					{
 						uint16_t current_val = (OD.BatteryDataRx.CCL < 0)? -OD.BatteryDataRx.CCL : OD.BatteryDataRx.CCL;
-						obcSetCurrentLimit(current_val);
+						uint16_t driver_current_limit = ((50 - OD.MaxChargingCurrentRequest) * OD.cfgEcu->MaxChargingCurrent_A / 50) + 15;
+
+						if(driver_current_limit < current_val)
+							obcSetCurrentLimit(driver_current_limit);
+						else
+							obcSetCurrentLimit(current_val);
 					}
 						break;
 

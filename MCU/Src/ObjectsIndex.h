@@ -9,6 +9,9 @@ typedef enum
 	didEcuInfo	= 0,
 	didConfigStructIndex,
 	didDateTime,
+	didMachineState,
+	didMachineSubState,
+	didInOutState,
 	didEcuVoltage,
 	didPowerManagmentState,
 	
@@ -26,10 +29,6 @@ typedef enum
 	didCurrentSensor3,
 	didCurrentSensor4,	
 	
-	didMachineState,
-	didMachineSubState,
-	
-	didInOutState,
 	didPwmOutState,
 	
 	didHelmDemandAngle,
@@ -82,6 +81,8 @@ typedef enum
 	
 	didFaults_FreezeFrame,
 	
+	didFlashData = 105,
+
 } ObjectsIndex_e;
 
 

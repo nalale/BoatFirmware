@@ -100,6 +100,8 @@ uint8_t PCanRx(CanMsg *msg)
 		OD.SB.cmdLightAll = GET_IN_STATE(d->LogicInputsOutputs, D_IN_D_ECU_LIGHT_SWITCH_2);
 		OD.SB.cmdLightCockPit = GET_IN_STATE(d->LogicInputsOutputs, D_IN_D_ECU_LIGHT_SWITCH_3);
 		OD.SB.BoostModeRequest = GET_IN_STATE(d->LogicInputsOutputs, D_IN_D_ECU_BOOST_SWITCH);
+
+		OD.MaxChargingCurrentRequest = msg->data[4];
 	}
 	else if(msg->ID == Bmu_ECU_CAN_ID)
 	{

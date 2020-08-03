@@ -10,60 +10,53 @@
 #define ENERGY_THRESHOLD_AMP_SEC	18000	// 5Ah
 #define ENERGY_RAMP_AMP_SEC			1800	// 1/2Ah
 
-int16_t CurrentLimitArray[CCL_DCL_POINTS_NUM * 2];
-
-typedef struct
-{
-	uint8_t EstimationDoneInThisCycle;
-	uint8_t StateOfCharge;
-	uint8_t StateOfHealth;
-	uint32_t TotalSystemEnergy_As;
-	uint16_t CellVoltageThreshold_mV;
-	uint16_t MinCellVoltageThreshold_mV;
-
-} BatteryModel_t;
-
-static BatteryModel_t battery;
+static int16_t CurrentLimitArray[CCL_DCL_POINTS_NUM * 2];
 
 // Ñalculation of module energy by the minimum cell voltage and the OCV table
-uint32_t sysEnergy_InitEnergyFromMinUcell(int16_t *OcvTable, uint32_t Voltage, uint32_t TotalCapatity_As)
+uint32_t sysEnergy_InitEnergyFromMinUcell(BatteryData_t *Handle, int16_t *OcvTable, uint16_t CellVoltage)
 {
-	uint32_t TempSoC = interpol(OcvTable, SOC_TABLE_SIZE, (uint16_t)Voltage);	
+	if(Handle == 0 || OcvTable == 0 || CellVoltage == 0)
+		return 1;
 	
-	return (TempSoC * (TotalCapatity_As) / 100);			// Asec * SoC / 100;
+	uint32_t TempSoC = interpol(OcvTable, SOC_TABLE_SIZE, CellVoltage);	
+	Handle->ActualEnergy_As = (TempSoC * (Handle->TotalEnergy_As) / 100);			// Asec * SoC / 100;
+	
+	return 0;
 }
 
 // Calculation of current module capacity by current value (Amp * 10) and current energy (Amps)
-uint16_t sysEnergy_CoulombCounting(int16_t Current_0p1, uint32_t* CurrentEnergy_Amps, uint32_t ModuleCapacity_As)
+uint16_t sysEnergy_CoulombCounting(BatteryData_t *Handle, int16_t Current_0p1)
 {
-	static int32_t EnergyLow = 0;
-	static int32_t EnergyLowPrev = 0;
-    
-    static uint32_t CapacityCulcStamp = 0;
+    uint32_t* CurrentEnergy_Amps = &Handle->ActualEnergy_As;
+    uint32_t ModuleCapacity_As = Handle->TotalEnergy_As;
 	
 	uint16_t result = 0;
 	result = (100L * (*CurrentEnergy_Amps)) / ModuleCapacity_As;
 	
 	// period of calculation is 100ms
-	uint32_t tm = GetTimeFrom(CapacityCulcStamp);
+	uint32_t tm = GetTimeFrom(Handle->CapacityCulcStamp);
 	if (tm >= 100)
 	{
-		CapacityCulcStamp = GetTimeStamp() - (tm - 100);
-		EnergyLow -= Current_0p1;
+		Handle->CapacityCulcStamp = GetTimeStamp() - (tm - 100);
+		Handle->EnergyLow -= Current_0p1;
 	}
 
 	// Coulomb counting
-	if (EnergyLow - EnergyLowPrev >= 100)			// Charging
+	if (Handle->EnergyLow - Handle->EnergyLowPrev >= 100)			// Charging
 	{
+		Handle->CurrentCycleEnergy_As++;
+
 		(*CurrentEnergy_Amps)++;
-		EnergyLowPrev += 100;
+		Handle->EnergyLowPrev += 100;
 	}
-	else if ((EnergyLow - EnergyLowPrev) <= -100)	// Discharging
+	else if ((Handle->EnergyLow - Handle->EnergyLowPrev) <= -100)	// Discharging
 	{
+		Handle->CurrentCycleEnergy_As--;
+
 		if ((*CurrentEnergy_Amps) > 0)
 			(*CurrentEnergy_Amps)--;
 		
-		EnergyLowPrev -= 100;
+		Handle->EnergyLowPrev -= 100;
 	}
 	
 	if(result > 100)
@@ -72,58 +65,63 @@ uint16_t sysEnergy_CoulombCounting(int16_t Current_0p1, uint32_t* CurrentEnergy_
 	return result;
 }
 
-int8_t sysEnergy_Init(uint32_t InitialSystemEnergy_As, uint16_t MaxCellVoltageThreshold_mV, uint16_t MinCellVoltageThreshold_mV)
+int8_t sysEnergy_Init(BatteryData_t *Handle, uint32_t InitialTotalSystemEnergy_As, uint32_t InitialActualEnergy_As, uint16_t MaxCellVoltageThreshold_mV, uint16_t MinCellVoltageThreshold_mV)
 {
-	battery.TotalSystemEnergy_As = InitialSystemEnergy_As;
-	battery.CellVoltageThreshold_mV = MaxCellVoltageThreshold_mV;
-	battery.MinCellVoltageThreshold_mV = MinCellVoltageThreshold_mV;
+	Handle->TotalEnergy_As = InitialTotalSystemEnergy_As;
+	Handle->ActualEnergy_As = InitialActualEnergy_As;
+	Handle->MaxCellVoltageThreshold_mV = MaxCellVoltageThreshold_mV;
+	Handle->MinCellVoltageThreshold_mV = MinCellVoltageThreshold_mV;
+
+	Handle->IsInit = 1;
 
 	return 0;
 }
 
-uint32_t sysEnergy_EnergyEstimation(uint32_t *CurrentEnergy_As, uint16_t MaxCellVoltage_mV, uint16_t MinCellVoltage_mV)
+uint32_t sysEnergy_EnergyEstimation(BatteryData_t *Handle, uint16_t MaxCellVoltage_mV, uint16_t MinCellVoltage_mV)
 {
+	uint32_t *CurrentEnergy_As = &Handle->ActualEnergy_As;
+	uint32_t TotalEstimatedEnergy = Handle->TotalEnergy_As;
 	// Charge is done
-	if(MaxCellVoltage_mV >= battery.CellVoltageThreshold_mV)
+	if(MaxCellVoltage_mV >= Handle->MaxCellVoltageThreshold_mV)
 	{
-		if(!battery.EstimationDoneInThisCycle)
+		if(!Handle->EstimationDoneInThisCycle)
 		{
-			battery.EstimationDoneInThisCycle = 1;
+			Handle->EstimationDoneInThisCycle = 1;
 
-			if(battery.TotalSystemEnergy_As >= *CurrentEnergy_As)
+			if(TotalEstimatedEnergy >= *CurrentEnergy_As)
 			{
-				if((battery.TotalSystemEnergy_As - *CurrentEnergy_As) > ENERGY_THRESHOLD_AMP_SEC)
+				if((TotalEstimatedEnergy - *CurrentEnergy_As) > ENERGY_THRESHOLD_AMP_SEC)
 				{
-					battery.TotalSystemEnergy_As -= (battery.TotalSystemEnergy_As > ENERGY_THRESHOLD_AMP_SEC)? ENERGY_RAMP_AMP_SEC : 0;
+					TotalEstimatedEnergy -= (TotalEstimatedEnergy > ENERGY_THRESHOLD_AMP_SEC)? ENERGY_RAMP_AMP_SEC : 0;
 				}
 			}
 			else
 			{
-				if((*CurrentEnergy_As - battery.TotalSystemEnergy_As) > ENERGY_THRESHOLD_AMP_SEC)
+				if((*CurrentEnergy_As - TotalEstimatedEnergy) > ENERGY_THRESHOLD_AMP_SEC)
 				{
-					battery.TotalSystemEnergy_As += ENERGY_RAMP_AMP_SEC;
+					TotalEstimatedEnergy += ENERGY_RAMP_AMP_SEC;
 				}
 			}
 		}
 	}
-	else if(MinCellVoltage_mV <= battery.MinCellVoltageThreshold_mV)
+	else if(MinCellVoltage_mV <= Handle->MinCellVoltageThreshold_mV)
 	{
-		if(!battery.EstimationDoneInThisCycle)
+		if(!Handle->EstimationDoneInThisCycle)
 		{
 			if(*CurrentEnergy_As > ENERGY_THRESHOLD_AMP_SEC)
 			{
-				battery.EstimationDoneInThisCycle = 1;
+				Handle->EstimationDoneInThisCycle = 1;
 				*CurrentEnergy_As = ENERGY_THRESHOLD_AMP_SEC;
-				battery.TotalSystemEnergy_As += ENERGY_RAMP_AMP_SEC;
+				TotalEstimatedEnergy += ENERGY_RAMP_AMP_SEC;
 			}
 		}
 	}
 	else
 	{
-		battery.EstimationDoneInThisCycle = 0;
+		Handle->EstimationDoneInThisCycle = 0;
 	}
 
-	return battery.TotalSystemEnergy_As;
+	return TotalEstimatedEnergy;
 }
 
 
@@ -183,7 +181,7 @@ void GetCurrentLimit(const BatteryData_t* handle, const EcuConfig_t *ecuConfig, 
 	v = ((int32_t)CCLCurrentLimit * ecuConfig->Sys_MaxCCL) / 100;
 	CCLCurrentLimit = (ecuConfig->Sys_MaxCCL > 0)? 0 : v;
 
-	if (handle->StateMachine.MainState == WORKSTATE_FAULT)
+	if (handle->MainState == WORKSTATE_FAULT)
 	{
 		*Discharge = 0;
 		*Charge = 0;
@@ -209,3 +207,27 @@ void GetCurrentLimit(const BatteryData_t* handle, const EcuConfig_t *ecuConfig, 
 	return;
 }
 
+// Function Defenition:
+// SOC is calculated for each battery by themself.
+// Master calculates SOC as minimum SOC values of each battery
+uint8_t sysEnergy_EnergyCounting(BatteryData_t* Handle, int16_t Current_0p1A)
+{
+	if(Handle == 0)
+		return 0;
+
+	if(Handle->IsInit && Current_0p1A != INT16_MAX)
+	{
+		Handle->TotalCurrent = Current_0p1A;
+		Handle->TotalEnergy_As = sysEnergy_EnergyEstimation(Handle, Handle->MaxCellVoltage.Voltage_mv, Handle->MinCellVoltage.Voltage_mv);
+		Handle->SoC = sysEnergy_CoulombCounting(Handle, Handle->TotalCurrent);
+	}
+	else if(Current_0p1A == INT16_MAX)
+	{
+		Handle->TotalCurrent = 0;
+		Handle->TotalEnergy_As = UINT32_MAX;
+		Handle->SoC = UINT16_MAX;
+	}
+
+	return 1;
+
+}

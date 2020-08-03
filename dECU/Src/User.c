@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "User.h"
 #include "WorkStates.h"
 #include "dVCU_ECU.h"
@@ -45,7 +47,7 @@ void HardwareInit(void)
     PortInit();
     Tmr_Init(1000);		// resolution 1mS
     Can_Init(1, 1);
-    Pwm_Init(5000);
+    Pwm_Init(10000);
     Adc_Init();
     I2c_Init();
 	Spi_Init(DATABIT_16);
@@ -85,20 +87,6 @@ void PortInit(void)
 
 	FIO_SetDir(1, 0xC713, DIR_IN);
 	FIO_SetDir(0, (1 << 30) | (1 << 29), DIR_IN);
-
-//	FIO_SetDir(0, 0x40, DIR_OUT);
-//
-//    FIO_SetDir(1, 0xFFFFFFFF, DIR_OUT);		//(1 << 18) | (1 << 19) | (1 << 23) | (1 << 24) | (1 << 25) | (1 << 26) | (1 << 28) | (1 << 29)/*
-//    FIO_SetValue(1, 0xFFFFFFFF);
-//
-//    FIO_SetDir(2, 0xFFFFFFFF, DIR_OUT);			//0x27F/*
-//    FIO_SetValue(2, 0x00000000);
-//
-//    FIO_SetDir(4, 0xFFFFFFFF, DIR_OUT);		//(1 << 28) | (1 << 29)/*
-//    FIO_SetValue(4, 0xFFFFFFFF);
-//
-//	FIO_SetDir(1, 0xC713, DIR_IN);
-//	FIO_SetDir(0, (1 << 30) | (1 << 29), DIR_IN);
 }
 
 
@@ -121,8 +109,7 @@ void DisplayTrim(uint16_t Value)
 void DisplayEnergy(uint16_t Value)
 {
 	const EcuConfig_t *config = OD.cfg;
-	uint8_t dutycycle = (uint8_t)interpol((int16_t*)config->SpecPower, 6, Value);
-
+	uint8_t dutycycle = (uint8_t)interpol((int16_t*)config->SpecPower, 6, Value);	
 	btnSetOutputLevel(DISPLAY_CONS_CH, dutycycle);
 }
 
@@ -164,6 +151,85 @@ void DisplayMotorRpmInit(void)
 	TIM_Cmd(LPC_TIM0, ENABLE);
 }
 
+int8_t flashWriteSData(const StorageData_t *sdata)
+{
+	StorageData_t tmp_sdata;
+
+	// write 1st data to 1st and 2nd buffer
+	memcpy(&tmp_sdata.Buf_1st, &sdata->Buf_1st, sizeof(sdata->Buf_1st));
+
+	tmp_sdata.Buf_1st.Crc = 0;
+
+	for(uint8_t i = 0; i < sizeof(sdata->Buf_1st) - sizeof(sdata->Buf_1st.Crc); i++)
+		tmp_sdata.Buf_1st.Crc += *((uint8_t*)&tmp_sdata.Buf_1st + i);
+
+	MemEcuSDataWrite((uint8_t*)&tmp_sdata.Buf_1st, sizeof(sdata->Buf_1st), 0);
+
+	return 0;
+}
+
+int8_t flashReadSData(StorageData_t *sdata)
+{
+	int8_t result = 0;
+	uint16_t crc0 = 0;//, crc1 = 0;
+
+	sdata->Result = 0;
+
+	MemEcuSDataRead((uint8_t*)&sdata->Buf_1st, sizeof(sdata->Buf_1st), 0);
+	for(uint8_t i = 0; i < sizeof(sdata->Buf_1st) - sizeof(sdata->Buf_1st.Crc); i++)
+		crc0 += *((uint8_t*)&sdata->Buf_1st + i);
+
+	// if data from buf is correct
+	if(crc0 == sdata->Buf_1st.Crc)
+	{
+		uint8_t save_poweroff = sdata->Buf_1st.NormalPowerOff;
+		// Reset normal power off sign
+		sdata->Buf_1st.NormalPowerOff = 0;
+
+		if(!save_poweroff)
+			result =  -1;
+		else
+		{
+			result = 0;
+			sdata->DataChanged = 1;
+		}
+
+	}
+	// else restore TotalCapacity from another buffer
+	else
+	{
+
+		memset(&sdata->Buf_1st, 0xff, sizeof(sdata->Buf_1st));
+		result =  -1;
+	}
+
+	sdata->Result = result;
+	return result;
+}
+
+int8_t flashClearData(StorageData_t *sdata)
+{
+	// Prepare for write
+	int16_t Length = sizeof(sdata->Buf_1st) + sizeof(EcuConfig_t) + (dtcListSize * sizeof(dtcItem_t));
+	
+	__disable_irq();
+	MemEcuWriteData((uint8_t*)sdata, Length);
+
+	cfgWrite(sdata->cfgData);
+	SaveFaults(dtcList, dtcListSize);	
+	
+	__enable_irq();
+	
+	sdata->DataChanged = 0;	
+	return 0;
+}
+
+int8_t flashClearFaults(StorageData_t *sdata)
+{
+	ClearFaults(dtcList, dtcListSize);
+	return 0;
+}
+
 int8_t flashStoreData(StorageData_t *sdata)
 {
 	// Prepare for write
@@ -173,8 +239,8 @@ int8_t flashStoreData(StorageData_t *sdata)
 	MemEcuWriteData((uint8_t*)sdata, Length);
 
 	cfgWrite(sdata->cfgData);
-	SaveFaults();
-	//flashWriteSData(sdata);
+	SaveFaults(dtcList, dtcListSize);
+	flashWriteSData(sdata);
 
 	__enable_irq();
 

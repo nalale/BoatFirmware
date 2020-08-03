@@ -47,7 +47,10 @@ uint8_t PCanRx(CanMsg *msg)
 	{
 		OD.SB.BatteryMsgReceived = 1;
 		memcpy(&OD.BmuData1, msg->data, sizeof(BatM_Ext1_t));
-
+	}
+	else if(msg->ID == Bmu_ECU_CAN_ID + 2)
+	{
+		memcpy(&OD.BmuData2, msg->data, sizeof(BatM_Ext3_t));
 	}
 	else if(msg->ID == Bat_ECU_CAN_ID)
 	{
@@ -56,10 +59,6 @@ uint8_t PCanRx(CanMsg *msg)
 	else if(msg->ID == Bat_ECU_CAN_ID + Bat_ECUx_CAN_ID_LEN)
 	{
 		memcpy(&OD.PackData2, msg->data, sizeof(BatBatteryStatus1Msg_t));
-	}
-	else if(msg->ID == Bmu_ECU_CAN_ID + 2)
-	{
-		memcpy(&OD.BmuData2, msg->data, sizeof(BatM_Ext3_t));
 	}
 	else if(msg->ID == 0xa100100)
 	{
@@ -111,6 +110,8 @@ void PCanMesGenerate(void)
 									SET_OUT_STATE(D_IN3, D_IN_D_ECU_LIGHT_SWITCH_2) |
 									SET_OUT_STATE(D_IN5, D_IN_D_ECU_LIGHT_SWITCH_3) |
 									SET_OUT_STATE(D_IN9, D_IN_D_ECU_BOOST_SWITCH);
+
+					msg->data[4] = OD.A_CH_Voltage_0p1[0];
 				}
 				break;
 			}

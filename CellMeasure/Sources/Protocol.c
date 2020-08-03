@@ -1,8 +1,11 @@
-#include "Main.h"
+#include "EcuConfig.h"
 #include "Protocol.h"
-#include "CanFunc.h"
+
+#include "../Protocols/TestMsgProtocol.h"
 #include "../Protocols/ExternalProtocol.h"
 #include "../MolniaLib/N_OBD.h"
+
+#include "CanFunc.h"
 
 CanMsg PCanRxMsg;
 CanMsg PCanTxMsg;
@@ -31,17 +34,21 @@ void Protocol(void)
 	
 	//Master
 	if(ecuConfig.IsMaster)
-        MasterMesGenerate();	
+        MasterMesGenerate();
+	
 	//Battery
 	if(ecuConfig.ModuleIndex == 0)
 		SlaveMesGenerate();
+	
 	//Module
-	if(ecuConfig.ModuleIndex > 0)
-		ModuleMesGenerate();
+	ModuleMesGenerate();
 	   
 	ExternalMesGenerate();
 	ObdSendMes();
 	
+	if(ecuConfig.TestMode)
+		TestMesGenerate();
+
    
     if (GetBufferAvailable(P_CAN_CH) && ecanGetTxMsg(&PCanTxMsg, P_CAN_CH))
     { 	

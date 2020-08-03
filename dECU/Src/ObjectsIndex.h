@@ -42,6 +42,8 @@ typedef enum
 	
 	didFaults_FreezeFrame,
 	
+	didFlashData = 105,
+
 } ObjectsIndex_e;
 
 

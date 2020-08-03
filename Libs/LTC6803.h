@@ -91,6 +91,7 @@ typedef struct
 	uint8_t m_tmp_code_arr[TMP_ARRAY_SZ];
 	int16_t m_tmp_arr[EXT_TMP_SENSOR_NUM];
 	
+	uint8_t results_is_available;
 	uint8_t is_ready;
 	uint8_t open_conncetion_cell;
 	uint16_t m_ref_volt;
@@ -119,6 +120,7 @@ int16_t* vs_cell_volt_get(uint8_t vs_num);
 uint8_t ltc6803_GetError(uint8_t vs_num);
 uint32_t ltc6803_GetDischargingMask(uint8_t num_cs);
 
+uint8_t vs_is_available(uint8_t num);
 void vs_ban_balancing(uint8_t cmd);
 uint16_t find_cell_for_discharge(const int16_t * cell_voltage_array, uint8_t cell_num, const int16_t discharge_volt_target, const int16_t discharge_volt_min);
 

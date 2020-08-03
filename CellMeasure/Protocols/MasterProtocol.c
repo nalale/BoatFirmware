@@ -87,7 +87,7 @@ void MasterMesGenerate(void)
             
 				d->RequestState = OD.MasterControl.RequestState;
                 d->DCL = OD.MasterControl.DCL;
-                d->CCL = OD.MasterControl.CCL;							
+                d->CCL = OD.MasterControl.CCL;
 			}
 			break;
 

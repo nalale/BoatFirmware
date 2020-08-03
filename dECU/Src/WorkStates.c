@@ -46,8 +46,10 @@ void InitializationState(uint8_t *SubState)
 			// Инициализация устройства питания
 			TLE_GoToPowerSupply();
 		
-			if(ReadFaults())
-				FillFaultsList(OD.OldFaultList, &OD.OldFaultsNumber, 0);
+			if(ReadFaults(dtcList, dtcListSize))
+				OD.OldFaultsNumber = FillFaultsList(dtcList, dtcListSize, OD.OldFaultList, 0);
+
+			flashReadSData(&OD.SData);
 
 			*SubState = 1;
             break;
@@ -83,7 +85,10 @@ void ShutdownState(uint8_t *SubState)
 		// Запомнить время входа в режим, сохранить данные
 		case 0:
 			OD.LogicTimers.PowerOffTimer_ms = GetTimeStamp();
-			SaveFaults();
+			OD.SData.Buf_1st.SystemTime = OD.SystemTime;
+			OD.SData.Buf_1st.NormalPowerOff = 1;
+
+			flashStoreData(&OD.SData);
 			*SubState = 1;
 		break;
 		
@@ -121,7 +126,7 @@ void CommonState(void)
         boardMarineECU_Thread();
 		OD.ecuPowerSupply_0p1 = boardMarineECU_GetVoltage();
 		// Power Manager thread
-		PM_Proc(OD.ecuPowerSupply_0p1, 0);
+		PM_Proc(OD.ecuPowerSupply_0p1, OD.cfg->IsPowerManager);
 
 		Max11612_GetResult(OD.A_CH_Voltage_0p1, V_AN);
 		
@@ -139,15 +144,16 @@ void CommonState(void)
 		TLE_Proc();
 		Max11612_StartConversion();
 		
-		OD.LocalPMState = PM_GetPowerState();
+		OD.LocalPMState = (OD.cfg->IsPowerManager)? PM_GetPowerState() : OD.PowerManagerCmd;
 
 		if(OD.LocalPMState == PM_PowerOn1)
-		{
 			OD.SB.PowerOn = 1;
-		}
-		if(OD.LocalPMState == PM_ShutDown || OD.PowerManagerCmd == PM_ShutDown)
+		else if((OD.LocalPMState == PM_ShutDown) &&
+						(OD.SB.PowerOn == 1 && OD.StateMachine.MainState != WORKSTATE_SHUTDOWN))
+		{
+			OD.SB.PowerOn = 0;
 			SetWorkState(&OD.StateMachine, WORKSTATE_SHUTDOWN);
-
+		}
 	}
     if(GetTimeFrom(OD.LogicTimers.Timer_100ms) >= OD.DelayValues.Time100_ms)
     {       

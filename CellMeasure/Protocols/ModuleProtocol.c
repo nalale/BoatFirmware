@@ -3,27 +3,30 @@
 #include "Protocol.h"
 #include "TimerFunc.h"
 
-static uint32_t modSendTime[Module_ECUx_CAN_ID_LEN];
+#define TX_MSG	3
+
+static uint32_t modSendTime[TX_MSG];
 // Периоды отправки сообщений
-const uint16_t msgPeriod[Module_ECUx_CAN_ID_LEN] = {
+const uint16_t msgPeriod[TX_MSG] = {
+								250,
 								250,
 								250
 								 };
 
 uint8_t moduleMsgHandler(CanMsg *msg)
 {	
-	if((msg->ID < Module_ECU_CAN_ID) || (msg->ID >= Module_ECU_CAN_ID + Module_ECU_CAN_ID))
+	if((msg->ID < Module_ECU_CAN_ID) || (msg->ID >= Module_ECU_CAN_ID + Module_ECU_CAN_ID_LEN))
 		return 1;	
 	
 	EcuConfig_t ecuConfig = GetConfigInstance();
 	
 	// Проверяем индекс сообщения. Если ID нечетный, значит пришло второе сообщение из группы сообщений Battery
-	uint16_t msg_id = (msg->ID & 0x01)? msg->ID - 1 : msg->ID;		
-	uint8_t module_id = ((msg_id - Module_ECU_CAN_ID) / Module_ECUx_CAN_ID_LEN) - (MaxModuleNum * ecuConfig.BatteryIndex);
-	uint8_t msg_num = msg->ID & 0x01;
 
-	// Модуль не принадлежит ветке своей батареи
-	if(module_id >= MAX_MODULE_NUM)
+	uint16_t msg_id = msg->ID;
+	uint8_t module_id = ((msg_id - Module_ECU_CAN_ID) / Module_ECUx_CAN_ID_LEN) - (MaxModuleNum * ecuConfig.BatteryIndex);
+	uint8_t msg_num = ((msg->ID - Module_ECU_CAN_ID) - (Module_ECUx_CAN_ID_LEN * module_id)) - (Module_ECUx_CAN_ID_LEN * ecuConfig.BatteryIndex * MaxModuleNum);
+	
+	if(module_id >= MaxModuleNum)
 		return 1;
 	
 	switch(msg_num)
@@ -44,11 +47,26 @@ uint8_t moduleMsgHandler(CanMsg *msg)
 		{
 			BatModuleStatus2Msg_t *d = (BatModuleStatus2Msg_t*)msg->data;
 			
-			OD.ModuleData[module_id].StateMachine.MainState = (WorkStates_e)d->Mod_MainState;
-			OD.ModuleData[module_id].StateMachine.SubState = d->Mod_SubState;
+			OD.ModuleData[module_id].MainState = (WorkStates_e)d->Mod_MainState;
+			OD.ModuleData[module_id].SubState = d->Mod_SubState;
 			OD.ModuleData[module_id].Faults = d->Faults;
+			OD.ModuleData[module_id].ActualEnergy_As = (d->ActualEnergy_0p01Ah == UINT16_MAX)?
+					UINT32_MAX : (uint32_t)d->ActualEnergy_0p01Ah * 36;
 		}
 			break;
+
+		case 2:
+		{
+			cmPackModule1_t *d = (cmPackModule1_t*)msg->data;
+
+			if((OD.ConfigData->ModuleIndex > module_id) && (OD.ConfigData->ModuleIndex < module_id + d->ModulesInPack))
+			{
+				OD.PackControl.ModulesInAssembly = d->ModulesInPack;
+				OD.PackControl.BalancingEnabled = d->BalancingEnabled;
+				OD.PackControl.TargetVoltage_mV = d->TargetBalancingVoltage;
+			}
+		}
+		break;
 		
 		default:
 			return 1;			
@@ -65,9 +83,10 @@ void ModuleMesGenerate(void)
 	static uint8_t SendMesNumber = 0;
     
     CanMsg *msg;
-    
+    uint8_t max_msg_num = ((OD.ConfigData->Sys_ModulesCountS == OD.ConfigData->ModulesInAssembly) || 
+							(OD.ConfigData->ModulesInAssembly <= 1))? TX_MSG - 1 : TX_MSG;
     // Генерация сообщений
-	if (++SendMesNumber >= Module_ECUx_CAN_ID_LEN)
+	if (++SendMesNumber >= max_msg_num)
 		SendMesNumber = 0;
 
 	if (GetTimeFrom(modSendTime[SendMesNumber]) > msgPeriod[SendMesNumber])
@@ -106,9 +125,24 @@ void ModuleMesGenerate(void)
 				d->Mod_MainState = (WorkStates_e)OD.StateMachine.MainState;
 				d->Mod_SubState = OD.StateMachine.SubState;
 				d->Faults = OD.Faults.Flags;
-				
+				d->StateOfCharge = OD.ModuleData[ecuConfig.ModuleIndex].SoC;
+				d->dummy2 = OD.ModuleData[ecuConfig.ModuleIndex].TotalCurrent; 
+				d->ActualEnergy_0p01Ah = (OD.ModuleData[OD.ConfigData->ModuleIndex].ActualEnergy_As == UINT32_MAX)?
+						UINT16_MAX : (uint16_t)(OD.ModuleData[OD.ConfigData->ModuleIndex].ActualEnergy_As / (uint32_t)36);
             }
                 break;
+
+			case 2:
+			{
+				cmPackModule1_t *d = (cmPackModule1_t*)msg->data;
+
+				d->ModulesInPack = OD.ConfigData->ModulesInAssembly;
+				d->BalancingEnabled = OD.PackControl.BalancingEnabled;
+				d->TargetBalancingVoltage = OD.PackControl.TargetVoltage_mV;
+				d->CCL = OD.PackData[OD.ConfigData->BatteryIndex].CCL;
+				d->DCL = OD.PackData[OD.ConfigData->BatteryIndex].DCL;
+			}
+			break;
         }
 
     }

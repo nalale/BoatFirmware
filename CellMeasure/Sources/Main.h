@@ -6,7 +6,7 @@
 #include "lpc_types.h"
 
 #include "ObjectsIndex.h"
-
+#include "BatteryMeasuring.h"
 
 #include "../BoardDefinitions/BmsCombi_Board.h"
 #include "../MolniaLib/Config.h"
@@ -16,26 +16,14 @@
 #include "../MolniaLib/PowerManager.h"
 #include "../MOlniaLib/FaultsServices.h"
 
-#define MASTER
-//#define MODULE
-//#define DEBUG_CELL
-
 // Максимальное число батарей, которые могут работать вместе
 #define MAX_BATTERY_AMOUNT			2
 // Количество аккумуляторов в модуле
 #define CELLS_IN_MODULE				24
 // КОличество модулей в ветке
-#define MAX_MODULE_NUM				4
+#define MAX_MODULE_NUM				12
 // Количество термодатчиков в модуле
 #define TMP_SENSOR_IN_MODULE		4
-
-
-typedef enum
-{
-	type_Master = 0,
-	type_Pack,
-	type_Module,
-} ModuleType_e;
 
 // Состояния конечного автомата
 typedef enum {
@@ -111,8 +99,8 @@ typedef struct
 	uint32_t TotalActualEnergy_As;
 	uint32_t ActualEnergy_As;
 
-	uint32_t dummy;
-	uint32_t dumm1;
+	uint32_t SystemTotalEnergy_As;
+	uint32_t SystemActualEnergy_As;
 	uint32_t dummy2;
 	uint32_t dummy3;
 	uint32_t dummy4;
@@ -134,109 +122,6 @@ typedef struct
 	uint8_t DataChanged;
 } StorageData_t;
 
-// Напряжение на ячейке
-typedef struct
-{
-	// Напряжение ячейки в мВ
-	int16_t Voltage_mv;
-	// Номер ячейки
-	uint8_t  CellNumber;
-	// Номер модуля
-	uint8_t ModuleNumber;
-	// Номер батареи
-	uint8_t  BatteryNumber;
-} CellVoltage_t;
-
-// Температура модуля
-typedef struct
-{
-    // Температура модуля
-    int8_t Temperature;
-	// Номер датчика
-	uint8_t SensorNum;
-    // Номер модуля
-    uint8_t  ModuleNumber;
-    // Номер батареи
-    uint8_t  BatteryNumber;
-} ModuleTemperature_t;
-
-// Ток батареи
-typedef struct
-{
-    // Ток батареи в амперах * 10
-    int16_t Current;
-    // Номер батареи
-    int8_t BatteryNumber;
-} BatteryCurrent_t;
-
-// Напряжение батареи
-typedef struct
-{
-    // Напряжение батареи в вольтах * 10
-    uint16_t Voltage;
-    // Номер батареи
-    int8_t BatteryNumber;
-} BatteryVoltage_t;
-
-// структура данных статистика мастера
-typedef struct
-{	
-	ModuleType_e Type;
-	// Состояние конечного автомата
-    StateMachine_t StateMachine;
-	
-	uint8_t Faults;
-	
-    // Уровень заряда в % * 10
-    uint16_t SoC;
-	// Для подсчета отданной энергии в Ампер-секундах
-    uint32_t ActualEnergy_As;
-	uint32_t TotalEnergy_As;
-    // Ограничение тока заряда в амперах
-    int16_t CCL;
-    // Ограничение тока разряда в амперах
-    int16_t DCL;
-	
-	// Флаги батарей в сети
-    uint32_t OnlineFlags;
-	// Сколько всего батарей в сети
-    uint8_t OnlineNumber;
-	// Флаги балансируемых ячеек
-	uint32_t DischargingCellsFlag;
-	
-    // Ток всей системы * 10
-    int16_t TotalCurrent;
-    // Суммарное напряжение на аккумуляторах * 10
-    uint16_t TotalVoltage;
-	
-    // Максимальный ток батареи в амперах * 10
-    BatteryCurrent_t MaxBatteryCurrent;
-    // Минимальный ток батареи в амперах * 10
-    BatteryCurrent_t MinBatteryCurrent;
-	
-    // Максимальное напряжение из всех батарей в вольтах
-    BatteryVoltage_t MaxBatteryVoltage;
-    // Минимальное напряжение из всех батарей
-    BatteryVoltage_t MinBatteryVoltage;
-	
-	uint32_t TimeOutCnts;
-	
-	// ********************** Напряжение и температура ячеек **************************************	
-    // Напряжение наиболее заряженной ячейки в мВ
-	CellVoltage_t MaxCellVoltage;
-    // Напряжение наименее заряженной ячейки в мВ
-	CellVoltage_t MinCellVoltage;
-	// Среднее напряжение на ячейках в мВ
-	uint16_t AvgCellVoltage;
-
-	
-    // Максимальная температура модуля
-    ModuleTemperature_t MaxModuleTemperature;
-    // Минимальная температура модуля
-    ModuleTemperature_t MinModuleTemperature;
-	// Средняя температура модуля
-	int8_t AvgModuleTemperature;	
-} BatteryData_t;
 
 typedef struct
 {
@@ -258,6 +143,7 @@ typedef struct
 	// Напряжение балансировки
 	uint16_t TargetVoltage_mV;
 	uint8_t BalancingEnabled;
+	uint8_t ModulesInAssembly;
 } PackControl_t;
 
 typedef union
@@ -340,7 +226,7 @@ typedef struct
     
 	BatteryData_t ModuleData[MAX_MODULE_NUM];
     // Данные батареи
-	BatteryData_t BatteryData[MAX_BATTERY_AMOUNT];
+	BatteryData_t PackData[MAX_BATTERY_AMOUNT];
     // Данные мастера
     BatteryData_t MasterData;
 	
@@ -351,7 +237,6 @@ typedef struct
     uint32_t LastPrechargeDuration;
     int16_t PreZeroCurrent_0p1A;
     
-    uint32_t Energy_As;
 	uint32_t BatteryCapacity;
 	
 	uint32_t SystemOperateEnabled;

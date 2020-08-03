@@ -276,7 +276,7 @@ const DiagnosticValueFRZF dVal_frzfBatState[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfBatNumber) },
 };
 // Статические параметры неисправности
-static dtcProperty_t dtcProp_BatState = { dtc_Mst_WrongBatState, DTC_BIT_WARNING_ENABLE + DTC_BIT_OPERATION_DISABLE, 0, 4, -4, 250, DIAG_ITEM(dVal_frzfBatState) };
+static dtcProperty_t dtcProp_BatState = { dtc_Mst_WrongBatState, DTC_BIT_WARNING_ENABLE + DTC_BIT_OPERATION_DISABLE, 0, 8, -1, 250, DIAG_ITEM(dVal_frzfBatState) };
 // Все о неисправности
 dtcItem_t dtcMst_BatState = {&dtcProp_BatState};
 
@@ -332,16 +332,18 @@ void ecuInit(ObjectDictionary_t *dictionary)
 	dictionary->EcuInfo[2] = FW_VERSION;
 	dictionary->EcuInfo[3] = HW_VERSION;
 	
-	dictionary->BatteryData[_config.BatteryIndex].Type = type_Pack;
+	dictionary->PackData[_config.BatteryIndex].Type = type_Pack;
+	dictionary->PackData[_config.BatteryIndex].Index = _config.ModuleIndex;
 	dictionary->MasterData.Type = type_Master;
-	
+	dictionary->MasterData.Index = _config.BatteryIndex;
+
 	// Применение ошибок
 	if(!_config.CheckContactor)
 		dtcContactor.Property->Bits.IsCritical = 0;
 	else
 		dtcContactor.Property->Bits.IsCritical = 1;
 	
-	dictionary->ecuIndex = _config.DiagnosticID + _config.ModuleIndex + (MAX_MODULE_NUM * _config.BatteryIndex);	
+	dictionary->ecuIndex = _config.DiagnosticID + _config.ModuleIndex + (MaxModuleNum * _config.BatteryIndex);
 	
 	// Настройка лимита предзаряда
 	dtcBat_Precharge.Property->TestSamplePeriod = _config.PreMaxDuration / dtcBat_Precharge.Property->TestFailedThreshold;

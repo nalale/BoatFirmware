@@ -24,6 +24,7 @@
 #include "../Libs/CurrentSens.h"
 
 #define MIN_AVAIL_CELL_VOLTAGE_MV	200
+static int16_t CurrentLimitArray[CCL_DCL_POINTS_NUM * 2];
 
 void HardwareInit(void);
 void PortInit(void);
@@ -80,6 +81,30 @@ void ControlBatteriesState(WorkStates_e *CurrentState, WorkStates_e RequestState
 	}
 }
 
+void TestContactorControl()
+{
+	static uint32_t ts = 0;
+	static uint8_t dsch_flag = 0;
+
+	if(dsch_flag)
+	{
+		LED(1);
+		if(GetTimeFrom(ts) > 5000)
+		{
+			dsch_flag = 0;
+			ts = GetTimeStamp();
+		}
+	}
+	else
+	{
+		LED(0);
+		if(GetTimeFrom(ts) > 15000)
+		{
+			dsch_flag = 1;
+			ts = GetTimeStamp();
+		}
+	}
+}
 
 void LedStatus(uint8_t ContFB, uint32_t Balancing)
 {
@@ -209,6 +234,11 @@ uint8_t ModuleIsPackHeader(const EcuConfig_t *config)
 	return config->ModuleIndex == 0;
 }
 
+uint8_t ModuleIsAssemblyHeader(const EcuConfig_t *config)
+{
+	return (OD.ConfigData->ModulesInAssembly > 1) && (OD.ConfigData->ModulesInAssembly != OD.ConfigData->Sys_ModulesCountS);
+}
+
 void ModuleStatisticCalculating(BatteryData_t* Handle, const EcuConfig_t *ecuConfig, const int16_t *CellsVoltageArray, const int16_t *CellsTempArray)
 {
 	uint16_t nv = 0;
@@ -294,36 +324,45 @@ void ModuleStatisticCalculating(BatteryData_t* Handle, const EcuConfig_t *ecuCon
 
     if(nv > 0)
     	Handle->AvgModuleTemperature = SumTemperature / nt;
+	
+	Handle->DataIsReady = ((Handle->MinCellVoltage.Voltage_mv == INT16_MAX) || 
+							(Handle->MinBatteryCurrent.Current == INT16_MAX) || 
+							(Handle->MinModuleTemperature.Temperature == INT8_MAX))? 0 : 1;
 
 }
 
 /* *********************** Battery Functionality ****************************** */
+uint8_t packIsModulesOnline(const BatteryData_t* Handle, const EcuConfig_t *config)
+{
+	uint8_t tmp = 1;
+
+	if (Handle->MinCellVoltage.Voltage_mv <= config->Sys_MinCellVoltage_mV)
+		tmp = 0;
+
+	return tmp;
+}
 
 uint8_t packIsReady(const BatteryData_t* Handle, const BatteryData_t *ModulesData, const EcuConfig_t *config, uint32_t *ReadyConditionTimeStamp)
 {
 	if(ModuleIsPackHeader(config))
 	{
-		if(Handle[config->BatteryIndex].OnlineNumber == config->Sys_ModulesCountS)
+		uint8_t tmp = 1;
+		for (uint8_t i = config->ModuleIndex + 1; i < config->Sys_ModulesCountS; i++)
 		{
-			uint8_t tmp = 1;
-			for (uint8_t i = config->ModuleIndex + 1; i < config->Sys_ModulesCountS; i++)
-			{
-				// Ждем когда все модули замкнут контакторы
-				if (ModulesData[i].StateMachine.MainState != WORKSTATE_OPERATE)
-					tmp = 0;
-			}
+			// Ждем когда все модули замкнут контакторы
+			if (ModulesData[i].MainState != WORKSTATE_OPERATE)
+				tmp = 0;
+		}
 
-			if(tmp == 1)
-			{
-				if(GetTimeFrom(*ReadyConditionTimeStamp) > 500)
-					return tmp;
+		if(tmp == 1)
+		{
+			if(GetTimeFrom(*ReadyConditionTimeStamp) > 500)
+				return tmp;
 
-			}
-			else
-				*ReadyConditionTimeStamp = GetTimeStamp();
 		}
 		else
 			*ReadyConditionTimeStamp = GetTimeStamp();
+
 	}
 
 	return 0;
@@ -373,34 +412,30 @@ uint8_t packWaitForPrecharge(const BatteryData_t* Handle, const EcuConfig_t *con
 	return 0;
 }
 
-// Function Defenition:
-// SOC is calculated for each battery by themself.
-// Master calculates SOC as minimum SOC values of each battery
-uint8_t packCapacityCalculating(BatteryData_t* Handle, const EcuConfig_t *config, uint8_t StartMeasuringPermission)
-{
-	if(Handle == 0 || config == 0)
-		return 0;
-
-	if(StartMeasuringPermission && ModuleIsPackHeader(config))
+void BatteryCheckModulesOnline(BatteryData_t *Handle, const BatteryData_t *SourceData, uint8_t SourceItemsNum)
+{	
+	uint8_t packsNum = SourceItemsNum;
+	uint8_t mod_index = Handle->Index;
+	
+	Handle->OnlineFlags = 1 << mod_index;
+	Handle->OnlineNumber = 1;
+	
+	for (uint8_t j = mod_index + 1; j < mod_index + packsNum; j++)
 	{
-		uint32_t totalEnergy_As = sysEnergy_EnergyEstimation(&OD.Energy_As, OD.BatteryData[OD.ConfigData->BatteryIndex].MaxCellVoltage.Voltage_mv, OD.BatteryData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv);
-		Handle[config->BatteryIndex].TotalCurrent = csGetAverageCurrent();
-		Handle[config->BatteryIndex].SoC = sysEnergy_CoulombCounting(Handle[config->BatteryIndex].TotalCurrent, &OD.Energy_As, totalEnergy_As);
-
-		return 1;
-	}
-	else
-	{
-		Handle[config->BatteryIndex].TotalCurrent = 0;
-		Handle[config->BatteryIndex].SoC = 0;
-
-		return 0;
+		// If module or pack online
+		uint32_t bat_delay = GetTimeFrom(SourceData[j].TimeOutCnts);
+		if (bat_delay < 1000)
+		{
+			// Зафиксировать наличие батарей
+			Handle->OnlineFlags |= 1L << j;
+			Handle->OnlineNumber = Handle->OnlineNumber + 1;
+		}
 	}
 }
 
-void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *SourceData, const EcuConfig_t *ecuConfig)
+void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *SourceData, uint8_t SourceItemsNum)
 {
-	if(Handle == 0 || SourceData == 0 || ecuConfig == 0 || ecuConfig->ModuleIndex > 0)
+	if(Handle == 0 || SourceData == 0)// || ecuConfig == 0)
 		return;
 		
     uint32_t SumVoltageTemp = 0;
@@ -408,10 +443,13 @@ void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *Sou
 	uint32_t SumCurrentTmp = 0;
 	uint32_t SumEnergyTmp = 0;	
 	uint32_t SumTotalEnergyTmp = 0;
+	uint32_t MinEnergyTmp = UINT32_MAX;
+	uint32_t MinTotalEnergyTmp = UINT32_MAX;
 	uint16_t minSoc = UINT16_MAX;
 	uint8_t n = 0;
 	uint8_t isModulesData = (Handle->Type == type_Pack)? 1 : 0;
-	uint8_t packsNum = (isModulesData)? ecuConfig->Sys_ModulesCountS :  ecuConfig->Sys_ModulesCountP;
+	uint8_t packsNum = SourceItemsNum;
+	uint8_t mod_index = Handle->Index;
 
 	Handle->MinCellVoltage.Voltage_mv = INT16_MAX;
 	Handle->MaxCellVoltage.Voltage_mv = INT16_MIN;
@@ -421,25 +459,10 @@ void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *Sou
 	Handle->MinBatteryCurrent.Current = INT16_MAX;
 	Handle->MaxBatteryVoltage.Voltage = 0;
 	Handle->MinBatteryVoltage.Voltage = UINT16_MAX;
-
-	for (uint8_t i = 0; i < packsNum; i++)
+	Handle->DataIsReady = 1;
+	
+	for (uint8_t i = mod_index; i < mod_index + packsNum; i++)
 	{
-        // Сбросить значения
-		Handle->OnlineFlags = 1;
-		Handle->OnlineNumber = 1;
-
-        for (uint8_t i = 1; i < packsNum; i++)
-		{
-			// Если батарея/модуль в сети
-            uint32_t bat_delay = GetTimeFrom(SourceData[i].TimeOutCnts);
-			if (bat_delay < 1000)
-			{
-				// Зафиксировать наличие батарей
-				Handle->OnlineFlags |= 1L << i;
-				Handle->OnlineNumber = Handle->OnlineNumber + 1;
-			}
-		}
-
 		// Если батареи нет в сети - проверить следующую
 		if (!(Handle->OnlineFlags & (1L << i)))
 			continue;
@@ -453,6 +476,10 @@ void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *Sou
 		SumCurrentTmp += SourceData[i].TotalCurrent;
 		SumEnergyTmp += SourceData[i].ActualEnergy_As;
 		SumTotalEnergyTmp += SourceData[i].TotalEnergy_As;
+
+		// Reset Ready flag if uncorrent condition
+		if(SourceData[i].MaxCellVoltage.Voltage_mv >= INT16_MAX /*ecuConfig->Sys_MaxCellVoltage_mV*/ || SourceData[i].MinCellVoltage.Voltage_mv <= 0 /*ecuConfig->Sys_MinCellVoltage_mV*/)
+			Handle->DataIsReady = 0;
 
 		// Поиск максимльного напряжяения
 		if (SourceData[i].MaxCellVoltage.Voltage_mv > Handle->MaxCellVoltage.Voltage_mv)
@@ -512,14 +539,17 @@ void BatteryStatisticCalculating(BatteryData_t *Handle, const BatteryData_t *Sou
 
 		if(SourceData[i].SoC < minSoc)
 			minSoc = SourceData[i].SoC;
+
+		if(SourceData[i].ActualEnergy_As < MinEnergyTmp)
+			MinEnergyTmp = SourceData[i].ActualEnergy_As;
+
+		if(SourceData[i].TotalEnergy_As < MinTotalEnergyTmp)
+			MinTotalEnergyTmp = SourceData[i].TotalEnergy_As;
 	}
 
 	if(n > 0)
 		Handle->AvgCellVoltage = SumAvgCellVoltage / n;
 
-	// Мастер умножает минимальный CCL на количество packs
-	Handle->CCL = (isModulesData)? OD.MasterControl.CCL : OD.MasterControl.CCL * packsNum;
-	Handle->DCL = (isModulesData)? OD.MasterControl.DCL : OD.MasterControl.DCL * packsNum;
 	Handle->SoC = (isModulesData)?	Handle->SoC : minSoc;
 	Handle->TotalVoltage = (isModulesData)? SumVoltageTemp : SumVoltageTemp / n;
 	Handle->TotalCurrent = (isModulesData)? Handle->TotalCurrent : SumCurrentTmp;
@@ -533,16 +563,11 @@ uint8_t packGetBalancingPermission(const BatteryData_t *PackHandle, const PackCo
 
 	if(PackHandle->Type == type_Pack)
 	{
-		if(ecuConfig->ModuleIndex == 0)
-		{
-			// Разрешаем балансировку при токе меньше 1 Ампера
-			if(PackHandle->TotalCurrent > 10 || PackHandle->TotalCurrent < -10)
-				res = 0;
-			else
-				res = 1;
-		}
+		// Разрешаем балансировку при токе меньше 1 Ампера
+		if(PackHandle->TotalCurrent > 10 || PackHandle->TotalCurrent < -10)
+			res = 0;
 		else
-			res = PackControl->BalancingEnabled;
+			res = 1;
 	}
 	else
 		res = PackControl->BalancingEnabled;
@@ -552,7 +577,7 @@ uint8_t packGetBalancingPermission(const BatteryData_t *PackHandle, const PackCo
 
 uint16_t packGetBalancingVoltage(const BatteryData_t *PackHandle, const PackControl_t *PackControl, const EcuConfig_t *ecuConfig)
 {
-	if(ecuConfig->ModuleIndex != 0 || PackHandle->Type != type_Pack)
+	if(PackHandle->Type != type_Pack)
 		return PackControl->TargetVoltage_mV;
 
 	uint16_t _minVolt_mV = PackHandle->MinCellVoltage.Voltage_mv;
@@ -564,6 +589,128 @@ uint16_t packGetBalancingVoltage(const BatteryData_t *PackHandle, const PackCont
 		TargetVoltTemp_mV = ecuConfig->MinVoltageForBalancing;
 
 	return TargetVoltTemp_mV;
+}
+
+uint32_t packGetMinEnergy(const BatteryData_t *SourceHandle, const EcuConfig_t *ecuConfig)
+{
+	uint32_t result = UINT32_MAX;
+
+	if(SourceHandle == 0 || ecuConfig == 0 || SourceHandle->Type != type_Module)
+		return UINT32_MAX;
+
+	for(int i = 0; i < ecuConfig->Sys_ModulesCountS; i++)
+	{
+		if(result < SourceHandle[i].ActualEnergy_As)
+			result = SourceHandle[i].ActualEnergy_As;
+	}
+
+	return result;
+}
+
+int16_t packGetChargeCurrentLimit(const BatteryData_t* handle, const EcuConfig_t *ecuConfig, int16_t FullCCL_A)
+{
+	int16_t limit;
+	int16_t Charge = handle->CCL;
+	int16_t CCLCurrentLimit = 100;
+
+	if(ecuConfig->ModulesInAssembly <= 1 && !ecuConfig->IsMaster)
+		return 0;
+
+	if(ecuConfig->IsMaster)
+		FullCCL_A = FullCCL_A * ecuConfig->Sys_ModulesCountP;
+
+	// Копируем во временный массив данные по ограничению заряда от напряжения
+	memcpy(CurrentLimitArray, ecuConfig->VoltageCCLpoint, CCL_DCL_POINTS_NUM * 4);
+	// Вычисляем локальное ограничение заряда
+	limit = interpol(CurrentLimitArray, CCL_DCL_POINTS_NUM, handle->MaxCellVoltage.Voltage_mv);
+	CCLCurrentLimit = (limit < CCLCurrentLimit)? limit : CCLCurrentLimit;
+
+
+	// Ограничение по температуре.
+/*	limit = interpol((int16_t *)EcuConfig.TemperatureCCLpoint, CCL_DCL_POINTS_NUM, OD.MasterData.MaxModuleTemperature.Temperature);
+	if (limit < CCLCurrentLimit)
+	{
+		CCLCurrentLimit = limit;
+	}
+
+	limit = interpol((int16_t *)EcuConfig.TemperatureCCLpoint, CCL_DCL_POINTS_NUM, OD.MasterData.MinModuleTemperature.Temperature);
+	if (limit < CCLCurrentLimit)
+	{
+		CCLCurrentLimit = limit;
+	}
+*/
+
+	// Перевод процентов в амперы
+	int32_t v =  ((int32_t)CCLCurrentLimit * FullCCL_A) / 100;
+	CCLCurrentLimit = (FullCCL_A > 0)? 0 : v;
+
+	if (handle->MainState == WORKSTATE_FAULT)
+	{
+		Charge = 0;
+	}
+	else
+	{
+		// if less or max value
+		if((CCLCurrentLimit >= Charge))		//CCL < 0
+			Charge = CCLCurrentLimit;	// Снижаем сразу
+		else
+			Charge -= 1;	// Повышаем постепенно
+	}
+
+	return Charge;
+}
+
+int16_t packGetDischargeCurrentLimit(const BatteryData_t* handle, const EcuConfig_t *ecuConfig, int16_t FullDCL_A)
+{
+	int16_t limit;
+	int16_t Discharge = handle->DCL;
+	int16_t DCLCurrentLimit = 100;
+
+	if(ecuConfig->ModulesInAssembly <= 1 && !ecuConfig->IsMaster)
+		return 0;
+
+	if(ecuConfig->IsMaster)
+		FullDCL_A = FullDCL_A * ecuConfig->Sys_ModulesCountP;
+
+	// Копируем во временный массив данные по ограничению заряда от напряжения
+	memcpy(CurrentLimitArray, (uint8_t*)(ecuConfig->VoltageCCLpoint), CCL_DCL_POINTS_NUM * 2);
+	memcpy((uint8_t*)(CurrentLimitArray) + (CCL_DCL_POINTS_NUM * 2), (uint8_t*)(ecuConfig->VoltageCCLpoint) + CCL_DCL_POINTS_NUM * 4, CCL_DCL_POINTS_NUM * 2);
+	limit = interpol(CurrentLimitArray, CCL_DCL_POINTS_NUM, handle->MinCellVoltage.Voltage_mv);
+	DCLCurrentLimit = (limit < DCLCurrentLimit)? limit : DCLCurrentLimit;
+
+
+	// Ограничение по температуре.
+/*	limit = interpol((int16_t *)EcuConfig.TemperatureCCLpoint, CCL_DCL_POINTS_NUM, OD.MasterData.MaxModuleTemperature.Temperature);
+	if (limit < DCLCurrentLimit)
+	{
+		DCLCurrentLimit = limit;
+	}
+
+	limit = interpol((int16_t *)EcuConfig.TemperatureCCLpoint, CCL_DCL_POINTS_NUM, OD.MasterData.MinModuleTemperature.Temperature);
+	if (limit < DCLCurrentLimit)
+	{
+		DCLCurrentLimit = limit;
+	}
+*/
+
+	// Перевод процентов в амперы
+	int32_t v = ((int32_t)DCLCurrentLimit * FullDCL_A) / 100;
+	DCLCurrentLimit = v;
+
+	if (handle->MainState == WORKSTATE_FAULT)
+	{
+		Discharge = 0;
+	}
+	else
+	{
+		// if less or max value
+		if(DCLCurrentLimit <= Discharge)
+			Discharge = DCLCurrentLimit;	// Снижаем сразу
+		else
+			Discharge += 1;				// Повышаем постепенно
+	}
+
+	return Discharge;
 }
 
 /* *********************** Master Functionality ******************************* */
@@ -611,6 +758,7 @@ int8_t flashWriteSData(const StorageData_t *sdata)
 	for(uint8_t i = 0; i < sizeof(sdata->Buf_1st) - sizeof(sdata->Buf_1st.Crc); i++)
 		tmp_sdata.Buf_1st.Crc += *((uint8_t*)&tmp_sdata.Buf_1st + i);
 
+	tmp_sdata.Buf_1st.Crc++;
 	MemEcuSDataWrite((uint8_t*)&tmp_sdata.Buf_1st, sizeof(sdata->Buf_1st), 0);
 	
 //	for(uint8_t i = 0; i < sizeof(sdata->Buf_2nd) - sizeof(sdata->Buf_2nd.Crc); i++)
@@ -641,7 +789,7 @@ int8_t flashReadSData(StorageData_t *sdata)
 	{
 	*/
 		// if data from buf is correct
-		if(crc0 == sdata->Buf_1st.Crc)
+		if(crc0 == sdata->Buf_1st.Crc - 1)
 		{			
 			uint8_t save_poweroff = sdata->Buf_1st.NormalPowerOff;
 			// Reset normal power off sign
@@ -673,6 +821,23 @@ int8_t flashReadSData(StorageData_t *sdata)
 int8_t flashClearFaults(StorageData_t *sdata)
 {
 	ClearFaults(dtcList, dtcListSize);
+	return 0;
+}
+
+int8_t flashClearData(StorageData_t *sdata)
+{
+	// Prepare for write
+	int16_t Length = sizeof(sdata->Buf_1st) + sizeof(EcuConfig_t) + (dtcListSize * sizeof(dtcItem_t));
+	
+	__disable_irq();
+	MemEcuWriteData((uint8_t*)sdata, Length);
+
+	cfgWrite(sdata->cfgData);
+	SaveFaults(dtcList, dtcListSize);	
+	
+	__enable_irq();
+	
+	sdata->DataChanged = 0;	
 	return 0;
 }
 

@@ -281,6 +281,14 @@ uint8_t ecuWriteDiagnosticValue(uint16_t did, uint32_t buf, uint16_t NoteToWrite
 		flashClearFaults(&OD.SData);
 		OD.SData.DataChanged = 1;
 	}
+	else if(did == didFlashData)
+	{
+		if(NoteToWrite > 0)
+			return GENERAL_PROGRAMMING_FAILURE;		
+		
+		flashClearData(&OD.SData);
+		OD.SData.DataChanged = 1;
+	}
 	else
 	{
 		return INDEX_OUTSIDE_BOUNDSE_ERROR;

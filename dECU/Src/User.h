@@ -5,6 +5,8 @@
 #include "Main.h"
 #include "../BoardDefinitions/MarineEcu_Board.h"
 #include "../Libs/max11612.h"
+#include "../MolniaLib/FaultsServices.h"
+
 #include "PwmFunc.h"
 
 #define DISPLAY_SOC_CH 		PWM_Channel1
@@ -21,6 +23,10 @@ void DisplayTrim(uint16_t Value);
 void DisplayEnergy(uint16_t Value);
 void DisplayMotorRpm(int16_t Value);
 
+
+int8_t flashReadSData(StorageData_t *sdata);
+int8_t flashClearFaults(StorageData_t *sdata);
 int8_t flashStoreData(StorageData_t *sdata);
+int8_t flashClearData(StorageData_t *sdata);
 
 #endif

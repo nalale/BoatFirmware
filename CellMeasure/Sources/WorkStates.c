@@ -51,18 +51,16 @@ void InitializationState(uint8_t *SubState)
     {
 		// Read saved faults
     	case 0:			
-    		ModuleSetContactorPosition(OD.BatteryData, stBat_Disabled, OD.ConfigData, &timeStamp);    		
+    		ModuleSetContactorPosition(OD.PackData, stBat_Disabled, OD.ConfigData, &timeStamp);    		
 
 			if(ReadFaults(dtcList, dtcListSize))
-				OD.OldFaultsNumber = FillFaultsList(dtcList, dtcListSize, OD.OldFaultList, 0);
-			
-			flashReadSData(&OD.SData);
+				OD.OldFaultsNumber = FillFaultsList(dtcList, dtcListSize, OD.OldFaultList, 0);			
 
 			OD.SB.CheckFaults = 0;          // запрещаем проверку ошибок
 			OD.SB.CurrentSensorReady = 0;	// датчик тока не откалиброван
             OD.SB.FaultStateHandled = 1;	// все ошибки обработаны
             OD.SB.PrechargeDone = 0;		// Флаг успешного предзаряда
-			OD.SB.PowerOff_SaveParams = 1;	// Флаг корректного выключения(анализируется в шаге 3)
+			OD.SB.PowerOff_SaveParams = 1;	// Флаг корректного выключения(analyze at next step)
             
 			OD.MasterControl.CCL = 0;
 			OD.MasterControl.DCL = 0;
@@ -71,87 +69,114 @@ void InitializationState(uint8_t *SubState)
 			OD.LastPrechargeMaxCurrent_0p1A = INT16_MIN;
 			OD.LastPrechargeDuration = 0;
 
+			timeStamp = GetTimeStamp();
 			*SubState = 1;
     	break;
 			
-		// Waiting for power on
-        case 1:
-            
-            if(OD.SB.PowerOn == 1)
-			{				
-            	OD.SB.CheckFaults = 1;
+    	// Current sensor calibration
+        case 1:            
+        {
+        	if(csGetCurrentSensorType() != cstNone)
+			{
+				csCalibrateCurrentSensor();
 
-				// Intermediate module goes to Operating state and closes contactors
-            	// Terminal module goes to sensor calibrating proccess
-				if(!ModuleIsPackHeader(OD.ConfigData))
-					SetWorkState(&OD.StateMachine, WORKSTATE_OPERATE);
+				if(GetTimeFrom(timeStamp) > 2500)
+				{
+					OD.SB.CurrentSensorReady = 1;
+					csCalibrateIsDone();
+				}
 				else
-					*SubState = 2;
-
-				timeStamp = GetTimeStamp();
+					break;
 			}
+
+			timeStamp = GetTimeStamp();
+			*SubState = 2;
+
+        }
             break;
-        
-		// Current sensor calibration
+
+            // Waiting for power on and analyze saved data
         case 2:
 		{
-            if(GetTimeFrom(timeStamp) > 3000)
-            {
-				timeStamp = GetTimeStamp();            	
+			uint32_t totalBankEnergy_As = UINT32_MAX, actualBankEnergy = UINT32_MAX;
+			uint32_t totalPackEnergy_As = UINT32_MAX, actualPackEnergy = UINT32_MAX;
 
-            	if(OD.SData.Result == 0)
-            	{
-					OD.SB.PowerOff_SaveParams = 1;
-            		OD.Energy_As = OD.SData.Buf_1st.ActualEnergy_As;
-            		sysEnergy_Init(OD.SData.Buf_1st.TotalActualEnergy_As,
-            				OD.ConfigData->VoltageCCLpoint[0][CCL_DCL_POINTS_NUM - 1] - 25,
-							OD.ConfigData->VoltageCCLpoint[0][0] + 25);
-            	}
-            	else
-            	{
-					OD.SB.PowerOff_SaveParams = 0;
-					
-					if(OD.SData.Buf_1st.TotalActualEnergy_As == UINT32_MAX){
-						OD.Energy_As = sysEnergy_InitEnergyFromMinUcell((int16_t*)OD.ConfigData->OCVpoint, 
-								OD.BatteryData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv, 
-								OD.ConfigData->ModuleCapacity * 3600);
-						
-						sysEnergy_Init(OD.ConfigData->ModuleCapacity * 3600,
-								OD.ConfigData->VoltageCCLpoint[0][CCL_DCL_POINTS_NUM - 1] - 25,
-								OD.ConfigData->VoltageCCLpoint[0][0] + 25);
+			// Don't restore data without current sensor
+			if(OD.SB.CurrentSensorReady == 0){
+				OD.SB.PowerOff_SaveParams = 1;
+			}
+			else
+			{
+				flashReadSData(&OD.SData);
+				
+				// If bank has current sensor it init local energy
+				OD.SB.PowerOff_SaveParams = (OD.SData.Result == 0)? 1 : 0;
+				// Get Total Energy either from FLASH or from settings
+				totalBankEnergy_As = (OD.SData.Result == 0)? OD.SData.Buf_1st.TotalActualEnergy_As : OD.ConfigData->ModuleCapacity * 3600;
+				totalPackEnergy_As = (OD.SData.Result == 0)? OD.SData.Buf_1st.SystemTotalEnergy_As : OD.ConfigData->ModuleCapacity * 3600;
+
+				// Get Actual energy from either FLASH or calulate at min cell voltage
+				actualBankEnergy = (OD.SData.Result == 0)? OD.SData.Buf_1st.ActualEnergy_As : UINT32_MAX;
+				actualPackEnergy = (OD.SData.Result == 0)? OD.SData.Buf_1st.SystemActualEnergy_As : UINT32_MAX;
+
+				// Init Total and Actual energy
+				sysEnergy_Init(&OD.ModuleData[OD.ConfigData->ModuleIndex], totalBankEnergy_As, actualBankEnergy,
+						OD.ConfigData->VoltageCCLpoint[0][CCL_DCL_POINTS_NUM - 1] - 25,
+						OD.ConfigData->VoltageCCLpoint[0][0] + 25);
+
+				sysEnergy_Init(&OD.PackData[OD.ConfigData->BatteryIndex], totalPackEnergy_As, actualPackEnergy,
+						OD.ConfigData->VoltageCCLpoint[0][CCL_DCL_POINTS_NUM - 1] - 25,
+						OD.ConfigData->VoltageCCLpoint[0][0] + 25);
+
+				// If stored data isn't corrent reinit actual energy at min cell voltage and total energy
+				if(OD.SData.Result != 0)
+				{
+					if(OD.ModuleData[OD.ConfigData->ModuleIndex].DataIsReady)
+					{
+						sysEnergy_InitEnergyFromMinUcell(&OD.ModuleData[OD.ConfigData->ModuleIndex], (int16_t*)OD.ConfigData->OCVpoint,
+														OD.ModuleData[OD.ConfigData->ModuleIndex].MinCellVoltage.Voltage_mv);
 					}
 					else
+						break;
+
+					if(OD.SB.CurrentSensorReady)
 					{
-						OD.Energy_As = sysEnergy_InitEnergyFromMinUcell((int16_t*)OD.ConfigData->OCVpoint, 
-								OD.BatteryData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv, 
-								OD.SData.Buf_1st.TotalActualEnergy_As);
-						
-						sysEnergy_Init(OD.SData.Buf_1st.TotalActualEnergy_As,
-								OD.ConfigData->VoltageCCLpoint[0][CCL_DCL_POINTS_NUM - 1] - 25,
-								OD.ConfigData->VoltageCCLpoint[0][0] + 25);
+						if(OD.PackData[OD.ConfigData->BatteryIndex].DataIsReady)
+						{
+							uint32_t min_cell_v = OD.PackData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv;
+							sysEnergy_InitEnergyFromMinUcell(&OD.PackData[OD.ConfigData->BatteryIndex], (int16_t*)OD.ConfigData->OCVpoint, min_cell_v);
+						}
+						else
+							break;
 					}
 				}
-				
-
-            	OD.SB.CurrentSensorReady = 1;
-				*SubState = 3;
-            }
-            else
-            	csCalibrateCurrentSensor();
+			}
+			
+			OD.SB.CheckFaults = 1;
+			timeStamp = GetTimeStamp();
+			*SubState = 3;
 		}
             break;
             
         case 3:
-			// Terminal module waits for all intermediate modules close contactors
-        	if(packIsReady(OD.BatteryData, OD.ModuleData, OD.ConfigData, &timeStamp))
-        	{        		
-				timeStamp = GetTimeStamp();
-				OD.BatteryData[OD.ConfigData->BatteryIndex].TotalEnergy_As = sysEnergy_EnergyEstimation(&OD.Energy_As,
-						OD.BatteryData[OD.ConfigData->BatteryIndex].MaxCellVoltage.Voltage_mv,
-						OD.BatteryData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv);
-
-				SetWorkState(&OD.StateMachine, WORKSTATE_PREOP);
-        	}
+        	if(OD.SB.PowerOn == 1)
+			{
+				// Terminal module waits for all intermediate modules close contactors
+				if(ModuleIsPackHeader(OD.ConfigData))
+				{
+					if(packIsReady(OD.PackData, OD.ModuleData, OD.ConfigData, &timeStamp))
+					{
+						timeStamp = GetTimeStamp();
+						SetWorkState(&OD.StateMachine, WORKSTATE_PREOP);
+						
+					}
+				}
+				else
+				{
+					SetWorkState(&OD.StateMachine, WORKSTATE_OPERATE);
+					OD.SB.CheckFaults = 1;
+				}
+			}
             
             break;
     }       
@@ -161,11 +186,15 @@ void PreoperationState(uint8_t *SubState)
 { 
 	static uint32_t preChargingTmr = 0;
 
-	ModuleSetContactorPosition(OD.BatteryData, stBat_Disabled, OD.ConfigData, &timeStamp);
+	ModuleSetContactorPosition(OD.PackData, stBat_Disabled, OD.ConfigData, &timeStamp);
 
 	// Мастер ждет когда система будет готовы к предзаряду
-	if(MasterIsReady(&OD.MasterData, OD.BatteryData, OD.ConfigData, &preChargingTmr))
+	if(MasterIsReady(&OD.MasterData, OD.PackData, OD.ConfigData, &preChargingTmr))
+	{
 		ControlBatteriesState(&OD.MasterControl.RequestState, WORKSTATE_OPERATE);
+		OD.MasterControl.CCL = OD.ConfigData->Sys_MaxCCL / OD.ConfigData->Sys_ModulesCountP;
+		OD.MasterControl.DCL = OD.ConfigData->Sys_MaxDCL / OD.ConfigData->Sys_ModulesCountP;
+	}
 }
 
 void OperatingState(uint8_t *SubState)
@@ -174,7 +203,7 @@ void OperatingState(uint8_t *SubState)
 	{
 		case 0:
 		{
-			if(ModuleSetContactorPosition(OD.BatteryData, stBat_Precharging, OD.ConfigData, &timeStamp))
+			if(ModuleSetContactorPosition(OD.PackData, stBat_Precharging, OD.ConfigData, &timeStamp))
 			{
 				OD.SB.PrechargeDone = 1;
 				*SubState = 1;
@@ -182,8 +211,8 @@ void OperatingState(uint8_t *SubState)
 			else
 			{
 				// Считаем максимальный ток предзаряда
-				if(OD.LastPrechargeMaxCurrent_0p1A < OD.BatteryData[OD.ConfigData->ModuleIndex].TotalCurrent)
-					OD.LastPrechargeMaxCurrent_0p1A = OD.BatteryData[OD.ConfigData->ModuleIndex].TotalCurrent;
+				if(OD.LastPrechargeMaxCurrent_0p1A < OD.PackData[OD.ConfigData->ModuleIndex].TotalCurrent)
+					OD.LastPrechargeMaxCurrent_0p1A = OD.PackData[OD.ConfigData->ModuleIndex].TotalCurrent;
 
 				// Считаем длительность предзаряда
 				OD.LastPrechargeDuration = (uint16_t)GetTimeFrom(timeStamp);
@@ -192,7 +221,7 @@ void OperatingState(uint8_t *SubState)
 			break;
 		
 		case 1:			
-			ModuleSetContactorPosition(OD.BatteryData, stBat_Enabled, OD.ConfigData, &timeStamp);
+			ModuleSetContactorPosition(OD.PackData, stBat_Enabled, OD.ConfigData, &timeStamp);
 			break;
 	}	
 }
@@ -207,10 +236,13 @@ void ShutdownState(uint8_t *SubState)
 		// Запомнить время входа в режим, сохранить данные
 		case 0:
 			OD.LogicTimers.PowerOffTimer_ms = GetTimeStamp();
-			OD.SData.Buf_1st.ActualEnergy_As = OD.Energy_As;
-			OD.SData.Buf_1st.TotalActualEnergy_As = sysEnergy_EnergyEstimation(&OD.Energy_As, 
-																				OD.BatteryData[OD.ConfigData->BatteryIndex].MaxCellVoltage.Voltage_mv, 
-																				OD.BatteryData[OD.ConfigData->BatteryIndex].MinCellVoltage.Voltage_mv);
+		
+			OD.SData.Buf_1st.ActualEnergy_As = OD.ModuleData[OD.ConfigData->ModuleIndex].ActualEnergy_As;
+			OD.SData.Buf_1st.TotalActualEnergy_As = OD.ModuleData[OD.ConfigData->ModuleIndex].TotalEnergy_As;
+
+			OD.SData.Buf_1st.SystemActualEnergy_As = OD.PackData[OD.ConfigData->BatteryIndex].ActualEnergy_As;
+			OD.SData.Buf_1st.SystemTotalEnergy_As = OD.PackData[OD.ConfigData->BatteryIndex].TotalEnergy_As;
+
 			OD.SData.Buf_1st.SystemTime = OD.SystemTime;
 			OD.SData.Buf_1st.NormalPowerOff = 1;
 
@@ -219,7 +251,7 @@ void ShutdownState(uint8_t *SubState)
 		break;
 
 		case 1:
-			ModuleSetContactorPosition(OD.BatteryData, stBat_Disabled, OD.ConfigData, &timeStamp);
+			ModuleSetContactorPosition(OD.PackData, stBat_Disabled, OD.ConfigData, &timeStamp);
 			if(GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= OD.ConfigData->PowerOffDelay_ms)
 				*SubState = 2;
 		break;
@@ -245,7 +277,7 @@ void FaultState(uint8_t *SubState)
 	switch(*SubState)
 	{
 		case 0:
-			ModuleSetContactorPosition(OD.BatteryData, stBat_Disabled, OD.ConfigData, &timeStamp);
+			ModuleSetContactorPosition(OD.PackData, stBat_Disabled, OD.ConfigData, &timeStamp);
 			timeStamp = GetTimeStamp();
 		break;
 			
@@ -279,30 +311,55 @@ void CommonState(void)
 		PM_Proc(OD.ecuPowerSupply_0p1, OD.ConfigData->IsPowerManager);
 		boardThread();
 		vs_thread(OD.CellVoltageArray_mV, OD.CellTemperatureArray);
-		packCapacityCalculating(OD.BatteryData, OD.ConfigData, OD.SB.CurrentSensorReady);		
 		
-		if(FaultsTest())
+		if(OD.SB.CheckFaults && FaultsTest())
 		{
 			OD.SB.FaultStateHandled = 0;
 			ControlBatteriesState(&OD.MasterControl.RequestState, WORKSTATE_FAULT);
 			SetWorkState(&OD.StateMachine, WORKSTATE_FAULT);
 		}
 
-		OD.BatteryData[OD.ConfigData->ModuleIndex].StateMachine.MainState = OD.StateMachine.MainState;
-		OD.BatteryData[OD.ConfigData->ModuleIndex].StateMachine.SubState = OD.StateMachine.SubState;
+		OD.ModuleData[OD.ConfigData->ModuleIndex].MainState = OD.StateMachine.MainState;
+		OD.ModuleData[OD.ConfigData->ModuleIndex].SubState = OD.StateMachine.SubState;
     }
     
 	if(GetTimeFrom(OD.LogicTimers.Timer_10ms) >= OD.DelayValues.Time10_ms)
 	{
 		OD.LogicTimers.Timer_10ms = GetTimeStamp();		
 		
-		// Battery Module
-        ModuleStatisticCalculating(&OD.ModuleData[OD.ConfigData->ModuleIndex], OD.ConfigData, OD.CellVoltageArray_mV, OD.CellTemperatureArray);
-		// Battery Pack
-		BatteryStatisticCalculating(&OD.BatteryData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData);
-		// Master
-		BatteryStatisticCalculating(&OD.MasterData, OD.BatteryData, OD.ConfigData);
+		// bank doesn't have current sensor get current from battery data
+		int16_t current = (OD.SB.CurrentSensorReady)? csGetAverageCurrent() : INT16_MAX;
 
+		// For each module
+		sysEnergy_EnergyCounting(&OD.ModuleData[OD.ConfigData->ModuleIndex], current);
+		ModuleStatisticCalculating(&OD.ModuleData[OD.ConfigData->ModuleIndex], OD.ConfigData, OD.CellVoltageArray_mV, OD.CellTemperatureArray);
+		
+		// For header modules or Bms
+		if(ModuleIsPackHeader(OD.ConfigData))
+		{
+			sysEnergy_EnergyCounting(&OD.PackData[OD.ConfigData->BatteryIndex], current);
+			BatteryCheckModulesOnline(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData->Sys_ModulesCountS);
+			BatteryStatisticCalculating(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData->Sys_ModulesCountS);
+			
+			BatteryCheckModulesOnline(&OD.MasterData, OD.PackData, OD.ConfigData->Sys_ModulesCountP);
+			BatteryStatisticCalculating(&OD.MasterData, OD.PackData, OD.ConfigData->Sys_ModulesCountP);
+
+			OD.PackData[OD.ConfigData->BatteryIndex].MainState = OD.ModuleData[OD.ConfigData->ModuleIndex].MainState;
+			OD.PackData[OD.ConfigData->BatteryIndex].SubState = OD.ModuleData[OD.ConfigData->ModuleIndex].SubState;
+		}
+		
+		// For modules in assembly
+		if(ModuleIsAssemblyHeader(OD.ConfigData))
+		{
+			if(!ModuleIsPackHeader(OD.ConfigData))
+				BatteryCheckModulesOnline(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData->ModulesInAssembly);
+			
+			sysEnergy_EnergyCounting(&OD.PackData[OD.ConfigData->BatteryIndex], current);
+			BatteryStatisticCalculating(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData->ModulesInAssembly);
+		}
+
+
+		// Power Manager Functionality
 		OD.LocalPMState = (OD.ConfigData->IsPowerManager)? PM_GetPowerState() : OD.PowerMaganerCmd;
 		
 		if(OD.LocalPMState == PM_PowerOn1)
@@ -328,15 +385,32 @@ void CommonState(void)
     if(GetTimeFrom(OD.LogicTimers.Timer_100ms) >= OD.DelayValues.Time100_ms)
     {
         OD.LogicTimers.Timer_100ms = GetTimeStamp();
-		
-		OD.PackControl.TargetVoltage_mV = packGetBalancingVoltage(&OD.BatteryData[OD.ConfigData->BatteryIndex], &OD.PackControl, OD.ConfigData);
-        OD.PackControl.BalancingEnabled = packGetBalancingPermission(&OD.BatteryData[OD.ConfigData->BatteryIndex], &OD.PackControl, OD.ConfigData);
-		GetCurrentLimit(&OD.BatteryData[OD.ConfigData->BatteryIndex], OD.ConfigData, &OD.MasterControl.DCL, &OD.MasterControl.CCL);
-		
+
+        // for header module or for pack modules
+        if(ModuleIsAssemblyHeader(OD.ConfigData))
+        {
+			OD.PackControl.TargetVoltage_mV = packGetBalancingVoltage(&OD.PackData[OD.ConfigData->BatteryIndex], &OD.PackControl, OD.ConfigData);
+			OD.PackControl.BalancingEnabled = packGetBalancingPermission(&OD.PackData[OD.ConfigData->BatteryIndex], &OD.PackControl, OD.ConfigData);
+			//packGetCurrentsLimit(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ConfigData, &OD.MasterControl, &OD.PackData[OD.ConfigData->BatteryIndex].DCL, &OD.PackData[OD.ConfigData->BatteryIndex].CCL);
+			OD.PackData[OD.ConfigData->BatteryIndex].CCL = packGetChargeCurrentLimit(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ConfigData, OD.MasterControl.CCL);
+			OD.PackData[OD.ConfigData->BatteryIndex].DCL = packGetDischargeCurrentLimit(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ConfigData, OD.MasterControl.DCL);
+        }
+        else
+        {
+        	// Get from CAN message
+        }
+
+        OD.MasterData.CCL = packGetChargeCurrentLimit(&OD.MasterData, OD.ConfigData, OD.MasterControl.CCL);
+        OD.MasterData.DCL = packGetDischargeCurrentLimit(&OD.MasterData, OD.ConfigData, OD.MasterControl.DCL);
+
+
 		vs_ban_balancing(!OD.PackControl.BalancingEnabled);
 		vs_set_min_dis_chars(OD.PackControl.TargetVoltage_mV);
 			
-		LedStatus(FB_PLUS & FB_MINUS, OD.ModuleData[OD.ConfigData->ModuleIndex].DischargingCellsFlag);
+		if(OD.ConfigData->TestMode)
+			TestContactorControl();
+		else
+			LedStatus(FB_PLUS & FB_MINUS, OD.ModuleData[OD.ConfigData->ModuleIndex].DischargingCellsFlag);
 		
 		OD.InOutState = boardBMSCombi_GetDiscreteIO();
     }
@@ -347,14 +421,12 @@ void CommonState(void)
 		OD.AfterResetTime++;
 		OD.SystemTime = dateTime_GetCurrentTotalSeconds();
         
-		if(OD.SData.DataChanged && OD.SB.PowerOn)
+		if(OD.SData.DataChanged && (OD.SB.PowerOn || OD.Faults.Mod_PowerManagerOffline))
 			flashStoreData(&OD.SData);
         
 		uint16_t discharge_mask1 = ltc6803_GetDischargingMask(0);
 		uint16_t discharge_mask2 = ltc6803_GetDischargingMask(1);		
         OD.ModuleData[OD.ConfigData->ModuleIndex].DischargingCellsFlag = (uint32_t)discharge_mask1 + ((uint32_t)discharge_mask2 << 12);
-		
-		OD.BatteryData[OD.ConfigData->BatteryIndex].ActualEnergy_As = OD.Energy_As;
     }
 }
 

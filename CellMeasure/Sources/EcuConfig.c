@@ -10,7 +10,7 @@ void _cfgSetDefaultParams(void)
 	EcuConfig.DiagnosticID = BMS_ECU_DIAG_ID;	
 	
 	EcuConfig.BatteryIndex = 0;	
-	EcuConfig.ModuleIndex = 0;
+	EcuConfig.ModuleIndex = MAX_MODULE_NUM - 1;
 	EcuConfig.IsMaster = 0;
 	
 	EcuConfig.Sys_MaxDCL = 300;
@@ -45,17 +45,19 @@ void _cfgSetDefaultParams(void)
 	EcuConfig.Sys_MaxVoltageDisbalanceP = 50;	
 	EcuConfig.Sys_MaxVoltageDisbalanceS = 50;	
 
-	
+	EcuConfig.TestMode = 0;
 	EcuConfig.CellNumber = 24;
 	EcuConfig.Sys_ModulesCountS = 1;
 	EcuConfig.Sys_ModulesCountP = 1;
 	EcuConfig.CurrentSensType = 3;
-	EcuConfig.ModuleCapacity = 185;
+	EcuConfig.ModuleCapacity = 90;
 	EcuConfig.PreMaxDuration = 600;
 	EcuConfig.PreZeroCurrentDuration = 300;
 	EcuConfig.PreZeroCurrent = 1;
 	EcuConfig.PreMaxCurrent = 5;	
-	EcuConfig.IsPowerManager = 0;
+	EcuConfig.IsPowerManager = 1;
+	EcuConfig.KeyOffTime_ms = 150;
+	EcuConfig.PowerOffDelay_ms = 1500;
 	EcuConfig.CRC = cfgCRC(&EcuConfig);
 	
 	
@@ -74,7 +76,7 @@ void cfgApply(void)
 		_cfgSetDefaultParams();
 	}	
 	
-	OD.ConfigData = &EcuConfig;	
+	OD.ConfigData = &EcuConfig;
 	csSetCurrentSensorType((CurrentSensorType_e)EcuConfig.CurrentSensType, EcuConfig.CurrentSensDirection);		// CurrentSensor init
 }
 

@@ -276,6 +276,23 @@ int8_t flashClearFaults(StorageData_t *sdata)
 	return 0;
 }
 
+int8_t flashClearData(StorageData_t *sdata)
+{
+	// Prepare for write
+	int16_t Length = sizeof(sdata->Buf_1st) + sizeof(EcuConfig_t) + (dtcListSize * sizeof(dtcItem_t));
+	
+	__disable_irq();
+	MemEcuWriteData((uint8_t*)sdata, Length);
+
+	cfgWrite(sdata->cfgData);
+	SaveFaults(dtcList, dtcListSize);	
+	
+	__enable_irq();
+	
+	sdata->DataChanged = 0;	
+	return 0;
+}
+
 int8_t flashStoreData(StorageData_t *sdata)
 {
 	// Prepare for write

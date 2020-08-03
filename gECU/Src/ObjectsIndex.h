@@ -27,8 +27,7 @@ typedef enum
 	didCurrentSensor1,
 	didCurrentSensor2,
 	didCurrentSensor3,
-	didCurrentSensor4,	
-	
+	didCurrentSensor4,
 	
 	didPwmOutState,
 	
@@ -38,6 +37,8 @@ typedef enum
 	
 	didFaults_FreezeFrame,
 	
+	didFlashData = 105,
+
 } ObjectsIndex_e;
 
 

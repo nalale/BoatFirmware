@@ -14,7 +14,7 @@ typedef enum
 	didInOutState,
 	didEcuVoltage,
 	didPowerManagmentState,
-	
+
 	didVoltageSensor1 = 10,
 	didVoltageSensor2,
 	didVoltageSensor3,
@@ -36,6 +36,11 @@ typedef enum
 	didModMinCellVoltage,
 	didModDischargeCellsFlag,
 	didModInOutState,
+	didModStateOfCharge,
+	didModEnergy,
+	didModTotalEnergy,
+	didModTotalCurrent,
+	didModCurrentCycleEnergy,
 	
 	// Battery parameters
 	didBatTotalCurrent = 50,
@@ -53,6 +58,7 @@ typedef enum
 	didBatDCL,
 	didBatLastPrechargeDuration,
 	didBatLastPrechargeCurrent,
+	didBatModulesOnlineFlag,
 	
 	// Master Parameters
 	didMstTotalCurrent = 70,
@@ -70,6 +76,7 @@ typedef enum
 	didMsgTotalEnergy,
 	didMstCCL,
 	didMstDCL,
+	didMstPacksOnlineFlag,
 	
 	// Диагностика ошибок
 	didFaults_Actual = 100,
@@ -77,6 +84,8 @@ typedef enum
 	
 	didFaults_FreezeFrame,
 	
+	didFlashData = 105,
+
 } ObjectsIndex_e;
 
 

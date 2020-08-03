@@ -4,7 +4,9 @@
 #include "../MolniaLib/FaultCategory.h"
 
 // NOTE: Порядок не менять, т.к. от него зависит ток для HASS (см. csHassIp)
-typedef enum { cstDHAB_S34, cstHASS_50, cstHASS_100, cstHASS_200, cstHASS_300, cstHASS_400 } CurrentSensorType_e;
+typedef enum { cstDHAB_S34, cstHASS_50, cstHASS_100, cstHASS_200, cstHASS_300, cstHASS_400, cstNone,
+
+} CurrentSensorType_e;
 
 
 // *************************** Для DHAB_S34 ************************************
@@ -51,12 +53,12 @@ typedef union
 
 
 
-
+CurrentSensorType_e csGetCurrentSensorType(void);
 void csSetCurrentSensorType(CurrentSensorType_e type, uint8_t CWDirection);
 void csCalibrateCurrentSensor(void);
 int16_t csGetAverageCurrent(void);
 uint8_t csGetCircuitState(void);
-
+void csCalibrateIsDone(void);
 
 #endif	/* CURRENTSENS_H */
 

@@ -537,14 +537,14 @@
               <FilePath>..\Libs\filter.c</FilePath>
             </File>
             <File>
-              <FileName>LTC6803.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Libs\LTC6803.c</FilePath>
-            </File>
-            <File>
               <FileName>DateTime.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\MolniaLib\DateTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>LTC6803.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Libs\LTC6803.c</FilePath>
             </File>
             <File>
               <FileName>FaultsServices.c</FileName>
@@ -575,6 +575,11 @@
               <FileName>ModuleProtocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Protocols\ModuleProtocol.c</FilePath>
+            </File>
+            <File>
+              <FileName>TestMsgProtocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Protocols\TestMsgProtocol.c</FilePath>
             </File>
           </Files>
         </Group>

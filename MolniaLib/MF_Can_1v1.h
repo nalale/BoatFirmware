@@ -1,20 +1,20 @@
 #ifndef _MF_CAN_1V1_H_
 #define _MF_CAN_1V1_H_
 
-// Модели ЭБУ
-#define GENERAL_ECU_DIAG_ID			1
-#define MAIN_ECU_DIAG_ID			10
-#define BMS_ECU_DIAG_ID				11
-#define DISPLAY_ECU_DIAG_ID			51
-
 // Модели контроллеров
 #define BMS_COMBI					1
 #define MARINE_ECU					2
 
-
-#define MaxGEcuNum		6
+#define MaxGEcuNum		5
 #define MaxBatteryNum	4
-#define MaxModuleNum	6
+#define MaxModuleNum	15
+
+// Модели ЭБУ
+#define GENERAL_ECU_DIAG_ID			1
+#define DISPLAY_ECU_DIAG_ID			GENERAL_ECU_DIAG_ID + MaxGEcuNum
+#define MAIN_ECU_DIAG_ID			10
+#define BMS_ECU_DIAG_ID				11
+
 
 typedef enum
 {
@@ -23,13 +23,13 @@ typedef enum
 	General_ECUx_CAN_ID_LEN = 2,
 	General_ECU_CAN_ID_LEN = General_ECUx_CAN_ID_LEN * MaxGEcuNum,
 	
-	Bmu_ECU_CAN_ID_LEN = 4,
+	Bmu_ECU_CAN_ID_LEN = 5,
 	Bmu_ECU_RX_ID_LEN = 2,
 	
-	Bat_ECUx_CAN_ID_LEN = 4,
+	Bat_ECUx_CAN_ID_LEN = 5,
 	Bat_ECU_CAN_ID_LEN = Bat_ECUx_CAN_ID_LEN * MaxBatteryNum,
 
-	Module_ECUx_CAN_ID_LEN = 2,
+	Module_ECUx_CAN_ID_LEN = 4,
 	Module_ECU_CAN_ID_LEN = (Module_ECUx_CAN_ID_LEN * MaxModuleNum) * MaxBatteryNum,
 
 	Main_ECU_CAN_ID_LEN = 10,
@@ -45,18 +45,15 @@ typedef enum
 	General_Control2_CAN_ID,
 	General_Control3_CAN_ID,
 	
-	General_ECU_CAN_ID = BASE_CAN_ID + BASE_CAN_ID_LEN,				//0x100 + 0x0A = 0x10a
-	Bmu_ECU_CAN_ID = General_ECU_CAN_ID + General_ECU_CAN_ID_LEN,	//0x10A + 0x0C = 0x116
-	Bat_ECU_CAN_ID = Bmu_ECU_CAN_ID + Bmu_ECU_CAN_ID_LEN,			//0x116 + 0x04 = 0x11a
-	Module_ECU_CAN_ID = Bat_ECU_CAN_ID + Bat_ECU_CAN_ID_LEN,		//0x11a + 0x10 = 0x12a
-	
-	Bmu_ECU_RX_ID = Module_ECU_CAN_ID + Module_ECU_CAN_ID_LEN,		//0x12a + 0x30 = 0x15a
-	
-	Main_ECU_CAN_ID = Bmu_ECU_RX_ID + Bmu_ECU_RX_ID_LEN,			//0x15a + 0x02 = 0x15c
-	
+	General_ECU_CAN_ID = BASE_CAN_ID + BASE_CAN_ID_LEN,
+	Main_ECU_CAN_ID = General_ECU_CAN_ID + General_ECU_CAN_ID_LEN,
 	Display_ECU_CAN_ID = Main_ECU_CAN_ID + Main_ECU_CAN_ID_LEN,
-
 	GPS_ECU_CAN_ID = Display_ECU_CAN_ID + Display_ECU_CAN_ID_LEN,
+
+	Bmu_ECU_RX_ID = GPS_ECU_CAN_ID + 2,
+	Bmu_ECU_CAN_ID = Bmu_ECU_RX_ID + Bmu_ECU_RX_ID_LEN,
+	Bat_ECU_CAN_ID = Bmu_ECU_CAN_ID + Bmu_ECU_CAN_ID_LEN,
+	Module_ECU_CAN_ID = Bat_ECU_CAN_ID + Bat_ECU_CAN_ID_LEN,
 
 } SystemIds_e;
 
@@ -157,8 +154,25 @@ typedef struct
 	Mod_MainState	: 4,
 	Mod_SubState	: 4;
 	uint16_t Faults;	
-	
+	uint8_t StateOfCharge;
+	uint16_t ActualEnergy_0p01Ah;
+	uint16_t dummy2;
 } BatModuleStatus2Msg_t;
+
+typedef struct
+{
+	// Лимит зарядного тока
+	int16_t CCL;
+	// Лимит разрядного тока
+	int16_t DCL;
+	int16_t TargetBalancingVoltage;
+
+	uint8_t
+			ModulesInPack		: 4,
+			BalancingEnabled	: 1,
+			dummy				: 3;
+
+} cmPackModule1_t;
 
 typedef struct
 {    

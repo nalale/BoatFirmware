@@ -14,5 +14,6 @@ void LedBlink(void);
 int8_t flashReadSData(StorageData_t *sdata);
 int8_t flashClearFaults(StorageData_t *sdata);
 int8_t flashStoreData(StorageData_t *sdata);
+int8_t flashClearData(StorageData_t *sdata);
 
 #endif

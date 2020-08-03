@@ -8,7 +8,7 @@
 
 static uint32_t extSendTime[EXTERNAL_SEND_MSG_AMOUNT];
 // Периоды отправки сообщений
-const uint16_t extPeriod[EXTERNAL_SEND_MSG_AMOUNT] = {
+static const uint16_t extPeriod[EXTERNAL_SEND_MSG_AMOUNT] = {
 								1000,
 								 };
 
