@@ -121,12 +121,12 @@ void InitializationState(uint8_t *SubState)
 
 				// Init Total and Actual energy
 				sysEnergy_Init(&OD.ModuleData[OD.ConfigData->ModuleIndex], totalBankEnergy_As, actualBankEnergy,
-						OD.ConfigData->VoltageCCLpoint[0][CCL_DCL_POINTS_NUM - 1] - 25,
-						OD.ConfigData->VoltageCCLpoint[0][0] + 25);
+						OD.ConfigData->VoltageCCLpoint[0][CCL_DCL_POINTS_NUM - 1],
+						OD.ConfigData->VoltageCCLpoint[0][0]);
 
 				sysEnergy_Init(&OD.PackData[OD.ConfigData->BatteryIndex], totalPackEnergy_As, actualPackEnergy,
-						OD.ConfigData->VoltageCCLpoint[0][CCL_DCL_POINTS_NUM - 1] - 25,
-						OD.ConfigData->VoltageCCLpoint[0][0] + 25);
+						OD.ConfigData->VoltageCCLpoint[0][CCL_DCL_POINTS_NUM - 1],
+						OD.ConfigData->VoltageCCLpoint[0][0]);
 
 				// If stored data isn't corrent reinit actual energy at min cell voltage and total energy
 				if(OD.SData.Result != 0)

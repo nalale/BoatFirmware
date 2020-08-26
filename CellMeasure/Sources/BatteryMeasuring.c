@@ -8,7 +8,7 @@
 
 #define SOC_TABLE_SIZE			(CCL_DCL_POINTS_NUM * 2)
 #define ENERGY_THRESHOLD_AMP_SEC	18000	// 5Ah
-#define ENERGY_RAMP_AMP_SEC			1800	// 1/2Ah
+#define ENERGY_RAMP_AMP_SEC			360		// 1/10Ah
 
 static int16_t CurrentLimitArray[CCL_DCL_POINTS_NUM * 2];
 
@@ -69,8 +69,8 @@ int8_t sysEnergy_Init(BatteryData_t *Handle, uint32_t InitialTotalSystemEnergy_A
 {
 	Handle->TotalEnergy_As = InitialTotalSystemEnergy_As;
 	Handle->ActualEnergy_As = InitialActualEnergy_As;
-	Handle->MaxCellVoltageThreshold_mV = MaxCellVoltageThreshold_mV;
-	Handle->MinCellVoltageThreshold_mV = MinCellVoltageThreshold_mV;
+	Handle->MaxCellVoltageThreshold_mV = MaxCellVoltageThreshold_mV - 50;
+	Handle->MinCellVoltageThreshold_mV = MinCellVoltageThreshold_mV + 50;
 
 	Handle->IsInit = 1;
 
@@ -79,12 +79,13 @@ int8_t sysEnergy_Init(BatteryData_t *Handle, uint32_t InitialTotalSystemEnergy_A
 
 uint32_t sysEnergy_EnergyEstimation(BatteryData_t *Handle, uint16_t MaxCellVoltage_mV, uint16_t MinCellVoltage_mV)
 {
+	static uint32_t low_energy_ts = 0, high_energy_ts = 0;
 	uint32_t *CurrentEnergy_As = &Handle->ActualEnergy_As;
 	uint32_t TotalEstimatedEnergy = Handle->TotalEnergy_As;
 	// Charge is done
 	if(MaxCellVoltage_mV >= Handle->MaxCellVoltageThreshold_mV)
 	{
-		if(!Handle->EstimationDoneInThisCycle)
+		if(!Handle->EstimationDoneInThisCycle && GetTimeFrom(high_energy_ts) > 5000)
 		{
 			Handle->EstimationDoneInThisCycle = 1;
 
@@ -99,6 +100,7 @@ uint32_t sysEnergy_EnergyEstimation(BatteryData_t *Handle, uint16_t MaxCellVolta
 			{
 				if((*CurrentEnergy_As - TotalEstimatedEnergy) > ENERGY_THRESHOLD_AMP_SEC)
 				{
+					*CurrentEnergy_As = TotalEstimatedEnergy + ENERGY_RAMP_AMP_SEC;
 					TotalEstimatedEnergy += ENERGY_RAMP_AMP_SEC;
 				}
 			}
@@ -106,7 +108,7 @@ uint32_t sysEnergy_EnergyEstimation(BatteryData_t *Handle, uint16_t MaxCellVolta
 	}
 	else if(MinCellVoltage_mV <= Handle->MinCellVoltageThreshold_mV)
 	{
-		if(!Handle->EstimationDoneInThisCycle)
+		if(!Handle->EstimationDoneInThisCycle && GetTimeFrom(low_energy_ts) > 5000)
 		{
 			if(*CurrentEnergy_As > ENERGY_THRESHOLD_AMP_SEC)
 			{
@@ -118,12 +120,14 @@ uint32_t sysEnergy_EnergyEstimation(BatteryData_t *Handle, uint16_t MaxCellVolta
 			{
 				Handle->EstimationDoneInThisCycle = 1;
 				*CurrentEnergy_As = ENERGY_THRESHOLD_AMP_SEC;
-				TotalEstimatedEnergy -= ENERGY_RAMP_AMP_SEC;
+				TotalEstimatedEnergy -= (TotalEstimatedEnergy > ENERGY_THRESHOLD_AMP_SEC)? ENERGY_RAMP_AMP_SEC : 0;
 			}
 		}
 	}
 	else
 	{
+		low_energy_ts = GetTimeStamp();
+		high_energy_ts = GetTimeStamp();
 		Handle->EstimationDoneInThisCycle = 0;
 	}
 

@@ -11,7 +11,7 @@
 
 #define CLASS_MODEL_ID			BMS_ECU_DIAG_ID		// Класс и модель устройства.
 #define HARDWARE				BMS_COMBI			// Контроллер
-#define	FW_VERSION				VER(0, 13)			// Версия прошивки. Старший байт - major, младший - minor (0...99)
+#define	FW_VERSION				VER(0, 14)			// Версия прошивки. Старший байт - major, младший - minor (0...99)
 #define	HW_VERSION				VER(1, 1)			// Версия железа. Старший байт - major, младший - minor (0...99)
 
 
