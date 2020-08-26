@@ -268,8 +268,8 @@ void PCanMesGenerate(void)
 				d->MotorRpm = McuRinegartGetParameter(&OD.mcHandler, mcu_ActualSpeed);
 				d->MotorTemperature = McuRinegartGetParameter(&OD.mcHandler, mcu_MotorTemperature) + 40;
 				d->InverterTemperature = McuRinegartGetParameter(&OD.mcHandler, mcu_BoardTemperature) + 40;
-				d->TargetTorque = McuRinegartGetParameter(&OD.mcHandler, mcu_TargetTorque);
-				d->ActualTorque = McuRinegartGetParameter(&OD.mcHandler, mcu_ActualTorque);
+				d->TargetTorque = McuRinegartGetParameter(&OD.mcHandler, mcu_TargetPercentTorque);
+				d->ActualTorque = McuRinegartGetParameter(&OD.mcHandler, mcu_ActualPercentTorque);
 				d->TrimPosition = TrimGetParameter(&OD.TrimDataRx, paramTrim_Position);
 				d->SpecPowerCons = (current_val > 255)? 255 : current_val;
 				

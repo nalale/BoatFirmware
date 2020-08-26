@@ -219,6 +219,10 @@ int16_t McuRinegartGetParameter(McuRinehart_t *mcu, mcuParameters_e Param)
 
 	switch(Param)
 	{
+		case mcu_ActualPercentTorque:
+			return mcu->rmsMsgTx_4.TorqueFeedback_0p1 * 10 / mcu->MaxTorque;	// (actual / 10 * 100%) / max_torque
+		case mcu_TargetPercentTorque:
+			return mcu->rmsMsgTx_4.CmdTorque_0p1 * 10 / mcu->MaxTorque;
 		case mcu_ActualTorque:
 			return mcu->rmsMsgTx_4.TorqueFeedback_0p1 / 10;
 		case mcu_ActualSpeed:

@@ -24,6 +24,8 @@ typedef enum
 	mcu_CurrentDC,
 	mcu_VoltageDC,
 	mcu_Direction,
+	mcu_ActualPercentTorque,
+	mcu_TargetPercentTorque,
 } mcuParameters_e;
 
 typedef enum
