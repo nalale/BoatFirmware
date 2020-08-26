@@ -245,7 +245,7 @@ void OperatingState(uint8_t *SubState)
 			if((TrimGetParameter(&OD.TrimDataRx, paramTrim_Status) == stTrim_Warning))
 				TargetTorque = 0;
 			else if(transmissionMovementPermission() || transmissionShiftInProcess())
-				TargetTorque = 2;
+				TargetTorque = 1;
 
 
 			McuRinehartSetDirection(&OD.mcHandler, mcu_DirFW);
@@ -286,6 +286,10 @@ void OperatingState(uint8_t *SubState)
 					case st_OBC_STOP:
 					{
 						obcSetCurrentLimit(0);
+
+						// Restart charging process
+						if(OD.BatteryDataRx.CCL < -100)
+							obcSetState(0);
 					}
 						break;
 				}

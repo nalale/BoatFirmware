@@ -114,6 +114,12 @@ uint32_t sysEnergy_EnergyEstimation(BatteryData_t *Handle, uint16_t MaxCellVolta
 				*CurrentEnergy_As = ENERGY_THRESHOLD_AMP_SEC;
 				TotalEstimatedEnergy += ENERGY_RAMP_AMP_SEC;
 			}
+			else if(*CurrentEnergy_As == 0)
+			{
+				Handle->EstimationDoneInThisCycle = 1;
+				*CurrentEnergy_As = ENERGY_THRESHOLD_AMP_SEC;
+				TotalEstimatedEnergy -= ENERGY_RAMP_AMP_SEC;
+			}
 		}
 	}
 	else

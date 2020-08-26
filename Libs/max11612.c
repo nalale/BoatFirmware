@@ -6,6 +6,9 @@
 
 #include "max11612.h"
 
+/** Own Slave address in Slave I2C device */
+static uint8_t I2CDEV_S_ADDR = typeMAX11612;
+
 typedef union
 {
   uint8_t value;
@@ -52,7 +55,7 @@ MAX11612_ConfigByte_t config_byte;
 uint8_t tx_buf[2];
 uint8_t rx_buf[8];
 
-uint16_t max11612Result[4];
+uint16_t max11612Result[8];
 static uint8_t _max11612MsgSend;
 
 void WriteConfig(void);
@@ -79,6 +82,12 @@ void Max11612_Init(void)
     WriteConfig();
 }
 
+void adcMax_SetType(MaxTypes_e type)
+{
+	if(type >= typeMAX11612 && type <= typeMAX11616)
+		I2CDEV_S_ADDR = (uint8_t)type;
+}
+
 void WriteConfig()
 {    
     while(!I2CReadWrite(&config_byte.value, 1, NULL, 0, I2CDEV_S_ADDR))   {   }
@@ -96,19 +105,31 @@ void Max11612_SetData(void)
 	max11612Result[2] = (uint16_t)(((rx_buf[4] & 0x0F) << 8) + rx_buf[5]);
 	max11612Result[3] = (uint16_t)(((rx_buf[6] & 0x0F) << 8) + rx_buf[7]);
 	
+	if(I2CDEV_S_ADDR == typeMAX11614 || I2CDEV_S_ADDR == typeMAX11616)
+	{
+		max11612Result[4] = (uint16_t)(((rx_buf[8] & 0x0F) << 8) + rx_buf[9]);
+		max11612Result[5] = (uint16_t)(((rx_buf[10] & 0x0F) << 8) + rx_buf[11]);
+		max11612Result[6] = (uint16_t)(((rx_buf[12] & 0x0F) << 8) + rx_buf[13]);
+		max11612Result[7] = (uint16_t)(((rx_buf[14] & 0x0F) << 8) + rx_buf[15]);
+	}
+
 	_max11612MsgSend = 0;
 }
 
 void Max11612_ClearData(void)
 {
-	for(int i = 0; i < 4; i++)
+	for(int i = 0; i < 8; i++)
 		max11612Result[i] = 0;
 }
 
 void Max11612_StartConversion(void)
 {
 	_max11612MsgSend = 1;
-	I2CReadWrite(NULL, 0, rx_buf, 8, I2CDEV_S_ADDR);
+
+	if(I2CDEV_S_ADDR == typeMAX11612)
+		I2CReadWrite(NULL, 0, rx_buf, 8, I2CDEV_S_ADDR);
+	else if(I2CDEV_S_ADDR == typeMAX11614)
+		I2CReadWrite(NULL, 0, rx_buf, 16, I2CDEV_S_ADDR);
 }
 
 void Max11612_GetResult(uint8_t *Buf, uint8_t V_ref)

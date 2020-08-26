@@ -243,6 +243,9 @@ void ShutdownState(uint8_t *SubState)
 			OD.SData.Buf_1st.SystemActualEnergy_As = OD.PackData[OD.ConfigData->BatteryIndex].ActualEnergy_As;
 			OD.SData.Buf_1st.SystemTotalEnergy_As = OD.PackData[OD.ConfigData->BatteryIndex].TotalEnergy_As;
 
+//			OD.SData.Buf_1st.BmsTotalEnergy_As = OD.MasterData.TotalEnergy_As;
+//			OD.SData.Buf_1st.BmsTotalEnergy_As = OD.MasterData.ActualEnergy_As;
+
 			OD.SData.Buf_1st.SystemTime = OD.SystemTime;
 			OD.SData.Buf_1st.NormalPowerOff = 1;
 
@@ -341,6 +344,7 @@ void CommonState(void)
 			BatteryCheckModulesOnline(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData->Sys_ModulesCountS);
 			BatteryStatisticCalculating(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData->Sys_ModulesCountS);
 			
+			//sysEnergy_EnergyCounting(&OD.MasterData, OD.MasterData.TotalCurrent);
 			BatteryCheckModulesOnline(&OD.MasterData, OD.PackData, OD.ConfigData->Sys_ModulesCountP);
 			BatteryStatisticCalculating(&OD.MasterData, OD.PackData, OD.ConfigData->Sys_ModulesCountP);
 

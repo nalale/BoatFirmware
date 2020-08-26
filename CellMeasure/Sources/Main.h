@@ -101,8 +101,8 @@ typedef struct
 
 	uint32_t SystemTotalEnergy_As;
 	uint32_t SystemActualEnergy_As;
-	uint32_t dummy2;
-	uint32_t dummy3;
+	uint32_t BmsTotalEnergy_As;
+	uint32_t BmsActualEnergy_As;
 	uint32_t dummy4;
 	uint16_t NormalPowerOff;
 

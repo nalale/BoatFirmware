@@ -4,11 +4,12 @@
 #include <stdint.h>
 
 #pragma anon_unions
-/** Own Slave address in Slave I2C device */
-#define I2CDEV_S_ADDR	0x34
 
+
+typedef enum {typeMAX11612 = 0x34, typeMAX11614 = 0x33, typeMAX11616 = 0x35 } MaxTypes_e;
 
 void Max11612_Init(void);
+void adcMax_SetType(MaxTypes_e type);
 void Max11612_StartConversion(void);
 void Max11612_GetResult(uint8_t *Buf, uint8_t V_ref);
 void Max11612_SetData(void);
