@@ -107,9 +107,10 @@ IAP_STATUS_CODE CopyRAM2Flash(uint8_t * dest, uint8_t* source, IAP_WRITE_SIZE si
 	if(status != CMD_SUCCESS)
         return status;
     
-	if(source == 0)
+	if(source == 0){
 		status = EraseSector(sec, sec);
-//    
+		command.status = status;
+    }
 //    status = PrepareSector(sec, sec);
 //	if(status != CMD_SUCCESS)
 //        return status;

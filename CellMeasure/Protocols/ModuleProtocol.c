@@ -3,14 +3,15 @@
 #include "Protocol.h"
 #include "TimerFunc.h"
 
-#define TX_MSG	3
+#define TX_MSG	4
 
 static uint32_t modSendTime[TX_MSG];
 // Периоды отправки сообщений
 const uint16_t msgPeriod[TX_MSG] = {
 								250,
 								250,
-								250
+								250,
+								250,
 								 };
 
 uint8_t moduleMsgHandler(CanMsg *msg)
@@ -57,11 +58,11 @@ uint8_t moduleMsgHandler(CanMsg *msg)
 
 		case 2:
 		{
-			cmPackModule1_t *d = (cmPackModule1_t*)msg->data;
+			cmAssemblyMsg1_t *d = (cmAssemblyMsg1_t*)msg->data;
 
-			if((OD.ConfigData->ModuleIndex > module_id) && (OD.ConfigData->ModuleIndex < module_id + d->ModulesInPack))
+			if((OD.ConfigData->ModuleIndex > module_id) && (OD.ConfigData->ModuleIndex < module_id + d->ModulesInAssembly))
 			{
-				OD.PackControl.ModulesInAssembly = d->ModulesInPack;
+				OD.PackControl.ModulesInAssembly = d->ModulesInAssembly;
 				OD.PackControl.BalancingEnabled = d->BalancingEnabled;
 				OD.PackControl.TargetVoltage_mV = d->TargetBalancingVoltage;
 			}
@@ -134,13 +135,24 @@ void ModuleMesGenerate(void)
 
 			case 2:
 			{
-				cmPackModule1_t *d = (cmPackModule1_t*)msg->data;
+				cmAssemblyMsg1_t *d = (cmAssemblyMsg1_t*)msg->data;
 
-				d->ModulesInPack = OD.ConfigData->ModulesInAssembly;
+				d->ModulesInAssembly = OD.ConfigData->ModulesInAssembly;
 				d->BalancingEnabled = OD.PackControl.BalancingEnabled;
 				d->TargetBalancingVoltage = OD.PackControl.TargetVoltage_mV;
-				d->CCL = OD.PackData[OD.ConfigData->BatteryIndex].CCL;
+				d->CCL = -OD.PackData[OD.ConfigData->BatteryIndex].CCL;
 				d->DCL = OD.PackData[OD.ConfigData->BatteryIndex].DCL;
+
+			}
+			break;
+
+			case 3:
+			{
+				cmAssemblyMsg2_t *d = (cmAssemblyMsg2_t*)msg->data;
+
+				d->TotalVoltage = OD.ModuleData[OD.ConfigData->ModuleIndex].TotalVoltage;
+				d->TotalCurrent = OD.ModuleData[OD.ConfigData->ModuleIndex].TotalCurrent;
+
 			}
 			break;
         }

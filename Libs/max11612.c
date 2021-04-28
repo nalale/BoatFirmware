@@ -105,13 +105,13 @@ void Max11612_SetData(void)
 	max11612Result[2] = (uint16_t)(((rx_buf[4] & 0x0F) << 8) + rx_buf[5]);
 	max11612Result[3] = (uint16_t)(((rx_buf[6] & 0x0F) << 8) + rx_buf[7]);
 	
-	if(I2CDEV_S_ADDR == typeMAX11614 || I2CDEV_S_ADDR == typeMAX11616)
-	{
-		max11612Result[4] = (uint16_t)(((rx_buf[8] & 0x0F) << 8) + rx_buf[9]);
-		max11612Result[5] = (uint16_t)(((rx_buf[10] & 0x0F) << 8) + rx_buf[11]);
-		max11612Result[6] = (uint16_t)(((rx_buf[12] & 0x0F) << 8) + rx_buf[13]);
-		max11612Result[7] = (uint16_t)(((rx_buf[14] & 0x0F) << 8) + rx_buf[15]);
-	}
+//	if(I2CDEV_S_ADDR == typeMAX11614 || I2CDEV_S_ADDR == typeMAX11616)
+//	{
+//		max11612Result[4] = (uint16_t)(((rx_buf[8] & 0x0F) << 8) + rx_buf[9]);
+//		max11612Result[5] = (uint16_t)(((rx_buf[10] & 0x0F) << 8) + rx_buf[11]);
+//		max11612Result[6] = (uint16_t)(((rx_buf[12] & 0x0F) << 8) + rx_buf[13]);
+//		max11612Result[7] = (uint16_t)(((rx_buf[14] & 0x0F) << 8) + rx_buf[15]);
+//	}
 
 	_max11612MsgSend = 0;
 }

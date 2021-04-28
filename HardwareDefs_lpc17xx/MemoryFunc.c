@@ -2,7 +2,7 @@
 
 int8_t MemEcuWriteData(uint8_t *Data, uint16_t Length)
 {
-	int8_t res = CopyRAM2Flash((uint8_t*)CONFIG_START_ADDRESS, (uint8_t*)0, 0);
+	int8_t res = CopyRAM2Flash((uint8_t*)SDATA_START_ADDRESS, (uint8_t*)0, 0);
 //	if(res == 0)
 //		res = CopyRAM2Flash((uint8_t*)CONFIG_START_ADDRESS, (uint8_t*)data_pointer, Length);
 

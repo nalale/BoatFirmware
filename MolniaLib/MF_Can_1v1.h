@@ -168,11 +168,22 @@ typedef struct
 	int16_t TargetBalancingVoltage;
 
 	uint8_t
-			ModulesInPack		: 4,
+			ModulesInAssembly		: 4,
 			BalancingEnabled	: 1,
 			dummy				: 3;
 
-} cmPackModule1_t;
+	uint8_t SOC;
+
+} cmAssemblyMsg1_t;
+
+typedef struct
+{
+	// Лимит зарядного тока
+	int16_t TotalVoltage;
+	// Лимит разрядного тока
+	int16_t TotalCurrent;
+
+} cmAssemblyMsg2_t;
 
 typedef struct
 {    

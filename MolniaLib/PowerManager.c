@@ -19,8 +19,8 @@ void PM_Proc(uint16_t voltageEcu, uint8_t IsPowerManager)
 	EcuConfig_t _config = GetConfigInstance();
 
 	// ≈сли блок не управл€ет питанием выходим
-	if(!_config.IsPowerManager)
-		return;
+//	if(!_config.IsPowerManager)
+//		return;
 	
 	if(OD.ecuPowerSupply_0p1 > 100)
 	{

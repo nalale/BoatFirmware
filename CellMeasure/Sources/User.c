@@ -236,7 +236,7 @@ uint8_t ModuleIsPackHeader(const EcuConfig_t *config)
 
 uint8_t ModuleIsAssemblyHeader(const EcuConfig_t *config)
 {
-	return (OD.ConfigData->ModulesInAssembly > 1) && (OD.ConfigData->ModulesInAssembly != OD.ConfigData->Sys_ModulesCountS);
+	return (OD.ConfigData->ModulesInAssembly > 1);// && (OD.ConfigData->ModulesInAssembly != OD.ConfigData->Sys_ModulesCountS);
 }
 
 void ModuleStatisticCalculating(BatteryData_t* Handle, const EcuConfig_t *ecuConfig, const int16_t *CellsVoltageArray, const int16_t *CellsTempArray)
@@ -329,6 +329,43 @@ void ModuleStatisticCalculating(BatteryData_t* Handle, const EcuConfig_t *ecuCon
 							(Handle->MinBatteryCurrent.Current == INT16_MAX) || 
 							(Handle->MinModuleTemperature.Temperature == INT8_MAX))? 0 : 1;
 
+}
+
+void assemblyAddData(BatteryData_t* Handle, const BatteryData_t* SourceData)
+{
+	if(Handle->MaxCellVoltage.Voltage_mv < SourceData->MaxCellVoltage.Voltage_mv)
+	{
+		Handle->MaxCellVoltage.Voltage_mv = SourceData->MaxCellVoltage.Voltage_mv;
+		Handle->MaxCellVoltage.BatteryNumber = SourceData->MaxCellVoltage.BatteryNumber;
+		Handle->MaxCellVoltage.CellNumber = SourceData->MaxCellVoltage.CellNumber;
+		Handle->MaxCellVoltage.ModuleNumber = SourceData->MaxCellVoltage.ModuleNumber;
+	}
+
+	if(Handle->MinCellVoltage.Voltage_mv > SourceData->MinCellVoltage.Voltage_mv)
+	{
+		Handle->MinCellVoltage.Voltage_mv = SourceData->MinCellVoltage.Voltage_mv;
+		Handle->MaxCellVoltage.BatteryNumber = SourceData->MaxCellVoltage.BatteryNumber;
+		Handle->MaxCellVoltage.CellNumber = SourceData->MaxCellVoltage.CellNumber;
+		Handle->MaxCellVoltage.ModuleNumber = SourceData->MaxCellVoltage.ModuleNumber;
+	}
+
+	if(Handle->MaxModuleTemperature.Temperature < SourceData->MaxModuleTemperature.Temperature)
+	{
+		Handle->MaxModuleTemperature.Temperature = SourceData->MaxModuleTemperature.Temperature;
+		Handle->MaxModuleTemperature.BatteryNumber = SourceData->MaxModuleTemperature.BatteryNumber;
+		Handle->MaxModuleTemperature.SensorNum = SourceData->MaxModuleTemperature.SensorNum;
+		Handle->MaxModuleTemperature.ModuleNumber = SourceData->MaxModuleTemperature.ModuleNumber;
+	}
+
+	if(Handle->MinModuleTemperature.Temperature > SourceData->MinModuleTemperature.Temperature)
+	{
+		Handle->MinModuleTemperature.Temperature = SourceData->MinModuleTemperature.Temperature;
+		Handle->MinModuleTemperature.BatteryNumber = SourceData->MinModuleTemperature.BatteryNumber;
+		Handle->MinModuleTemperature.SensorNum = SourceData->MinModuleTemperature.SensorNum;
+		Handle->MinModuleTemperature.ModuleNumber = SourceData->MinModuleTemperature.ModuleNumber;
+	}
+
+	Handle->TotalVoltage += SourceData->TotalVoltage;
 }
 
 /* *********************** Battery Functionality ****************************** */
@@ -566,7 +603,7 @@ uint8_t packGetBalancingPermission(const BatteryData_t *PackHandle, const PackCo
 		// Разрешаем балансировку при токе меньше 1 Ампера
 		if(PackHandle->TotalCurrent > 10 || PackHandle->TotalCurrent < -10)
 			res = 0;
-		else
+		else if(PackHandle->MaxCellVoltage.Voltage_mv > PackControl->TargetVoltage_mV)
 			res = 1;
 	}
 	else
@@ -750,22 +787,14 @@ int8_t flashWriteSData(const StorageData_t *sdata)
 	
 	// write 1st data to 1st and 2nd buffer
 	memcpy(&tmp_sdata.Buf_1st, &sdata->Buf_1st, sizeof(sdata->Buf_1st));
-	//memcpy(&tmp_sdata.Buf_2nd, &sdata->Buf_1st, sizeof(sdata->Buf_2nd));
 	
 	tmp_sdata.Buf_1st.Crc = 0;
-	//tmp_sdata.Buf_2nd.Crc = 0;
 	
 	for(uint8_t i = 0; i < sizeof(sdata->Buf_1st) - sizeof(sdata->Buf_1st.Crc); i++)
 		tmp_sdata.Buf_1st.Crc += *((uint8_t*)&tmp_sdata.Buf_1st + i);
 
 	tmp_sdata.Buf_1st.Crc++;
 	MemEcuSDataWrite((uint8_t*)&tmp_sdata.Buf_1st, sizeof(sdata->Buf_1st), 0);
-	
-//	for(uint8_t i = 0; i < sizeof(sdata->Buf_2nd) - sizeof(sdata->Buf_2nd.Crc); i++)
-//		tmp_sdata.Buf_2nd.Crc += *((uint8_t*)&tmp_sdata.Buf_2nd + i);
-
-	
-	//MemEcuSDataWrite((uint8_t*)&tmp_sdata.Buf_2nd, sizeof(sdata->Buf_2nd), 1);
 
 	return 0;
 }
@@ -781,38 +810,29 @@ int8_t flashReadSData(StorageData_t *sdata)
 	for(uint8_t i = 0; i < sizeof(sdata->Buf_1st) - sizeof(sdata->Buf_1st.Crc); i++)
 		crc0 += *((uint8_t*)&sdata->Buf_1st + i);
 
-	/*MemEcuSDataRead((uint8_t*)&sdata->Buf_2nd, sizeof(sdata->Buf_2nd), 1);
-	for(uint8_t i = 0; i < sizeof(sdata->Buf_2nd) - sizeof(sdata->Buf_2nd.Crc); i++)
-		crc1 += *((uint8_t*)&sdata->Buf_2nd + i);
 
-	if(sdata->Buf_1st.SystemTime >= sdata->Buf_2nd.SystemTime)
+	// if data from buf is correct
+	if(crc0 == sdata->Buf_1st.Crc - 1)
 	{
-	*/
-		// if data from buf is correct
-		if(crc0 == sdata->Buf_1st.Crc - 1)
-		{			
-			uint8_t save_poweroff = sdata->Buf_1st.NormalPowerOff;
-			// Reset normal power off sign
-			sdata->Buf_1st.NormalPowerOff = 0;
-			// rewrite current and previous note
-			//memcpy(&sdata->Buf_2nd, &sdata->Buf_1st, sizeof(sdata->Buf_2nd));
+		uint8_t save_poweroff = sdata->Buf_1st.NormalPowerOff;
+		// Reset normal power off sign
+		sdata->Buf_1st.NormalPowerOff = 0;
 
-			if(!save_poweroff)
-				result =  -1;
-			else
-			{
-				result = 0;
-				sdata->DataChanged = 1;
-			}
-
-		}
-		// else restore TotalCapacity from another buffer
+		if(!save_poweroff)
+			result =  -1;
 		else
 		{
-
-			memset(&sdata->Buf_1st, 0xff, sizeof(sdata->Buf_1st));
-			result =  -1;
+			result = 0;
+			sdata->DataChanged = 1;
 		}
+	}
+	// else restore TotalCapacity from another buffer
+	else
+	{
+
+		memset(&sdata->Buf_1st, 0xff, sizeof(sdata->Buf_1st));
+		result =  -1;
+	}
 	
 	sdata->Result = result;
 	return result;
@@ -833,7 +853,7 @@ int8_t flashClearData(StorageData_t *sdata)
 	MemEcuWriteData((uint8_t*)sdata, Length);
 
 	cfgWrite(sdata->cfgData);
-	SaveFaults(dtcList, dtcListSize);	
+	SaveFaults(dtcList, dtcListSize);
 	
 	__enable_irq();
 	

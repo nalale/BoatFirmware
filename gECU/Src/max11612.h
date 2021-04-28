@@ -5,7 +5,7 @@
 
 #pragma anon_unions
 /** Own Slave address in Slave I2C device */
-#define I2CDEV_S_ADDR	0x34
+#define I2CDEV_S_ADDR	0x33//0x34
 
 
 void Max11612_Init(void);

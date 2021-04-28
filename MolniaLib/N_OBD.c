@@ -287,7 +287,7 @@ uint8_t ecuWriteDiagnosticValue(uint16_t did, uint32_t buf, uint16_t NoteToWrite
 			return GENERAL_PROGRAMMING_FAILURE;		
 		
 		flashClearData(&OD.SData);
-		OD.SData.DataChanged = 1;
+//		OD.SData.DataChanged = 1;
 	}
 	else
 	{

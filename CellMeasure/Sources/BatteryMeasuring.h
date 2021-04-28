@@ -138,7 +138,7 @@ int8_t sysEnergy_Init(BatteryData_t *Handle, uint32_t InitialTotalSystemEnergy_A
 uint32_t sysEnergy_InitEnergyFromMinUcell(BatteryData_t *Handle, int16_t *OcvTable, uint16_t CellVoltage);
 uint16_t sysEnergy_CoulombCounting(BatteryData_t *Handle, int16_t Current_0p1);
 uint32_t sysEnergy_EnergyEstimation(BatteryData_t *Handle, uint16_t MaxCellVoltage_mV, uint16_t MinCellVoltage_mV);
-
+uint32_t sysEnergy_CapacityInit(BatteryData_t *Handle, uint32_t Capacity);
 
 
 #endif

@@ -2,7 +2,7 @@
 #include <lpc17xx.h>
 #include "TimerFunc.h"
 #include "../MolniaLib/DateTime.h"
-
+#include "lpc17xx_timer.h"
 
 
 /* SysTick Counter */
@@ -43,6 +43,14 @@ void Delay (uint32_t tick) {
 void Tmr_Init(uint32_t Freq_Hz)
 {
   SysTick_Config(SystemCoreClock/Freq_Hz - 1);
+	
+	TIM_TIMERCFG_Type usTimer;
+	TIM_ConfigStructInit(TIM_TIMER_MODE, &usTimer);
+	usTimer.PrescaleOption = TIM_PRESCALE_USVAL;
+	usTimer.PrescaleValue = 1;
+
+	TIM_Init(LPC_TIM0, TIM_TIMER_MODE, &usTimer);
+	TIM_Cmd(LPC_TIM0, ENABLE);
 }
 
 uint32_t GetTimeStamp()
@@ -60,6 +68,25 @@ uint32_t GetTimeFrom(uint32_t TimeStampLoc)
     result = Timer0cnt - TimeStampLoc;
   else
     result = (0xFFffFFff -  TimeStampLoc)  + Timer0cnt;
+  
+  return result;
+}
+
+uint32_t uGetTimeStamp()
+{
+  return LPC_TIM0->TC;
+}
+
+uint32_t uGetTimeFrom(uint32_t TimeStampLoc)
+{
+  uint32_t result, ucnt;
+  
+  ucnt= uGetTimeStamp();
+  
+  if(ucnt >= TimeStampLoc)
+    result = ucnt - TimeStampLoc;
+  else
+    result = (0xFFffFFff -  TimeStampLoc)  + ucnt;
   
   return result;
 }

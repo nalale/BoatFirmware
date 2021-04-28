@@ -12,6 +12,16 @@
 
 static int16_t CurrentLimitArray[CCL_DCL_POINTS_NUM * 2];
 
+uint32_t sysEnergy_CapacityInit(BatteryData_t *Handle, uint32_t Capacity)
+{
+	if(Handle == 0)
+		return 1;
+
+	Handle->TotalEnergy_As = Capacity * 3600;			// Asec * SoC / 100;
+
+	return 0;
+}
+
 // Ñalculation of module energy by the minimum cell voltage and the OCV table
 uint32_t sysEnergy_InitEnergyFromMinUcell(BatteryData_t *Handle, int16_t *OcvTable, uint16_t CellVoltage)
 {

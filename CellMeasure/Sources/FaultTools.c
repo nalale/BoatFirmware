@@ -222,7 +222,7 @@ uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;
-		if(OD.PackData[ecuConfig->BatteryIndex].OnlineNumber != ecuConfig->Sys_ModulesCountS)
+		if(OD.PackData[ecuConfig->BatteryIndex].OnlineNumber < ecuConfig->Sys_ModulesCountS)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -252,9 +252,16 @@ uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		uint8_t flag = 0;
+		uint8_t units_number = 0;
 		it->SamplePeriodCounter = 0;
+
+		if(ModuleIsAssemblyHeader(ecuConfig))
+			units_number = ecuConfig->ModulesInAssembly;
+		else if(ModuleIsPackHeader(ecuConfig))
+			units_number = ecuConfig->Sys_ModulesCountS;
+
 		// —чет начинаетс€ с индекса 1, чтобы не анализировать состо€ние себ€
-		for(uint8_t i = 1; i < ecuConfig->Sys_ModulesCountS; i++)
+		for(uint8_t i = 1; i < units_number; i++)
 		{
 			// ¬ режиме инициализации ждем включени€ всех модулей
 			if(OD.StateMachine.MainState == WORKSTATE_INIT && OD.StateMachine.SubState > 3)

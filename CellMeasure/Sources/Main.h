@@ -58,7 +58,8 @@ typedef struct
 	PowerOn						:	1,
 	MsgFromSystem				:	1,
 	MsgFromPM					:	1,
-	dummy						:	5;
+	FlashDataRead				:	1,
+	dummy						:	4;
 } StateBits_t;
 
 typedef struct
