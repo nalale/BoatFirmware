@@ -6,7 +6,7 @@
 #define MARINE_ECU					2
 
 #define MaxGEcuNum		5
-#define MaxBatteryNum	4
+#define MaxBatteryNum	10
 #define MaxModuleNum	15
 
 // Модели ЭБУ
@@ -26,10 +26,10 @@ typedef enum
 	Bmu_ECU_CAN_ID_LEN = 5,
 	Bmu_ECU_RX_ID_LEN = 2,
 	
-	Bat_ECUx_CAN_ID_LEN = 5,
+	Bat_ECUx_CAN_ID_LEN = 4,
 	Bat_ECU_CAN_ID_LEN = Bat_ECUx_CAN_ID_LEN * MaxBatteryNum,
 
-	Module_ECUx_CAN_ID_LEN = 4,
+	Module_ECUx_CAN_ID_LEN = 2,
 	Module_ECU_CAN_ID_LEN = (Module_ECUx_CAN_ID_LEN * MaxModuleNum) * MaxBatteryNum,
 
 	Main_ECU_CAN_ID_LEN = 10,
@@ -168,7 +168,7 @@ typedef struct
 	int16_t TargetBalancingVoltage;
 
 	uint8_t
-			ModulesInAssembly		: 4,
+			PacksNumber		: 4,
 			BalancingEnabled	: 1,
 			dummy				: 3;
 
@@ -203,7 +203,7 @@ typedef struct
 	uint8_t Soc;
 } BatBatteryStatus2Msg_t;
 
-typedef struct
+/*typedef struct
 {
 	uint8_t
 	BalancingEnabled	: 1,
@@ -211,12 +211,14 @@ typedef struct
 
 	uint16_t TargetBalancingVoltage;
 } cmPack_Tx1;
+*/
 
 typedef struct
 {
 	uint32_t ActualEnergy_As;
 	uint32_t TotalEnergy_As;
 } smPack_Tx2;
+
 
 typedef struct
 {

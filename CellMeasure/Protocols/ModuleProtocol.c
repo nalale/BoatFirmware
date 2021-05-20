@@ -1,15 +1,14 @@
 #include "Main.h"
+#include "User.h"
 #include "CanFunc.h"
 #include "Protocol.h"
 #include "TimerFunc.h"
 
-#define TX_MSG	4
+#define TX_MSG	2
 
 static uint32_t modSendTime[TX_MSG];
 // Периоды отправки сообщений
 const uint16_t msgPeriod[TX_MSG] = {
-								250,
-								250,
 								250,
 								250,
 								 };
@@ -55,19 +54,6 @@ uint8_t moduleMsgHandler(CanMsg *msg)
 					UINT32_MAX : (uint32_t)d->ActualEnergy_0p01Ah * 36;
 		}
 			break;
-
-		case 2:
-		{
-			cmAssemblyMsg1_t *d = (cmAssemblyMsg1_t*)msg->data;
-
-			if((OD.ConfigData->ModuleIndex > module_id) && (OD.ConfigData->ModuleIndex < module_id + d->ModulesInAssembly))
-			{
-				OD.PackControl.ModulesInAssembly = d->ModulesInAssembly;
-				OD.PackControl.BalancingEnabled = d->BalancingEnabled;
-				OD.PackControl.TargetVoltage_mV = d->TargetBalancingVoltage;
-			}
-		}
-		break;
 		
 		default:
 			return 1;			
@@ -84,8 +70,7 @@ void ModuleMesGenerate(void)
 	static uint8_t SendMesNumber = 0;
     
     CanMsg *msg;
-    uint8_t max_msg_num = ((OD.ConfigData->Sys_ModulesCountS == OD.ConfigData->ModulesInAssembly) || 
-							(OD.ConfigData->ModulesInAssembly <= 1))? TX_MSG - 1 : TX_MSG;
+    uint8_t max_msg_num = TX_MSG;
     // Генерация сообщений
 	if (++SendMesNumber >= max_msg_num)
 		SendMesNumber = 0;
@@ -132,29 +117,6 @@ void ModuleMesGenerate(void)
 						UINT16_MAX : (uint16_t)(OD.ModuleData[OD.ConfigData->ModuleIndex].ActualEnergy_As / (uint32_t)36);
             }
                 break;
-
-			case 2:
-			{
-				cmAssemblyMsg1_t *d = (cmAssemblyMsg1_t*)msg->data;
-
-				d->ModulesInAssembly = OD.ConfigData->ModulesInAssembly;
-				d->BalancingEnabled = OD.PackControl.BalancingEnabled;
-				d->TargetBalancingVoltage = OD.PackControl.TargetVoltage_mV;
-				d->CCL = -OD.PackData[OD.ConfigData->BatteryIndex].CCL;
-				d->DCL = OD.PackData[OD.ConfigData->BatteryIndex].DCL;
-
-			}
-			break;
-
-			case 3:
-			{
-				cmAssemblyMsg2_t *d = (cmAssemblyMsg2_t*)msg->data;
-
-				d->TotalVoltage = OD.ModuleData[OD.ConfigData->ModuleIndex].TotalVoltage;
-				d->TotalCurrent = OD.ModuleData[OD.ConfigData->ModuleIndex].TotalCurrent;
-
-			}
-			break;
         }
 
     }

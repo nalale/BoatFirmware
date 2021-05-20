@@ -66,7 +66,7 @@ typedef struct
 	
 	uint16_t PowerOffDelay_ms;
 	uint16_t KeyOffTime_ms;
-	uint8_t ModulesInAssembly;
+	uint8_t PacksNumber;
 	uint8_t addition_5;
 	uint16_t addition_6;
 	uint16_t addition_7;

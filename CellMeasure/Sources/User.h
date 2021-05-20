@@ -23,10 +23,10 @@ uint8_t ContactorClose(uint8_t num);
 void ECU_GoToSleep(void);
 void ECU_GoToPowerSupply(void);
 
-uint8_t ModuleIsAssemblyHeader(const EcuConfig_t *config);
+
 uint8_t ModuleIsPackHeader(const EcuConfig_t *config);
 uint8_t ModuleSetContactorPosition(const BatteryData_t* Handle, stBattery_e StateCmd, const EcuConfig_t *config, uint32_t *CompleteConditionTimeStamp);
-void assemblyAddData(BatteryData_t* Handle, const BatteryData_t* SourceData);
+
 
 void BatteryCheckModulesOnline(BatteryData_t *Handle, const BatteryData_t *SourceData, uint8_t SourceItemsNum);
 uint8_t packGetBalancingPermission(const BatteryData_t *PackHandle, const PackControl_t *PackControl, const EcuConfig_t *ecuConfig);
@@ -38,8 +38,8 @@ uint32_t packGetMinEnergy(const BatteryData_t *SourceHandle, const EcuConfig_t *
 int16_t packGetChargeCurrentLimit(const BatteryData_t* handle, const EcuConfig_t *ecuConfig, int16_t FullCCL_A);
 int16_t packGetDischargeCurrentLimit(const BatteryData_t* handle, const EcuConfig_t *ecuConfig, int16_t FullDCL_A);
 
+uint8_t ModuleIsPackMaster(const EcuConfig_t *config);
 uint8_t MasterIsReady(const BatteryData_t* Handle, const BatteryData_t *BatteriesData, const EcuConfig_t *config, uint32_t *ReadyConditionTimeStamp);
-
 
 int8_t flashWriteSData(const StorageData_t *sdata);
 // Return 0 if success, otherwise return nonzero

@@ -3,6 +3,7 @@
 
 #include "FaultTools.h"
 #include "Main.h"
+#include "User.h"
 #include "TimerFunc.h"
 #include "MemoryFunc.h"
 #include "BMS_Combi_ECU.h"
@@ -11,14 +12,6 @@
 
 #include "../MolniaLib/FaultCategory.h"
 #include "../MolniaLib/FaultsServices.h"
-
-
-
-
-
-
-
-
 
 uint8_t MasterFaultTest(EcuConfig_t *ecuConfig);
 uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig);
@@ -42,12 +35,12 @@ uint8_t FaultsTest()
 		return 0;	
 	}
 
-	// Эту проверку выполняют только крайние модули в ветке
-	if(ecuConfig.ModuleIndex == 0)
+	// Эту проверку выполняют только крайние модули в ветке или в сборке
+	if(ModuleIsPackHeader(OD.ConfigData))
 		is_critical_fault |= BatteryFaultTest(&ecuConfig);
 
 	// Эту проверку выполняет только мастер
-	if(ecuConfig.IsMaster)
+	if(ModuleIsPackMaster(OD.ConfigData))
 		is_critical_fault |= MasterFaultTest(&ecuConfig);	
 	
 	OD.FaultsNumber = FillFaultsList(dtcList, dtcListSize, OD.FaultList, 1);
@@ -75,7 +68,8 @@ uint8_t MasterFaultTest(EcuConfig_t *ecuConfig)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;
-		if(OD.MasterData.OnlineNumber != ecuConfig->Sys_ModulesCountP)
+
+		if(OD.MasterData.OnlineNumber != ecuConfig->PacksNumber)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -99,17 +93,24 @@ uint8_t MasterFaultTest(EcuConfig_t *ecuConfig)
 	it = &dtcMst_BatVoltageDiff;
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
-		it->SamplePeriodCounter = 0;
-		if(OD.MasterData.MaxBatteryVoltage.Voltage - OD.MasterData.MinBatteryVoltage.Voltage > ecuConfig->Sys_MaxVoltageDisbalanceP)
+		uint16_t voltage_diff = 0;
+		if(ecuConfig->PacksNumber == ecuConfig->Sys_ModulesCountP)
+			voltage_diff = ecuConfig->Sys_MaxVoltageDisbalanceP;
+		else
+			voltage_diff = INT16_MAX;
+
+		it->SamplePeriodCounter = 0;	
+
+		if((OD.MasterData.MaxBatteryVoltage.Voltage - OD.MasterData.MinBatteryVoltage.Voltage) >= voltage_diff)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
-			{				
+			{
 				if(!TestFailedThisOperationCycle)
 				{
 					dtcSetFault(it, &env);
 					it->Category = 0;
-					SetGeneralFRZR(&frzfBatVoltageDiff);							
+					SetGeneralFRZR(&frzfBatVoltageDiff);
 				}
 				OD.Faults.Mst_BatteryVoltageDiff = 1;
 			}
@@ -126,7 +127,8 @@ uint8_t MasterFaultTest(EcuConfig_t *ecuConfig)
 	{
 		uint8_t flag = 0;
 		it->SamplePeriodCounter = 0;
-		for(uint8_t i = 0; i < ecuConfig->Sys_ModulesCountP; i++)
+
+		for(uint8_t i = 0; i < ecuConfig->PacksNumber; i++)
 		{
 			if(OD.PackData[i].MainState != OD.MasterControl.RequestState)
 			{
@@ -138,9 +140,9 @@ uint8_t MasterFaultTest(EcuConfig_t *ecuConfig)
 					{
 						dtcSetFault(it, &env);
 						it->Category = 0;
-						SetGeneralFRZR(&frzfBatState);							
+						SetGeneralFRZR(&frzfBatState);
 					}
-					OD.Faults.Mst_BatteryFault = 1;			
+					OD.Faults.Mst_BatteryFault = 1;
 				}
 			}
 		}
@@ -222,7 +224,9 @@ uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		it->SamplePeriodCounter = 0;
-		if(OD.PackData[ecuConfig->BatteryIndex].OnlineNumber < ecuConfig->Sys_ModulesCountS)
+		uint8_t number = ecuConfig->Sys_ModulesCountS;
+		
+		if(OD.PackData[ecuConfig->BatteryIndex].OnlineNumber < number)
 		{
 			TestFailedThisOperationCycle = it->Status.TestFailedThisOperationCycle;
 			if(dtcFaultDetection(it, &env, 1) == DTC_TEST_RESULT_FAILED)
@@ -252,16 +256,11 @@ uint8_t BatteryFaultTest(EcuConfig_t *ecuConfig)
 	if(++it->SamplePeriodCounter >= it->Property->TestSamplePeriod)
 	{
 		uint8_t flag = 0;
-		uint8_t units_number = 0;
 		it->SamplePeriodCounter = 0;
 
-		if(ModuleIsAssemblyHeader(ecuConfig))
-			units_number = ecuConfig->ModulesInAssembly;
-		else if(ModuleIsPackHeader(ecuConfig))
-			units_number = ecuConfig->Sys_ModulesCountS;
-
 		// Счет начинается с индекса 1, чтобы не анализировать состояние себя
-		for(uint8_t i = 1; i < units_number; i++)
+		//for(uint8_t i = 1; i < units_number; i++)
+		for(uint8_t i = ecuConfig->ModuleIndex; i < ecuConfig->ModuleIndex + ecuConfig->Sys_ModulesCountS; i++)
 		{
 			// В режиме инициализации ждем включения всех модулей
 			if(OD.StateMachine.MainState == WORKSTATE_INIT && OD.StateMachine.SubState > 3)

@@ -276,7 +276,7 @@ const DiagnosticValueFRZF dVal_frzfBatState[] =
 	{ didFaults_FreezeFrame, DV_FRZF(frzfBatNumber) },
 };
 // Статические параметры неисправности
-static dtcProperty_t dtcProp_BatState = { dtc_Mst_WrongBatState, DTC_BIT_WARNING_ENABLE + DTC_BIT_OPERATION_DISABLE, 0, 8, -1, 250, DIAG_ITEM(dVal_frzfBatState) };
+static dtcProperty_t dtcProp_BatState = { dtc_Mst_WrongBatState, DTC_BIT_WARNING_ENABLE + DTC_BIT_OPERATION_DISABLE, 0, 12, -1, 250, DIAG_ITEM(dVal_frzfBatState) };
 // Все о неисправности
 dtcItem_t dtcMst_BatState = {&dtcProp_BatState};
 
@@ -333,9 +333,17 @@ void ecuInit(ObjectDictionary_t *dictionary)
 	dictionary->EcuInfo[3] = HW_VERSION;
 	
 	dictionary->PackData[_config.BatteryIndex].Type = type_Pack;
+	dictionary->PackData[_config.BatteryIndex].PackType = pack_Serial;
 	dictionary->PackData[_config.BatteryIndex].Index = _config.ModuleIndex;
 	dictionary->MasterData.Type = type_Master;
 	dictionary->MasterData.Index = _config.BatteryIndex;
+
+	if(_config.PacksNumber == _config.Sys_ModulesCountP)
+		dictionary->MasterData.PackType = pack_Parallel;
+	else if(_config.PacksNumber == _config.Sys_ModulesCountS)
+		dictionary->MasterData.PackType = pack_Serial;
+	else
+		dictionary->MasterData.PackType = pack_Unknown;
 
 	// Применение ошибок
 	if(!_config.CheckContactor)

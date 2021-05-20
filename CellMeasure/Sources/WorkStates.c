@@ -283,13 +283,13 @@ void ShutdownState(uint8_t *SubState)
 		break;
 
 		case 1:
-			ModuleSetContactorPosition(OD.PackData, stBat_Disabled, OD.ConfigData, &timeStamp);
+
 			if(GetTimeFrom(OD.LogicTimers.PowerOffTimer_ms) >= OD.ConfigData->PowerOffDelay_ms)
 				*SubState = 2;
 		break;
 
 		case 2:
-
+			ModuleSetContactorPosition(OD.PackData, stBat_Disabled, OD.ConfigData, &timeStamp);
 			ECU_GoToSleep();
 			break;
 	}
@@ -365,40 +365,27 @@ void CommonState(void)
 		// For each module
 		sysEnergy_EnergyCounting(&OD.ModuleData[OD.ConfigData->ModuleIndex], current);
 		ModuleStatisticCalculating(&OD.ModuleData[OD.ConfigData->ModuleIndex], OD.ConfigData, OD.CellVoltageArray_mV, OD.CellTemperatureArray);
-
-		// For assemblies
-/*		for(int8_t mod = 0; mod < OD.ConfigData->ModulesInAssembly - 1; mod++)
-			assemblyAddData(&OD.ModuleData[OD.ConfigData->ModuleIndex], &OD.ModuleData[OD.ConfigData->ModuleIndex + mod]);
-*/
 		
-		// For header modules or Bms
+		// For pack header
 		if(ModuleIsPackHeader(OD.ConfigData))
 		{
 			sysEnergy_EnergyCounting(&OD.PackData[OD.ConfigData->BatteryIndex], current);
 			BatteryCheckModulesOnline(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData->Sys_ModulesCountS);
 			BatteryStatisticCalculating(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData->Sys_ModulesCountS);
 			
-			//sysEnergy_EnergyCounting(&OD.MasterData, OD.MasterData.TotalCurrent);
-			BatteryCheckModulesOnline(&OD.MasterData, OD.PackData, OD.ConfigData->Sys_ModulesCountP);
-			BatteryStatisticCalculating(&OD.MasterData, OD.PackData, OD.ConfigData->Sys_ModulesCountP);
-
 			OD.PackData[OD.ConfigData->BatteryIndex].MainState = OD.ModuleData[OD.ConfigData->ModuleIndex].MainState;
 			OD.PackData[OD.ConfigData->BatteryIndex].SubState = OD.ModuleData[OD.ConfigData->ModuleIndex].SubState;
-		}
-		
-		// For modules in assembly
-		if(ModuleIsAssemblyHeader(OD.ConfigData))
-		{
-			BatteryCheckModulesOnline(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData->ModulesInAssembly);
-			
-			sysEnergy_EnergyCounting(&OD.PackData[OD.ConfigData->BatteryIndex], current);
-			BatteryStatisticCalculating(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ModuleData, OD.ConfigData->ModulesInAssembly);
-		}
 
+			if(ModuleIsPackMaster(OD.ConfigData))
+			{
+				//sysEnergy_EnergyCounting(&OD.MasterData, OD.MasterData.TotalCurrent);
+				BatteryCheckModulesOnline(&OD.MasterData, OD.PackData, OD.ConfigData->PacksNumber);
+				BatteryStatisticCalculating(&OD.MasterData, OD.PackData, OD.ConfigData->PacksNumber);
+			}
+		}
 
 		// Power Manager Functionality
-//		OD.LocalPMState = (OD.ConfigData->IsPowerManager)? PM_GetPowerState() : OD.PowerMaganerCmd;
-		
+
 		OD.LocalPMState = PM_GetPowerState();
 
 		if(OD.LocalPMState == PM_PowerOn1)
@@ -425,23 +412,15 @@ void CommonState(void)
     {
         OD.LogicTimers.Timer_100ms = GetTimeStamp();
 
-        // for header module or for pack modules
-        if(ModuleIsAssemblyHeader(OD.ConfigData))
-        {
-			OD.PackControl.TargetVoltage_mV = packGetBalancingVoltage(&OD.PackData[OD.ConfigData->BatteryIndex], &OD.PackControl, OD.ConfigData);
-			OD.PackControl.BalancingEnabled = packGetBalancingPermission(&OD.PackData[OD.ConfigData->BatteryIndex], &OD.PackControl, OD.ConfigData);
-			//packGetCurrentsLimit(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ConfigData, &OD.MasterControl, &OD.PackData[OD.ConfigData->BatteryIndex].DCL, &OD.PackData[OD.ConfigData->BatteryIndex].CCL);
-			OD.PackData[OD.ConfigData->BatteryIndex].CCL = packGetChargeCurrentLimit(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ConfigData, OD.MasterControl.CCL);
-			OD.PackData[OD.ConfigData->BatteryIndex].DCL = packGetDischargeCurrentLimit(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ConfigData, OD.MasterControl.DCL);
-        }
-        else
-        {
-        	// Get from CAN message
-        }
 
-        OD.MasterData.CCL = packGetChargeCurrentLimit(&OD.MasterData, OD.ConfigData, OD.MasterControl.CCL);
+		OD.PackControl.TargetVoltage_mV = packGetBalancingVoltage(&OD.PackData[OD.ConfigData->BatteryIndex], &OD.PackControl, OD.ConfigData);
+		OD.PackControl.BalancingEnabled = packGetBalancingPermission(&OD.PackData[OD.ConfigData->BatteryIndex], &OD.PackControl, OD.ConfigData);
+		//packGetCurrentsLimit(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ConfigData, &OD.MasterControl, &OD.PackData[OD.ConfigData->BatteryIndex].DCL, &OD.PackData[OD.ConfigData->BatteryIndex].CCL);
+		OD.PackData[OD.ConfigData->BatteryIndex].CCL = packGetChargeCurrentLimit(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ConfigData, OD.MasterControl.CCL);
+		OD.PackData[OD.ConfigData->BatteryIndex].DCL = packGetDischargeCurrentLimit(&OD.PackData[OD.ConfigData->BatteryIndex], OD.ConfigData, OD.MasterControl.DCL);
+
+		OD.MasterData.CCL = packGetChargeCurrentLimit(&OD.MasterData, OD.ConfigData, OD.MasterControl.CCL);
         OD.MasterData.DCL = packGetDischargeCurrentLimit(&OD.MasterData, OD.ConfigData, OD.MasterControl.DCL);
-
 
 		vs_ban_balancing(!OD.PackControl.BalancingEnabled);
 		vs_set_min_dis_chars(OD.PackControl.TargetVoltage_mV);

@@ -13,7 +13,7 @@ static uint32_t extSendTime[TxMsg_NUM];
 const uint16_t slvPeriod[TxMsg_NUM] = {
 								100,
 								250,
-								500,
+								250,
 								500
 								 };
 
@@ -71,13 +71,24 @@ uint8_t packMsgHandler(CanMsg *msg)
 		
 		case 2:
 		{
-			cmPack_Tx1 *d = (cmPack_Tx1*)msg->data;
+			cmAssemblyMsg1_t *d = (cmAssemblyMsg1_t*)msg->data;
+
+			//if((OD.ConfigData->ModuleIndex > module_id) && (OD.ConfigData->ModuleIndex < module_id + d->ModulesInAssembly))
+			if(bat_id == ecuConfig->BatteryIndex)
+			{
+				OD.PackControl.ModulesInAssembly = d->PacksNumber;
+				OD.PackControl.BalancingEnabled = d->BalancingEnabled;
+				OD.PackControl.TargetVoltage_mV = d->TargetBalancingVoltage;
+			}
+
+/*			cmPack_Tx1 *d = (cmPack_Tx1*)msg->data;
 
 			if(bat_id == ecuConfig->BatteryIndex && OD.PackControl.ModulesInAssembly == 0)
 			{
 				OD.PackControl.BalancingEnabled = d->BalancingEnabled;
 				OD.PackControl.TargetVoltage_mV = d->TargetBalancingVoltage;
 			}
+*/
 		}
 		break;
 		
@@ -90,6 +101,19 @@ uint8_t packMsgHandler(CanMsg *msg)
 		}
 		break;
 
+		/*case 2:
+		{
+			cmAssemblyMsg1_t *d = (cmAssemblyMsg1_t*)msg->data;
+
+			if((OD.ConfigData->ModuleIndex > module_id) && (OD.ConfigData->ModuleIndex < module_id + d->ModulesInAssembly))
+			{
+				OD.PackControl.ModulesInAssembly = d->ModulesInAssembly;
+				OD.PackControl.BalancingEnabled = d->BalancingEnabled;
+				OD.PackControl.TargetVoltage_mV = d->TargetBalancingVoltage;
+			}
+		}
+		break;
+*/
 		default:
 			return 1;
 	}				
@@ -158,10 +182,19 @@ void SlaveMesGenerate(void)
 
 			case 2:
 			{
-				cmPack_Tx1 *d = (cmPack_Tx1*)msg->data;
+				cmAssemblyMsg1_t *d = (cmAssemblyMsg1_t*)msg->data;
+
+				d->PacksNumber = OD.ConfigData->PacksNumber;
+				d->BalancingEnabled = OD.PackControl.BalancingEnabled;
+				d->TargetBalancingVoltage = OD.PackControl.TargetVoltage_mV;
+				d->CCL = -OD.PackData[OD.ConfigData->BatteryIndex].CCL;		// send positive value
+				d->DCL = OD.PackData[OD.ConfigData->BatteryIndex].DCL;
+
+				/*cmPack_Tx1 *d = (cmPack_Tx1*)msg->data;
 
 				d->BalancingEnabled = OD.PackControl.BalancingEnabled;
 				d->TargetBalancingVoltage = OD.PackControl.TargetVoltage_mV;
+				*/
 			}
 			break;
 			
@@ -173,6 +206,21 @@ void SlaveMesGenerate(void)
 				d->TotalEnergy_As = OD.PackData[ecuConfig->BatteryIndex].TotalEnergy_As;
 			}
 			break;
+
+			/*
+			case 3:
+			{
+				cmAssemblyMsg2_t *d = (cmAssemblyMsg2_t*)msg->data;
+
+				d->TotalVoltage = OD.ModuleData[OD.ConfigData->ModuleIndex].TotalVoltage;
+				d->TotalCurrent = OD.ModuleData[OD.ConfigData->ModuleIndex].TotalCurrent;
+
+			}
+			break;
+			 *
+			 *
+			 *
+			 */
         }
 
     }

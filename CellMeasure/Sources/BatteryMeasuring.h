@@ -11,6 +11,14 @@ typedef enum
 	type_Module,
 } ModuleType_e;
 
+typedef enum
+{
+	pack_Parallel = 0,
+	pack_Serial,
+	pack_Unknown,
+
+} PackType_e;
+
 // Напряжение на ячейке
 typedef struct
 {
@@ -59,6 +67,7 @@ typedef struct
 typedef struct
 {
 	ModuleType_e Type;
+	PackType_e PackType;
 	uint8_t Index;
 	// Состояние конечного автомата
     uint8_t MainState;
