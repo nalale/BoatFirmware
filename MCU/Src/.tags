@@ -1,0 +1,1034 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+EcuConfig	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.c	/^EcuConfig_t EcuConfig;$/;"	variable	line:6
+_cfgSetDefaultParams	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.c	/^void _cfgSetDefaultParams(void)$/;"	function	line:8	signature:(void)
+cfgApply	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.c	/^void cfgApply(void)$/;"	function	line:39	signature:(void)
+GetConfigInstance	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.c	/^EcuConfig_t GetConfigInstance()$/;"	function	line:50
+_ECU_CONFIG_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^#define _ECU_CONFIG_H_$/;"	macro	line:2
+AN_IN_COUNT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^#define AN_IN_COUNT	/;"	macro	line:4
+DIG_IN_COUNT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^#define DIG_IN_COUNT	/;"	macro	line:5
+AN_OUT_COUNT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^#define AN_OUT_COUNT	/;"	macro	line:6
+DIG_OUT_COUNT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^#define DIG_OUT_COUNT	/;"	macro	line:7
+REPEATER_TABLE_SIZE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^#define REPEATER_TABLE_SIZE	/;"	macro	line:9
+DiagnosticID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^    uint8_t DiagnosticID;					\/\/ OBD ID$/;"	member	line:18	struct:__anon1
+BaseCanId	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint16_t BaseCanId;$/;"	member	line:19	struct:__anon1
+AccPedalFstCh_MaxV	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t AccPedalFstCh_MaxV;$/;"	member	line:22	struct:__anon1
+AccPedalFstCh_0V	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t AccPedalFstCh_0V;$/;"	member	line:23	struct:__anon1
+AccPedalSndCh_MaxV	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t AccPedalSndCh_MaxV;$/;"	member	line:24	struct:__anon1
+MaxMotorSpeedD	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint16_t MaxMotorSpeedD;$/;"	member	line:27	struct:__anon1
+MaxMotorTorque	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint16_t MaxMotorTorque;$/;"	member	line:28	struct:__anon1
+MaxMotorT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	int16_t MaxMotorT;$/;"	member	line:29	struct:__anon1
+MaxInverterT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	int16_t MaxInverterT;$/;"	member	line:30	struct:__anon1
+SteeringMinVal_0p1V	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t SteeringMinVal_0p1V;$/;"	member	line:33	struct:__anon1
+SteeringMaxVal_0p1V	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t SteeringMaxVal_0p1V;$/;"	member	line:34	struct:__anon1
+SteeringMaxCurrent_0p1A	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^    int16_t SteeringMaxCurrent_0p1A;$/;"	member	line:35	struct:__anon1
+SteeringBrakeSpeedTable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^    int16_t SteeringBrakeSpeedTable[12];$/;"	member	line:37	struct:__anon1
+SteeringKp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t SteeringKp;$/;"	member	line:39	struct:__anon1
+SteeringKi	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t SteeringKi;$/;"	member	line:40	struct:__anon1
+SteeringKd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t SteeringKd;$/;"	member	line:41	struct:__anon1
+TrimMinVal_0p1V	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t TrimMinVal_0p1V;$/;"	member	line:44	struct:__anon1
+TrimMaxVal_0p1V	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t TrimMaxVal_0p1V;$/;"	member	line:45	struct:__anon1
+TrimMaxCurrent_0p1A	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^    int16_t TrimMaxCurrent_0p1A;$/;"	member	line:46	struct:__anon1
+PowerOffDelay_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint16_t PowerOffDelay_ms;$/;"	member	line:49	struct:__anon1
+KeyOffTime_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint16_t KeyOffTime_ms;$/;"	member	line:50	struct:__anon1
+IsPowerManager	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^		IsPowerManager	: 1,$/;"	member	line:55	struct:__anon1::__anon2
+dummy	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^		dummy			: 3,$/;"	member	line:56	struct:__anon1::__anon2
+PU_IN1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^		PU_IN1			: 1,$/;"	member	line:58	struct:__anon1::__anon2
+PU_IN2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^		PU_IN2			: 1,$/;"	member	line:59	struct:__anon1::__anon2
+PU_IN3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^		PU_IN3			: 1,$/;"	member	line:60	struct:__anon1::__anon2
+PU_IN4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^		PU_IN4			: 1;$/;"	member	line:61	struct:__anon1::__anon2
+InvCoolingOn	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t InvCoolingOn;$/;"	member	line:64	struct:__anon1
+MotorCoolingOn	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t MotorCoolingOn;$/;"	member	line:65	struct:__anon1
+MaxChargingCurrent_A	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t MaxChargingCurrent_A;$/;"	member	line:69	struct:__anon1
+ChargersNumber	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t ChargersNumber;$/;"	member	line:70	struct:__anon1
+addition_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint8_t addition_3;$/;"	member	line:72	struct:__anon1
+addition_4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint16_t addition_4;$/;"	member	line:73	struct:__anon1
+addition_5	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint16_t addition_5;$/;"	member	line:74	struct:__anon1
+addition_6	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint16_t addition_6;$/;"	member	line:75	struct:__anon1
+addition_7	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^	uint16_t addition_7;$/;"	member	line:76	struct:__anon1
+CRC	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^    uint16_t CRC;$/;"	member	line:80	struct:__anon1
+EcuConfig_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\EcuConfig.h	/^} EcuConfig_t;$/;"	typedef	line:81	typeref:struct:__anon1
+EXTERNAL_SEND_MSG_AMOUNT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ExternalProtocol.c	/^#define EXTERNAL_SEND_MSG_AMOUNT	/;"	macro	line:8	file:
+extSendTime	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ExternalProtocol.c	/^static uint32_t extSendTime[EXTERNAL_SEND_MSG_AMOUNT];$/;"	variable	line:10	file:
+extPeriod	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ExternalProtocol.c	/^const uint16_t extPeriod[EXTERNAL_SEND_MSG_AMOUNT] = {								$/;"	variable	line:12
+ExternalRx	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ExternalProtocol.c	/^uint8_t ExternalRx(CanMsg *msg)$/;"	function	line:18	signature:(CanMsg *msg)
+ExternalMesGenerate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ExternalProtocol.c	/^void ExternalMesGenerate(void)$/;"	function	line:121	signature:(void)
+SendSteeringStartupMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ExternalProtocol.c	/^uint8_t SendSteeringStartupMsg(void)$/;"	function	line:190	signature:(void)
+_EXT_PROTOCOL_H	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ExternalProtocol.h	/^#define _EXT_PROTOCOL_H$/;"	macro	line:2
+pointer	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^static uint8_t pointer[512];$/;"	variable	line:12	file:
+CriticalFaultExist	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^		CriticalFaultExist				: 1,				\/\/ Выходить из рабочего режима или нет (серьезная ошибка)$/;"	member	line:19	struct:__anon3::__anon4	file:
+WarningIndicatorRequested	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^		WarningIndicatorRequested		: 1,				\/\/ Требуется ли индицировать о неисправности или нет$/;"	member	line:20	struct:__anon3::__anon4	file:
+PowerOff	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^		PowerOff						: 1,				\/\/ Отключиться полностью при возникновении неисправности$/;"	member	line:21	struct:__anon3::__anon4	file:
+dummy	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^		dummy : 5;$/;"	member	line:23	struct:__anon3::__anon4	file:
+dtcEnvironment_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^} dtcEnvironment_t;$/;"	typedef	line:25	typeref:struct:__anon3	file:
+FaultsTest	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^uint8_t FaultsTest(uint8_t TestIsEnabled)$/;"	function	line:33	signature:(uint8_t TestIsEnabled)
+FillFaultsList	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^uint8_t FillFaultsList(uint16_t *Array, uint8_t *FaultNum, uint8_t IsActualFaults)$/;"	function	line:479	signature:(uint16_t *Array, uint8_t *FaultNum, uint8_t IsActualFaults)
+SetGeneralFRZR	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^void SetGeneralFRZR(dtcFRZF_General* f)$/;"	function	line:513	signature:(dtcFRZF_General* f)
+dtcSetFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^void dtcSetFault(dtcItem_t* it, dtcEnvironment_t* env)$/;"	function	line:531	signature:(dtcItem_t* it, dtcEnvironment_t* env)
+dtcFaultDetection	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^uint8_t dtcFaultDetection(dtcItem_t* it, dtcEnvironment_t *env, uint8_t isFault)$/;"	function	line:548	signature:(dtcItem_t* it, dtcEnvironment_t *env, uint8_t isFault)
+SaveFaults	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^uint8_t SaveFaults()$/;"	function	line:598
+ReadFaults	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^uint8_t ReadFaults()$/;"	function	line:661
+ClearFaults	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.c	/^uint8_t ClearFaults(void)$/;"	function	line:719	signature:(void)
+_FAULTS_TEST_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^#define _FAULTS_TEST_H_$/;"	macro	line:2
+DTC_TEST_RESULT_UNCOMPLITED	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^#define DTC_TEST_RESULT_UNCOMPLITED	/;"	macro	line:7
+DTC_TEST_RESULT_PASSED	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^#define DTC_TEST_RESULT_PASSED	/;"	macro	line:8
+DTC_TEST_RESULT_FAILED	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^#define DTC_TEST_RESULT_FAILED	/;"	macro	line:9
+dtc_General_EcuConfig	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_General_EcuConfig = 0,$/;"	enumerator	line:18	enum:__anon5
+dtc_General_EcuSupplyOutOfRange	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_General_EcuSupplyOutOfRange,$/;"	enumerator	line:19	enum:__anon5
+dtc_General_UnexpectedPowerOff	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_General_UnexpectedPowerOff,$/;"	enumerator	line:20	enum:__anon5
+dtc_General_Interlock	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_General_Interlock,$/;"	enumerator	line:21	enum:__anon5
+dtc_General_EcuDataTimeNotCorrect	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_General_EcuDataTimeNotCorrect,	$/;"	enumerator	line:22	enum:__anon5
+dtc_CAN_Inverter	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_CAN_Inverter,$/;"	enumerator	line:25	enum:__anon5
+dtc_CAN_Skf	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_CAN_Skf,$/;"	enumerator	line:26	enum:__anon5
+dtc_CAN_Battery	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_CAN_Battery,$/;"	enumerator	line:27	enum:__anon5
+dtc_BatteryFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_BatteryFault,	$/;"	enumerator	line:29	enum:__anon5
+dtc_InverterFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_InverterFault,	$/;"	enumerator	line:30	enum:__anon5
+dtc_SteeringPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_SteeringPosition,	$/;"	enumerator	line:31	enum:__anon5
+dtc_TrimPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_TrimPosition,	$/;"	enumerator	line:32	enum:__anon5
+dtc_Accelerator	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_Accelerator	,$/;"	enumerator	line:33	enum:__anon5
+dtc_SteeringFeedback	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_SteeringFeedback,	$/;"	enumerator	line:35	enum:__anon5
+dtc_TrimFeedback	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_TrimFeedback,$/;"	enumerator	line:36	enum:__anon5
+dtc_PwmCircuit_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_PwmCircuit_1,$/;"	enumerator	line:38	enum:__anon5
+dtc_PwmCircuit_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_PwmCircuit_2,$/;"	enumerator	line:39	enum:__anon5
+dtc_PwmCircuit_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_PwmCircuit_3,$/;"	enumerator	line:40	enum:__anon5
+dtc_MeasuringCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_MeasuringCircuit,$/;"	enumerator	line:42	enum:__anon5
+dtc_PowerSupplyCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtc_PowerSupplyCircuit,$/;"	enumerator	line:43	enum:__anon5
+dtCodes_e	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^} dtCodes_e;$/;"	typedef	line:45	typeref:enum:__anon5
+OccurrenceCounter	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint8_t OccurrenceCounter;		\/\/ Сколько раз (рабочих циклов) появлялась неисправность	$/;"	member	line:52	struct:__anon6
+DateTime	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint32_t DateTime;				\/\/ Дата и время последнего возникновения неисправности.$/;"	member	line:53	struct:__anon6
+Voltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint16_t Voltage;$/;"	member	line:55	struct:__anon6
+Load	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	int8_t Load;$/;"	member	line:56	struct:__anon6
+AmbientTemperature	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	int8_t AmbientTemperature;$/;"	member	line:57	struct:__anon6
+Mileage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint32_t Mileage;$/;"	member	line:58	struct:__anon6
+CanRxErrorCount	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint32_t CanRxErrorCount;			\/\/ Количество ошибок приема с последнего включения$/;"	member	line:61	struct:__anon6
+CanBusLoad	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint8_t CanBusLoad;					\/\/ Загрузка шины в %$/;"	member	line:62	struct:__anon6
+dtcFRZF_General	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^} dtcFRZF_General;$/;"	typedef	line:66	typeref:struct:__anon6
+Value	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint8_t Value;$/;"	member	line:72	union:__anon7
+WarningIndicatorRequested	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^		WarningIndicatorRequested		: 1,		\/\/ Требуется ли индицировать о неисправности или нет$/;"	member	line:76	struct:__anon7::__anon8
+IsCritical	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^		IsCritical						: 1,		\/\/ Выходить из рабочего режима или нет$/;"	member	line:77	struct:__anon7::__anon8
+AutoRestore	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^		AutoRestore						: 1,		\/\/ Автоматически страсывать TestFailedThisOperationCycle, если ошибка становится неактивной$/;"	member	line:78	struct:__anon7::__anon8
+PowerOff	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^		PowerOff						: 1,		\/\/ Отключиться полностью при возникновении неисправности$/;"	member	line:79	struct:__anon7::__anon8
+dummy	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^		dummy							: 4;$/;"	member	line:81	struct:__anon7::__anon8
+dtcPropBits_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^} dtcPropBits_t;$/;"	typedef	line:83	typeref:union:__anon7
+DTC_BIT_NONE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^#define DTC_BIT_NONE	/;"	macro	line:85
+DTC_BIT_WARNING_ENABLE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^#define DTC_BIT_WARNING_ENABLE	/;"	macro	line:86
+DTC_BIT_OPERATION_DISABLE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^#define DTC_BIT_OPERATION_DISABLE	/;"	macro	line:87
+DTC_BIT_AUTO_RESTORE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^#define DTC_BIT_AUTO_RESTORE	/;"	macro	line:88
+DTC_BIT_POWER_OFF	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^#define DTC_BIT_POWER_OFF	/;"	macro	line:89
+DID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	const uint16_t DID;						\/\/ Идентификатор данных (DID_e)$/;"	member	line:94	struct:__anon9
+Length	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	const uint8_t Length;					\/\/ Длина значения в байтах$/;"	member	line:95	struct:__anon9
+Ref	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	const void* Ref;						\/\/ Ссылка на значение из структуры Freeze Frame$/;"	member	line:96	struct:__anon9
+DiagnosticValueFRZF	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^} DiagnosticValueFRZF;$/;"	typedef	line:97	typeref:struct:__anon9
+Code	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint16_t Code;									\/\/ Код неисправности (см. dtCodes_e)$/;"	member	line:102	struct:__anon10
+Bits	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtcPropBits_t Bits;$/;"	member	line:103	struct:__anon10
+AgingThreshold	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint8_t AgingThreshold;							\/\/ Счетчик старения (см. ISO 14229-1, стр.373)$/;"	member	line:104	struct:__anon10
+TestFailedThreshold	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	int8_t TestFailedThreshold;						\/\/ Необходимое количество сбойных ситуаций, когда можно сказать что Test = Failed (см. ISO 14229-1, стр.371)$/;"	member	line:105	struct:__anon10
+TestPassedThreshold	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	int8_t TestPassedThreshold;						\/\/ Необходимое количество ситуаций без сбоев, когда можно сказать что Test = Passed (см. ISO 14229-1, стр.371)$/;"	member	line:106	struct:__anon10
+TestSamplePeriod	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint16_t TestSamplePeriod;						\/\/ Период выполнения теста в мс$/;"	member	line:107	struct:__anon10
+FreezeFrameItemsCount	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint8_t FreezeFrameItemsCount;					\/\/ Количество элементов в массиве FreezeFrameItems$/;"	member	line:108	struct:__anon10
+FreezeFrameItems	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	const DiagnosticValueFRZF* FreezeFrameItems;	\/\/ Указатель на массив элементов стоп-кадра DiagnosticValueFRZF$/;"	member	line:109	struct:__anon10
+dtcProperty_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^} dtcProperty_t;$/;"	typedef	line:110	typeref:struct:__anon10
+TestFailed	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	TestFailed							:	1,$/;"	member	line:116	struct:__anon11
+ConfirmedDTC	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	ConfirmedDTC						:	1,$/;"	member	line:117	struct:__anon11
+TestFailedThisOperationCycle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	TestFailedThisOperationCycle		:	1,$/;"	member	line:118	struct:__anon11
+WarningIndicatorRequested	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	WarningIndicatorRequested			:	1,$/;"	member	line:119	struct:__anon11
+TestNotCompletedThisOperationCycle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	TestNotCompletedThisOperationCycle	: 	1,$/;"	member	line:120	struct:__anon11
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dummy1								:	5;$/;"	member	line:121	struct:__anon11
+dtcStatus_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^} dtcStatus_t;$/;"	typedef	line:122	typeref:struct:__anon11
+DTC_CLEAR_STATUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^#define DTC_CLEAR_STATUS	/;"	macro	line:124
+DTC_IS_STATUS_FAULT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^#define DTC_IS_STATUS_FAULT	/;"	macro	line:125
+Property	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtcProperty_t* Property;	\/\/ Свойства неисправности$/;"	member	line:130	struct:__anon12
+Category	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint8_t Category;				\/\/ Уточнение неисправности (см. dtcCategory_e)$/;"	member	line:131	struct:__anon12
+Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	dtcStatus_t Status;			$/;"	member	line:132	struct:__anon12
+FaultDetectionCounter	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	int8_t FaultDetectionCounter;$/;"	member	line:133	struct:__anon12
+SamplePeriodCounter	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^	uint16_t SamplePeriodCounter;	$/;"	member	line:134	struct:__anon12
+dtcItem_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\FaultsTest.h	/^} dtcItem_t;$/;"	typedef	line:135	typeref:struct:__anon12
+I2C2_IRQHandler	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Interrupts.c	/^void I2C2_IRQHandler(void)$/;"	function	line:11	signature:(void)
+CAN_IRQHandler	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Interrupts.c	/^void CAN_IRQHandler(void)$/;"	function	line:25	signature:(void)
+_INTERRUPTS_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Interrupts.h	/^#define _INTERRUPTS_H_$/;"	macro	line:2
+_INVERTER_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Inverter.h	/^#define _INVERTER_H_$/;"	macro	line:2
+VSM_StartState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Inverter.h	/^	VSM_StartState = 0,$/;"	enumerator	line:7	enum:__anon13
+VSM_PreChargeInitState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Inverter.h	/^	VSM_PreChargeInitState,$/;"	enumerator	line:8	enum:__anon13
+VSM_PreChargeActiveState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Inverter.h	/^	VSM_PreChargeActiveState,$/;"	enumerator	line:9	enum:__anon13
+VSM_PreChargeCompleteState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Inverter.h	/^	VSM_PreChargeCompleteState,$/;"	enumerator	line:10	enum:__anon13
+VSM_WaitState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Inverter.h	/^	VSM_WaitState,$/;"	enumerator	line:11	enum:__anon13
+VSM_ReadyState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Inverter.h	/^	VSM_ReadyState,$/;"	enumerator	line:12	enum:__anon13
+VSM_MotorRunningState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Inverter.h	/^	VSM_MotorRunningState,$/;"	enumerator	line:13	enum:__anon13
+VSM_FaultState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Inverter.h	/^	VSM_FaultState,$/;"	enumerator	line:14	enum:__anon13
+InverterStates_e	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Inverter.h	/^} InverterStates_e;$/;"	typedef	line:15	typeref:enum:__anon13
+INV_PROTOCOL_SEND_MSG_AMOUNT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.c	/^#define INV_PROTOCOL_SEND_MSG_AMOUNT	/;"	macro	line:6	file:
+msgSendTime	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.c	/^static uint32_t msgSendTime[INV_PROTOCOL_SEND_MSG_AMOUNT];$/;"	variable	line:8	file:
+msgPeriod	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.c	/^const uint16_t msgPeriod[INV_PROTOCOL_SEND_MSG_AMOUNT] = {$/;"	variable	line:10
+InvProtocolRx	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.c	/^uint8_t InvProtocolRx(CanMsg *msg)$/;"	function	line:15	signature:(CanMsg *msg)
+InvProtocolMesGenerate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.c	/^void InvProtocolMesGenerate(void)$/;"	function	line:62	signature:(void)
+_INVERTER_PROTOCOL_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define _INVERTER_PROTOCOL_H_$/;"	macro	line:2
+ID_Offset	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define ID_Offset	/;"	macro	line:10
+InvCmdMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define InvCmdMsg_ID /;"	macro	line:13
+BMSCurrentLimitMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define BMSCurrentLimitMsg_ID /;"	macro	line:14
+TempSet1Msg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define TempSet1Msg_ID /;"	macro	line:17
+TempSet2Msg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define TempSet2Msg_ID /;"	macro	line:18
+TempSet3Msg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define TempSet3Msg_ID /;"	macro	line:19
+MotorPositionMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define MotorPositionMsg_ID /;"	macro	line:20
+InvCurrentMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define InvCurrentMsg_ID /;"	macro	line:21
+InvVoltageMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define InvVoltageMsg_ID /;"	macro	line:22
+InvInternalStatesMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define InvInternalStatesMsg_ID /;"	macro	line:23
+InvFaultCodesMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define InvFaultCodesMsg_ID /;"	macro	line:24
+TorqueAndTimerMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^#define TorqueAndTimerMsg_ID /;"	macro	line:25
+TorqueCmd_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t TorqueCmd_0p1;$/;"	member	line:34	struct:__anon14
+SpeedCmd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t SpeedCmd;$/;"	member	line:35	struct:__anon14
+DirCmd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    DirCmd              :   1,$/;"	member	line:38	struct:__anon14
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    dummy1              :   7;$/;"	member	line:39	struct:__anon14
+InvEnable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    InvEnable           :   1,$/;"	member	line:42	struct:__anon14
+InvDischarge	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    InvDischarge        :   1,$/;"	member	line:43	struct:__anon14
+SpeedModeEnable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    SpeedModeEnable     :   1,$/;"	member	line:44	struct:__anon14
+dummy2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    dummy2              :   5;$/;"	member	line:45	struct:__anon14
+TorqueLimitCmd_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t TorqueLimitCmd_0p1;$/;"	member	line:47	struct:__anon14
+InvCmdMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^}InvCmdMsg_t;$/;"	typedef	line:48	typeref:struct:__anon14
+MaxDischargeCurrent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    uint16_t MaxDischargeCurrent;$/;"	member	line:52	struct:__anon15
+MaxChargeCurrent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    uint16_t MaxChargeCurrent;$/;"	member	line:53	struct:__anon15
+BMSCurrentLimitMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^} BMSCurrentLimitMsg_t;$/;"	typedef	line:54	typeref:struct:__anon15
+VSMState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    uint16_t VSMState;$/;"	member	line:62	struct:__anon16
+InvState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    uint8_t InvState;$/;"	member	line:63	struct:__anon16
+Relay1_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    Relay1_Status       :   1,$/;"	member	line:66	struct:__anon16
+Relay2_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    Relay2_Status       :   1,$/;"	member	line:67	struct:__anon16
+Relay3_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    Relay3_Status       :   1,$/;"	member	line:68	struct:__anon16
+Relay4_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    Relay4_Status       :   1,$/;"	member	line:69	struct:__anon16
+Relay5_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    Relay5_Status       :   1,$/;"	member	line:70	struct:__anon16
+Relay6_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    Relay6_Status       :   1,$/;"	member	line:71	struct:__anon16
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    dummy1              :   2;$/;"	member	line:72	struct:__anon16
+InvRunMode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    InvRunMode          :   1,$/;"	member	line:75	struct:__anon16
+dummy2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    dummy2              :   4,$/;"	member	line:76	struct:__anon16
+InvDischargeState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    InvDischargeState   :   3;$/;"	member	line:77	struct:__anon16
+InvCmdMode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    InvCmdMode          :   1,$/;"	member	line:80	struct:__anon16
+dummy3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    dummy3              :   7;$/;"	member	line:81	struct:__anon16
+InvEnableState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    InvEnableState      :   1,$/;"	member	line:84	struct:__anon16
+dummy4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    dummy4              :   6,$/;"	member	line:85	struct:__anon16
+InvEnableLockout	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    InvEnableLockout    :   1;$/;"	member	line:86	struct:__anon16
+DirCmd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    DirCmd              :   1,$/;"	member	line:89	struct:__anon16
+BMSActive	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    BMSActive           :   1,$/;"	member	line:90	struct:__anon16
+BMSTorqueLimit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    BMSTorqueLimit      :   1,$/;"	member	line:91	struct:__anon16
+dummy	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    dummy               :   5;$/;"	member	line:92	struct:__anon16
+InvInternalStatesMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^} InvInternalStatesMsg_t;$/;"	typedef	line:93	typeref:struct:__anon16
+PostCode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    uint32_t PostCode;$/;"	member	line:98	struct:__anon17
+RunCode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    uint32_t RunCode;$/;"	member	line:99	struct:__anon17
+InvFaultCodesMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^} InvFaultCodesMsg_t;$/;"	typedef	line:100	typeref:struct:__anon17
+MotorAngleElectrical_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    uint16_t MotorAngleElectrical_0p1;$/;"	member	line:104	struct:__anon18
+MotorSpeed	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t MotorSpeed;$/;"	member	line:105	struct:__anon18
+ElectricalOutputFreq_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t ElectricalOutputFreq_0p1;$/;"	member	line:106	struct:__anon18
+DeltaResolverFiltered_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t DeltaResolverFiltered_0p1;$/;"	member	line:107	struct:__anon18
+MotorPositionMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^} MotorPositionMsg_t;$/;"	typedef	line:108	typeref:struct:__anon18
+CmdTorque_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t CmdTorque_0p1;$/;"	member	line:112	struct:__anon19
+TorqueFeedback_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t TorqueFeedback_0p1;$/;"	member	line:113	struct:__anon19
+PowerOnTimer_0p003	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    uint32_t PowerOnTimer_0p003;$/;"	member	line:114	struct:__anon19
+TorqueAndTimerMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^} TorqueAndTimerMsg_t;$/;"	typedef	line:115	typeref:struct:__anon19
+PhaseACurrent_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t PhaseACurrent_0p1;$/;"	member	line:119	struct:__anon20
+PhaseBCurrent_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t PhaseBCurrent_0p1;$/;"	member	line:120	struct:__anon20
+PhaseCCurrent_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t PhaseCCurrent_0p1;$/;"	member	line:121	struct:__anon20
+DCBusCurrent_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t DCBusCurrent_0p1;$/;"	member	line:122	struct:__anon20
+InvCurrentMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^} InvCurrentMsg_t;$/;"	typedef	line:123	typeref:struct:__anon20
+DCBusVoltage_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t DCBusVoltage_0p1;$/;"	member	line:127	struct:__anon21
+OutputVoltage_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t OutputVoltage_0p1;$/;"	member	line:128	struct:__anon21
+VdVoltage_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t VdVoltage_0p1;$/;"	member	line:129	struct:__anon21
+VqVoltage_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t VqVoltage_0p1;$/;"	member	line:130	struct:__anon21
+InvVoltageMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^} InvVoltageMsg_t;$/;"	typedef	line:131	typeref:struct:__anon21
+ModuleATemp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t ModuleATemp_0p1;$/;"	member	line:135	struct:__anon22
+ModuleBTemp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t ModuleBTemp_0p1;$/;"	member	line:136	struct:__anon22
+ModuleCTemp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t ModuleCTemp_0p1;$/;"	member	line:137	struct:__anon22
+GateDriverBoardTemp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t GateDriverBoardTemp_0p1;$/;"	member	line:138	struct:__anon22
+TempSet1Msg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^} TempSet1Msg_t;$/;"	typedef	line:139	typeref:struct:__anon22
+ControlBoardTemp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t ControlBoardTemp_0p1;$/;"	member	line:143	struct:__anon23
+RTD1Temp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t RTD1Temp_0p1;$/;"	member	line:144	struct:__anon23
+RTD2Temp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t RTD2Temp_0p1;$/;"	member	line:145	struct:__anon23
+RTD3Temp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t RTD3Temp_0p1;$/;"	member	line:146	struct:__anon23
+TempSet2Msg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^} TempSet2Msg_t;$/;"	typedef	line:147	typeref:struct:__anon23
+RTD4Temp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t RTD4Temp_0p1;$/;"	member	line:151	struct:__anon24
+RTD5Temp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t RTD5Temp_0p1;$/;"	member	line:152	struct:__anon24
+MotorTem_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t MotorTem_0p1;$/;"	member	line:153	struct:__anon24
+TorqueShudder_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^    int16_t TorqueShudder_0p1;$/;"	member	line:154	struct:__anon24
+TempSet3Msg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\InverterProtocol.h	/^} TempSet3Msg_t;$/;"	typedef	line:155	typeref:struct:__anon24
+Algorithm	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.c	/^void (*Algorithm)(uint8_t *);$/;"	variable	line:12
+OD	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.c	/^ObjectDictionary_t OD;$/;"	variable	line:15
+main	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.c	/^int main(void)$/;"	function	line:17	signature:(void)
+GetDataByIndex	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.c	/^uint8_t GetDataByIndex(uint16_t Index, uint8_t subindex, uint8_t *Buf[])$/;"	function	line:42	signature:(uint16_t Index, uint8_t subindex, uint8_t *Buf[])
+check_failed	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.c	/^uint8_t check_failed(uint8_t *file, uint8_t line)$/;"	function	line:264	signature:(uint8_t *file, uint8_t line)
+_MAIN_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^#define _MAIN_H_$/;"	macro	line:2
+DIR_IN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^#define DIR_IN /;"	macro	line:5
+DIR_OUT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^#define DIR_OUT /;"	macro	line:6
+MAX_FAULTS_NUM	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^#define MAX_FAULTS_NUM	/;"	macro	line:22
+WORKSTATE_INIT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    WORKSTATE_INIT = 0,$/;"	enumerator	line:26	enum:__anon25
+WORKSTATE_OPERATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    WORKSTATE_OPERATE,$/;"	enumerator	line:27	enum:__anon25
+WORKSTATE_SHUTDOWN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    WORKSTATE_SHUTDOWN,$/;"	enumerator	line:28	enum:__anon25
+WORKSTATE_FAULT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    WORKSTATE_FAULT,    $/;"	enumerator	line:29	enum:__anon25
+WORKSTATE_CHARGE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    WORKSTATE_CHARGE$/;"	enumerator	line:30	enum:__anon25
+WorkStates_e	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} WorkStates_e ;$/;"	typedef	line:31	typeref:enum:__anon25
+MainState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	WorkStates_e MainState;$/;"	member	line:36	struct:__anon26
+SubState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t SubState;$/;"	member	line:37	struct:__anon26
+StateMachine_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} StateMachine_t;$/;"	typedef	line:38	typeref:struct:__anon26
+Timer_1ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t Timer_1ms;	$/;"	member	line:42	struct:__anon27
+Timer_10ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint32_t Timer_10ms;	$/;"	member	line:43	struct:__anon27
+Timer_100ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t Timer_100ms;$/;"	member	line:44	struct:__anon27
+Timer_500ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint32_t Timer_500ms;$/;"	member	line:45	struct:__anon27
+Timer_1s	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint32_t Timer_1s;$/;"	member	line:46	struct:__anon27
+MainLoopTimer_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t MainLoopTimer_ms;$/;"	member	line:47	struct:__anon27
+PowerOffTimer_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t PowerOffTimer_ms;$/;"	member	line:48	struct:__anon27
+KeyOffTimer_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t KeyOffTimer_ms;$/;"	member	line:49	struct:__anon27
+InverterTimer_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint32_t InverterTimer_ms;$/;"	member	line:52	struct:__anon27
+SteeringTimer_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint32_t SteeringTimer_ms;$/;"	member	line:53	struct:__anon27
+BatteryTimer_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint32_t BatteryTimer_ms;$/;"	member	line:54	struct:__anon27
+AcceleratorTimer_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t AcceleratorTimer_ms;$/;"	member	line:55	struct:__anon27
+Sim100OfflineTime_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t Sim100OfflineTime_ms;$/;"	member	line:56	struct:__anon27
+KeyCnt	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	int16_t KeyCnt;$/;"	member	line:58	struct:__anon27
+Timers_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} Timers_t;$/;"	typedef	line:59	typeref:struct:__anon27
+Time1_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t Time1_ms;$/;"	member	line:63	struct:__anon28
+Time10_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t Time10_ms;$/;"	member	line:64	struct:__anon28
+Time100_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t Time100_ms;$/;"	member	line:65	struct:__anon28
+Time1_s	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t Time1_s;$/;"	member	line:66	struct:__anon28
+MainLoopTime_ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t MainLoopTime_ms;$/;"	member	line:67	struct:__anon28
+TimeValues_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} TimeValues_t;$/;"	typedef	line:69	typeref:struct:__anon28
+CheckFaults	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    CheckFaults                 :   1,$/;"	member	line:74	struct:__anon29
+PowerOff_SaveParams	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    PowerOff_SaveParams         :   1,$/;"	member	line:75	struct:__anon29
+ReceiveTestRequest	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    ReceiveTestRequest          :   1,$/;"	member	line:76	struct:__anon29
+InverterIsOperate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	InverterIsOperate			:	1,$/;"	member	line:77	struct:__anon29
+BatteryIsOperate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	BatteryIsOperate			:	1,$/;"	member	line:78	struct:__anon29
+BatMsgReceived	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	BatMsgReceived				:	1,$/;"	member	line:79	struct:__anon29
+SkfMsgReceived	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	SkfMsgReceived				:	1,$/;"	member	line:80	struct:__anon29
+InvMsgReceived	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    InvMsgReceived              :   1;$/;"	member	line:81	struct:__anon29
+cmdDrainPumpOn	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	cmdDrainPumpOn				:	1,$/;"	member	line:84	struct:__anon29
+cmdMotorPumpCooling	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	cmdMotorPumpCooling			:	1,$/;"	member	line:85	struct:__anon29
+cmdHeatsinkPump	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	cmdHeatsinkPump				:	1,$/;"	member	line:86	struct:__anon29
+cmdInverterPowerSupply	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	cmdInverterPowerSupply		:	1,$/;"	member	line:87	struct:__anon29
+cmdSteeringPump	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	cmdSteeringPump				:	1,$/;"	member	line:88	struct:__anon29
+cmdTrimUp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	cmdTrimUp					:	1,$/;"	member	line:89	struct:__anon29
+cmdTrimDown	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	cmdTrimDown					:	1,$/;"	member	line:90	struct:__anon29
+cmddummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	cmddummy1					:	1;$/;"	member	line:91	struct:__anon29
+stWaterSwitch1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	stWaterSwitch1				:	1,$/;"	member	line:95	struct:__anon29
+stWaterSwitch2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	stWaterSwitch2				:	1,$/;"	member	line:96	struct:__anon29
+stManualDrainSwitch	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	stManualDrainSwitch			:	1,$/;"	member	line:97	struct:__anon29
+stChargingTerminal	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	stChargingTerminal			:	1,$/;"	member	line:98	struct:__anon29
+stManualDriveSwitch	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	stManualDriveSwitch			:	1,$/;"	member	line:99	struct:__anon29
+stManualDriveD	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	stManualDriveD				:	1,$/;"	member	line:100	struct:__anon29
+stManuelDriveR	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	stManuelDriveR				:	1,$/;"	member	line:101	struct:__anon29
+stCoolantLowLevel	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	stCoolantLowLevel			:	1;$/;"	member	line:102	struct:__anon29
+PowerOn	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	PowerOn						:	1,$/;"	member	line:105	struct:__anon29
+Ecu1MeasDataActual	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	Ecu1MeasDataActual			:	1,$/;"	member	line:106	struct:__anon29
+Ecu2MeasDataActual	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	Ecu2MeasDataActual			:	1,$/;"	member	line:107	struct:__anon29
+Ecu4MeasDataActual	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	Ecu4MeasDataActual			:	1,$/;"	member	line:108	struct:__anon29
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	dummy1						:	4;$/;"	member	line:109	struct:__anon29
+StateBits_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} StateBits_t;$/;"	typedef	line:110	typeref:struct:__anon29
+Flags	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t Flags;$/;"	member	line:114	union:__anon30
+ConfigCrc	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		ConfigCrc			:	1,	$/;"	member	line:118	struct:__anon30::__anon31
+InverterTimeout	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		InverterTimeout     :   1,$/;"	member	line:119	struct:__anon30::__anon31
+SteeringTimeout	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		SteeringTimeout     :   1,$/;"	member	line:120	struct:__anon30::__anon31
+BatteryTimeout	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		BatteryTimeout		:	1,$/;"	member	line:121	struct:__anon30::__anon31
+BatteryFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		BatteryFault        :   1,$/;"	member	line:122	struct:__anon30::__anon31
+InverterFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		InverterFault		:	1,$/;"	member	line:123	struct:__anon30::__anon31
+SteeringPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		SteeringPosition	:	1,$/;"	member	line:124	struct:__anon30::__anon31
+TrimPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		TrimPosition		:	1;$/;"	member	line:125	struct:__anon30::__anon31
+Accelerator	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		Accelerator			:	1,$/;"	member	line:128	struct:__anon30::__anon31
+SteeringFeedback	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		SteeringFeedback	:	1,$/;"	member	line:129	struct:__anon30::__anon31
+TrimFeedback	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		TrimFeedback		:	1,$/;"	member	line:130	struct:__anon30::__anon31
+PwmCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		PwmCircuit			:	1,$/;"	member	line:131	struct:__anon30::__anon31
+MeasuringCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		MeasuringCircuit	:	1,$/;"	member	line:132	struct:__anon30::__anon31
+PowerSupplyCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		PowerSupplyCircuit	:	1,$/;"	member	line:133	struct:__anon30::__anon31
+dummy	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^		dummy				:	2;$/;"	member	line:134	struct:__anon30::__anon31
+FaultsBits_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} FaultsBits_t;$/;"	typedef	line:136	typeref:union:__anon30
+D_IN_KL15_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_KL15_1 = 0,$/;"	enumerator	line:141	enum:__anon32
+D_IN_KL15_CHARGE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_KL15_CHARGE,$/;"	enumerator	line:142	enum:__anon32
+D_IN_MANUAL_DRAIN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_MANUAL_DRAIN,$/;"	enumerator	line:143	enum:__anon32
+D_IN_WATER_SWITCH_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_WATER_SWITCH_1,$/;"	enumerator	line:144	enum:__anon32
+D_IN_THRU_JOY_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_THRU_JOY_1,$/;"	enumerator	line:145	enum:__anon32
+D_IN_THRU_JOY_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_THRU_JOY_2,$/;"	enumerator	line:146	enum:__anon32
+D_IN_HEATER_SWITCH_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_HEATER_SWITCH_1,$/;"	enumerator	line:147	enum:__anon32
+D_IN_HEATER_SWITCH_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_HEATER_SWITCH_2,$/;"	enumerator	line:148	enum:__anon32
+D_IN_PADDING_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_1,$/;"	enumerator	line:149	enum:__anon32
+D_IN_PADDING_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_2,$/;"	enumerator	line:150	enum:__anon32
+D_IN_TRIM_JOY_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_TRIM_JOY_1 = 0,$/;"	enumerator	line:153	enum:__anon32
+D_IN_TRIM_JOY_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_TRIM_JOY_2,$/;"	enumerator	line:154	enum:__anon32
+D_IN_LIGHT_SWITCH_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_LIGHT_SWITCH_1,$/;"	enumerator	line:155	enum:__anon32
+D_IN_LIGHT_SWITCH_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_LIGHT_SWITCH_2,$/;"	enumerator	line:156	enum:__anon32
+D_IN_LIGHT_SWITCH_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_LIGHT_SWITCH_3,$/;"	enumerator	line:157	enum:__anon32
+D_IN_ROOF_OPEN_SWITCH	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_ROOF_OPEN_SWITCH,$/;"	enumerator	line:158	enum:__anon32
+D_IN_ROOF_CLOSE_SWITCH	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_ROOF_CLOSE_SWITCH,$/;"	enumerator	line:159	enum:__anon32
+D_IN_PADDING_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_3,$/;"	enumerator	line:160	enum:__anon32
+D_IN_PADDING_4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_4,$/;"	enumerator	line:161	enum:__anon32
+D_IN_PADDING_5	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_5,$/;"	enumerator	line:162	enum:__anon32
+D_IN_WATER_SWITCH_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_WATER_SWITCH_2 = 0,$/;"	enumerator	line:165	enum:__anon32
+D_IN_PADDING_6	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_6,$/;"	enumerator	line:166	enum:__anon32
+D_IN_PADDING_7	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_7,$/;"	enumerator	line:167	enum:__anon32
+D_IN_PADDING_8	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_8,$/;"	enumerator	line:168	enum:__anon32
+D_IN_PADDING_9	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_9,$/;"	enumerator	line:169	enum:__anon32
+D_IN_PADDING_10	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_10,$/;"	enumerator	line:170	enum:__anon32
+D_IN_PADDING_11	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_11,$/;"	enumerator	line:171	enum:__anon32
+D_IN_PADDING_12	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_12,$/;"	enumerator	line:172	enum:__anon32
+D_IN_PADDING_13	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_13,$/;"	enumerator	line:173	enum:__anon32
+D_IN_PADDING_14	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_IN_PADDING_14,$/;"	enumerator	line:174	enum:__anon32
+D_Inputs	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} D_Inputs;$/;"	typedef	line:175	typeref:enum:__anon32
+D_OUT_DRAIN_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_DRAIN_1 = 0,$/;"	enumerator	line:180	enum:__anon33
+D_OUT_DRAIN_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_DRAIN_3,$/;"	enumerator	line:181	enum:__anon33
+D_OUT_FAN_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_FAN_1,$/;"	enumerator	line:182	enum:__anon33
+D_OUT_HEATFUN_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_HEATFUN_1,$/;"	enumerator	line:183	enum:__anon33
+D_OUT_HEATFUN_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_HEATFUN_2,$/;"	enumerator	line:184	enum:__anon33
+D_OUT_PADDING_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_PADDING_1,$/;"	enumerator	line:185	enum:__anon33
+D_OUT_PADDING_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_PADDING_2,		\/\/6$/;"	enumerator	line:188	enum:__anon33
+D_OUT_LAMP_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_LAMP_1,$/;"	enumerator	line:189	enum:__anon33
+D_OUT_LAMP_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_LAMP_2,$/;"	enumerator	line:190	enum:__anon33
+D_OUT_LAMP_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_LAMP_3,$/;"	enumerator	line:191	enum:__anon33
+D_OUT_LAMP_4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_LAMP_4,$/;"	enumerator	line:192	enum:__anon33
+D_OUT_LAMP_5	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_LAMP_5,$/;"	enumerator	line:193	enum:__anon33
+D_OUT_TRIM_RUN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_TRIM_RUN,			\/\/12$/;"	enumerator	line:196	enum:__anon33
+D_OUT_TRIM_UpDown	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_TRIM_UpDown,$/;"	enumerator	line:197	enum:__anon33
+D_OUT_INV_CTRL	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_INV_CTRL,$/;"	enumerator	line:198	enum:__anon33
+D_OUT_PADDING_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_PADDING_3,$/;"	enumerator	line:199	enum:__anon33
+D_OUT_PADDING_4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_PADDING_4,$/;"	enumerator	line:200	enum:__anon33
+D_OUT_FAN_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_FAN_2,			$/;"	enumerator	line:201	enum:__anon33
+D_OUT_CPUMP_0	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_CPUMP_0,			\/\/18$/;"	enumerator	line:204	enum:__anon33
+D_OUT_CPUMP_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_CPUMP_1,$/;"	enumerator	line:205	enum:__anon33
+D_OUT_CPUMP_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_CPUMP_2,$/;"	enumerator	line:206	enum:__anon33
+D_OUT_ROOF_UP	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_ROOF_UP,$/;"	enumerator	line:207	enum:__anon33
+D_OUT_ROOF_DOWN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_ROOF_DOWN,$/;"	enumerator	line:208	enum:__anon33
+D_OUT_DRAIN_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	D_OUT_DRAIN_2,$/;"	enumerator	line:209	enum:__anon33
+D_Outputs	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} D_Outputs;$/;"	typedef	line:210	typeref:enum:__anon33
+GET_IN_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^#define GET_IN_STATE(/;"	macro	line:212
+SET_OUT_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^#define SET_OUT_STATE(/;"	macro	line:213
+TargetSteeringBrake	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint8_t TargetSteeringBrake;  $/;"	member	line:217	struct:__anon34
+Steering_Cmd_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} Steering_Cmd_t;$/;"	typedef	line:219	typeref:struct:__anon34
+MainState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t MainState;$/;"	member	line:223	struct:__anon35
+SubState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t SubState;$/;"	member	line:224	struct:__anon35
+SoC	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t SoC;$/;"	member	line:225	struct:__anon35
+CCL	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	int16_t CCL;$/;"	member	line:226	struct:__anon35
+DCL	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	int16_t DCL;$/;"	member	line:227	struct:__anon35
+TotalCurrent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	int16_t TotalCurrent;$/;"	member	line:228	struct:__anon35
+TotalVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	int16_t TotalVoltage;$/;"	member	line:229	struct:__anon35
+BatteryData_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} BatteryData_t;$/;"	typedef	line:230	typeref:struct:__anon35
+TargetTorque	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    int16_t TargetTorque;$/;"	member	line:234	struct:__anon36
+TorqueLimit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    int16_t TorqueLimit;$/;"	member	line:235	struct:__anon36
+Direction	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint8_t Direction;$/;"	member	line:236	struct:__anon36
+InverterEnable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    InverterEnable  :   1,$/;"	member	line:239	struct:__anon36
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    dummy1          :   7;$/;"	member	line:240	struct:__anon36
+Traction_Cmd_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} Traction_Cmd_t;$/;"	typedef	line:242	typeref:struct:__anon36
+AccPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint8_t AccPosition;$/;"	member	line:246	struct:__anon37
+Gear	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint8_t Gear;$/;"	member	line:247	struct:__anon37
+ActualSpeed	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    int16_t ActualSpeed;$/;"	member	line:248	struct:__anon37
+ActualTorque	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t ActualTorque;$/;"	member	line:249	struct:__anon37
+Mov_Control_Data_Rx_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} Mov_Control_Data_Rx_t;$/;"	typedef	line:250	typeref:struct:__anon37
+InverterIsEnable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    InverterIsEnable    :   1,$/;"	member	line:255	struct:__anon38
+LockupIsEnable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    LockupIsEnable      :   1,$/;"	member	line:256	struct:__anon38
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    dummy1              :   6;   $/;"	member	line:257	struct:__anon38
+InverterState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	InverterStates_e InverterState;$/;"	member	line:259	struct:__anon38
+InverterTemperature	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	int16_t InverterTemperature;$/;"	member	line:260	struct:__anon38
+MotorTemperature	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	int16_t MotorTemperature;$/;"	member	line:261	struct:__anon38
+FaultCode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint16_t FaultCode;$/;"	member	line:262	struct:__anon38
+VoltageDC	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	int16_t VoltageDC;$/;"	member	line:263	struct:__anon38
+CurrentDC	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	int16_t CurrentDC;$/;"	member	line:264	struct:__anon38
+Invertor_Data_Rx_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} Invertor_Data_Rx_t;$/;"	typedef	line:265	typeref:struct:__anon38
+CanMod	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t CanMod;$/;"	member	line:269	struct:__anon39
+CanGlobalStatus	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t CanGlobalStatus;$/;"	member	line:270	struct:__anon39
+CanInt	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t CanInt;$/;"	member	line:271	struct:__anon39
+StartSign	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t StartSign;$/;"	member	line:272	struct:__anon39
+DebugData_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} DebugData_t;$/;"	typedef	line:273	typeref:struct:__anon39
+cfgEcu	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	const EcuConfig_t *cfgEcu;$/;"	member	line:278	struct:__anon40
+EcuInfo	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t EcuInfo[4];$/;"	member	line:279	struct:__anon40
+StateMachine	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    StateMachine_t StateMachine;$/;"	member	line:280	struct:__anon40
+LogicTimers	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    Timers_t LogicTimers;$/;"	member	line:281	struct:__anon40
+DelayValues	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    TimeValues_t DelayValues;$/;"	member	line:282	struct:__anon40
+SB	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    StateBits_t SB;$/;"	member	line:284	struct:__anon40
+FaultsBits	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    FaultsBits_t FaultsBits;$/;"	member	line:285	struct:__anon40
+ecuIndex	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t ecuIndex;$/;"	member	line:287	struct:__anon40
+ecuPowerSupply_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t ecuPowerSupply_0p1;$/;"	member	line:288	struct:__anon40
+IO	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t IO;$/;"	member	line:290	struct:__anon40
+SystemTime	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint32_t SystemTime;$/;"	member	line:291	struct:__anon40
+A_CH_Voltage_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t A_CH_Voltage_0p1[4];$/;"	member	line:293	struct:__anon40
+PwmLoadCurrent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t PwmLoadCurrent[4];$/;"	member	line:294	struct:__anon40
+PwmTargetLevel	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t PwmTargetLevel[4];$/;"	member	line:295	struct:__anon40
+AccPedalChannels	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t AccPedalChannels[2];$/;"	member	line:297	struct:__anon40
+TractionData	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    Traction_Cmd_t TractionData;$/;"	member	line:299	struct:__anon40
+BatteryReqState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    uint8_t BatteryReqState;$/;"	member	line:300	struct:__anon40
+BatteryDataRx	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	BatteryData_t BatteryDataRx;$/;"	member	line:302	struct:__anon40
+InvertorDataRx	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    Invertor_Data_Rx_t InvertorDataRx;$/;"	member	line:303	struct:__anon40
+MovControlDataRx	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    Mov_Control_Data_Rx_t MovControlDataRx;$/;"	member	line:304	struct:__anon40
+HelmData	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    Helm_Data_Rx_t HelmData;$/;"	member	line:306	struct:__anon40
+SteeringData	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^    SteeringData_t SteeringData;$/;"	member	line:307	struct:__anon40
+TrimDataRx	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	TrimData_t TrimDataRx;$/;"	member	line:308	struct:__anon40
+Sim100DataRx	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	sim100Data_t Sim100DataRx;$/;"	member	line:309	struct:__anon40
+MaxMotorSpeed	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t MaxMotorSpeed;$/;"	member	line:311	struct:__anon40
+MaxMotorTorque	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t MaxMotorTorque;$/;"	member	line:312	struct:__anon40
+steeringFeedbackAngle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	int16_t steeringFeedbackAngle;$/;"	member	line:314	struct:__anon40
+DebugData	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	DebugData_t DebugData;$/;"	member	line:316	struct:__anon40
+TargetSteeringAngle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t TargetSteeringAngle;$/;"	member	line:318	struct:__anon40
+TargetChargingCurrent_A	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t TargetChargingCurrent_A;$/;"	member	line:319	struct:__anon40
+LocalPMState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	PowerStates_e LocalPMState;$/;"	member	line:321	struct:__anon40
+PowerManagerCmd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	PowerStates_e PowerManagerCmd;$/;"	member	line:322	struct:__anon40
+FaultsNumber	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t FaultsNumber;		$/;"	member	line:324	struct:__anon40
+FaultList	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t FaultList[MAX_FAULTS_NUM];$/;"	member	line:325	struct:__anon40
+OldFaultsNumber	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint8_t OldFaultsNumber;$/;"	member	line:327	struct:__anon40
+OldFaultList	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^	uint16_t OldFaultList[MAX_FAULTS_NUM];$/;"	member	line:328	struct:__anon40
+ObjectDictionary_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Main.h	/^} ObjectDictionary_t;$/;"	typedef	line:330	typeref:struct:__anon40
+tx_msg_cnt	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^static const int tx_msg_cnt = 2;$/;"	variable	line:13	file:
+msgPeriod	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^const uint16_t msgPeriod[tx_msg_cnt] = {$/;"	variable	line:15
+ID_Offset	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define ID_Offset	/;"	macro	line:20	file:
+InvCmdMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define InvCmdMsg_ID /;"	macro	line:23	file:
+BMSCurrentLimitMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define BMSCurrentLimitMsg_ID /;"	macro	line:24	file:
+TempSet1Msg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define TempSet1Msg_ID /;"	macro	line:27	file:
+TempSet2Msg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define TempSet2Msg_ID /;"	macro	line:28	file:
+TempSet3Msg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define TempSet3Msg_ID /;"	macro	line:29	file:
+MotorPositionMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define MotorPositionMsg_ID /;"	macro	line:30	file:
+InvCurrentMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define InvCurrentMsg_ID /;"	macro	line:31	file:
+InvVoltageMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define InvVoltageMsg_ID /;"	macro	line:32	file:
+InvInternalStatesMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define InvInternalStatesMsg_ID /;"	macro	line:33	file:
+InvFaultCodesMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define InvFaultCodesMsg_ID /;"	macro	line:34	file:
+TorqueAndTimerMsg_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^#define TorqueAndTimerMsg_ID /;"	macro	line:35	file:
+McuRinehartInit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^int8_t McuRinehartInit(McuRinehart_t *mcu)$/;"	function	line:37	signature:(McuRinehart_t *mcu)
+McuRinehartThread	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^int8_t McuRinehartThread(McuRinehart_t *mcu)$/;"	function	line:42	signature:(McuRinehart_t *mcu)
+McuRinehartSetCmd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^int8_t McuRinehartSetCmd(McuRinehart_t *mcu, int16_t TorqueCmd, int16_t SpeedCmd, int16_t GenCurrentMax, int16_t ConsCurrentMax)$/;"	function	line:109	signature:(McuRinehart_t *mcu, int16_t TorqueCmd, int16_t SpeedCmd, int16_t GenCurrentMax, int16_t ConsCurrentMax)
+McuRinehartSetState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^int8_t McuRinehartSetState(McuRinehart_t *mcu, UnitState_e State)$/;"	function	line:122	signature:(McuRinehart_t *mcu, UnitState_e State)
+McuRinehartGetState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^mcuStatus_e McuRinehartGetState(McuRinehart_t *mcu)$/;"	function	line:132	signature:(McuRinehart_t *mcu)
+McuRinehartGetLastError	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^int16_t McuRinehartGetLastError(McuRinehart_t *mcu)$/;"	function	line:140	signature:(McuRinehart_t *mcu)
+McuRinehartTxMsgGenerate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^int McuRinehartTxMsgGenerate(McuRinehart_t *mcu, uint8_t *MsgData, uint8_t *MsgDataLen, int32_t MsCounter)$/;"	function	line:149	signature:(McuRinehart_t *mcu, uint8_t *MsgData, uint8_t *MsgDataLen, int32_t MsCounter)
+McuRinehartMsgHandle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.c	/^int8_t McuRinehartMsgHandle(McuRinehart_t *mcu, int MsgID, uint8_t *MsgData, uint8_t MsgDataLen)$/;"	function	line:197	signature:(McuRinehart_t *mcu, int MsgID, uint8_t *MsgData, uint8_t MsgDataLen)
+SRC_MOTIONCONTROLLERS_INVERTER_RINEHART_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^#define SRC_MOTIONCONTROLLERS_INVERTER_RINEHART_H_$/;"	macro	line:9
+mcu_Disabled	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	mcu_Disabled = 0,$/;"	enumerator	line:14	enum:__anon41
+mcu_Enabled	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	mcu_Enabled,$/;"	enumerator	line:15	enum:__anon41
+mcu_Warning	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	mcu_Warning,$/;"	enumerator	line:16	enum:__anon41
+mcu_Fault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	mcu_Fault,$/;"	enumerator	line:17	enum:__anon41
+mcuStatus_e	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} mcuStatus_e;$/;"	typedef	line:18	typeref:enum:__anon41
+TorqueCmd_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t TorqueCmd_0p1;$/;"	member	line:26	struct:__anon42
+SpeedCmd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t SpeedCmd;$/;"	member	line:27	struct:__anon42
+DirCmd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    DirCmd              :   1,$/;"	member	line:30	struct:__anon42
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    dummy1              :   7;$/;"	member	line:31	struct:__anon42
+InvEnable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    InvEnable           :   1,$/;"	member	line:34	struct:__anon42
+InvDischarge	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    InvDischarge        :   1,$/;"	member	line:35	struct:__anon42
+SpeedModeEnable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    SpeedModeEnable     :   1,$/;"	member	line:36	struct:__anon42
+dummy2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    dummy2              :   5;$/;"	member	line:37	struct:__anon42
+TorqueLimitCmd_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t TorqueLimitCmd_0p1;$/;"	member	line:39	struct:__anon42
+InvCmdMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^}InvCmdMsg_t;$/;"	typedef	line:40	typeref:struct:__anon42
+MaxDischargeCurrent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    uint16_t MaxDischargeCurrent;$/;"	member	line:44	struct:__anon43
+MaxChargeCurrent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    uint16_t MaxChargeCurrent;$/;"	member	line:45	struct:__anon43
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    uint32_t dummy1;$/;"	member	line:46	struct:__anon43
+BMSCurrentLimitMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} BMSCurrentLimitMsg_t;$/;"	typedef	line:47	typeref:struct:__anon43
+VSMst_Start	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	VSMst_Start = 0,$/;"	enumerator	line:55	enum:__anon44
+VSMst_PreChargeInit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	VSMst_PreChargeInit,$/;"	enumerator	line:56	enum:__anon44
+VSMst_PreChargeActive	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	VSMst_PreChargeActive,$/;"	enumerator	line:57	enum:__anon44
+VSMst_PreChargeComplete	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	VSMst_PreChargeComplete,$/;"	enumerator	line:58	enum:__anon44
+VSMst_Wait	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	VSMst_Wait,$/;"	enumerator	line:59	enum:__anon44
+VSMst_Ready	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	VSMst_Ready,$/;"	enumerator	line:60	enum:__anon44
+VSMst_Running	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	VSMst_Running,$/;"	enumerator	line:61	enum:__anon44
+VSMst_Fault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	VSMst_Fault,$/;"	enumerator	line:62	enum:__anon44
+VSMst_Shutdown	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	VSMst_Shutdown = 14,$/;"	enumerator	line:63	enum:__anon44
+VSMst_Reset	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	VSMst_Reset = 15,$/;"	enumerator	line:64	enum:__anon44
+VsmStates_e	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} VsmStates_e;$/;"	typedef	line:65	typeref:enum:__anon44
+VSMState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    uint16_t VSMState;$/;"	member	line:69	struct:__anon45
+InvState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    uint8_t InvState;$/;"	member	line:70	struct:__anon45
+Relay1_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    Relay1_Status       :   1,$/;"	member	line:73	struct:__anon45
+Relay2_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    Relay2_Status       :   1,$/;"	member	line:74	struct:__anon45
+Relay3_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    Relay3_Status       :   1,$/;"	member	line:75	struct:__anon45
+Relay4_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    Relay4_Status       :   1,$/;"	member	line:76	struct:__anon45
+Relay5_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    Relay5_Status       :   1,$/;"	member	line:77	struct:__anon45
+Relay6_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    Relay6_Status       :   1,$/;"	member	line:78	struct:__anon45
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    dummy1              :   2;$/;"	member	line:79	struct:__anon45
+InvRunMode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    InvRunMode          :   1,$/;"	member	line:82	struct:__anon45
+dummy2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    dummy2              :   4,$/;"	member	line:83	struct:__anon45
+InvDischargeState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    InvDischargeState   :   3;$/;"	member	line:84	struct:__anon45
+InvCmdMode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    InvCmdMode          :   1,$/;"	member	line:87	struct:__anon45
+dummy3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    dummy3              :   7;$/;"	member	line:88	struct:__anon45
+InvEnableState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    InvEnableState      :   1,$/;"	member	line:91	struct:__anon45
+dummy4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    dummy4              :   6,$/;"	member	line:92	struct:__anon45
+InvEnableLockout	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    InvEnableLockout    :   1;$/;"	member	line:93	struct:__anon45
+DirCmd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    DirCmd              :   1,$/;"	member	line:96	struct:__anon45
+BMSActive	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    BMSActive           :   1,$/;"	member	line:97	struct:__anon45
+BMSTorqueLimit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    BMSTorqueLimit      :   1,$/;"	member	line:98	struct:__anon45
+dummy	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    dummy               :   5;$/;"	member	line:99	struct:__anon45
+InvInternalStatesMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} InvInternalStatesMsg_t;$/;"	typedef	line:100	typeref:struct:__anon45
+PostCode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    uint32_t PostCode;$/;"	member	line:105	struct:__anon46
+RunCode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    uint32_t RunCode;$/;"	member	line:106	struct:__anon46
+InvFaultCodesMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} InvFaultCodesMsg_t;$/;"	typedef	line:107	typeref:struct:__anon46
+MotorAngleElectrical_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    uint16_t MotorAngleElectrical_0p1;$/;"	member	line:111	struct:__anon47
+MotorSpeed	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t MotorSpeed;$/;"	member	line:112	struct:__anon47
+ElectricalOutputFreq_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t ElectricalOutputFreq_0p1;$/;"	member	line:113	struct:__anon47
+DeltaResolverFiltered_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t DeltaResolverFiltered_0p1;$/;"	member	line:114	struct:__anon47
+MotorPositionMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} MotorPositionMsg_t;$/;"	typedef	line:115	typeref:struct:__anon47
+CmdTorque_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t CmdTorque_0p1;$/;"	member	line:119	struct:__anon48
+TorqueFeedback_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t TorqueFeedback_0p1;$/;"	member	line:120	struct:__anon48
+PowerOnTimer_0p003	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    uint32_t PowerOnTimer_0p003;$/;"	member	line:121	struct:__anon48
+TorqueAndTimerMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} TorqueAndTimerMsg_t;$/;"	typedef	line:122	typeref:struct:__anon48
+PhaseACurrent_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t PhaseACurrent_0p1;$/;"	member	line:126	struct:__anon49
+PhaseBCurrent_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t PhaseBCurrent_0p1;$/;"	member	line:127	struct:__anon49
+PhaseCCurrent_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t PhaseCCurrent_0p1;$/;"	member	line:128	struct:__anon49
+DCBusCurrent_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t DCBusCurrent_0p1;$/;"	member	line:129	struct:__anon49
+InvCurrentMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} InvCurrentMsg_t;$/;"	typedef	line:130	typeref:struct:__anon49
+DCBusVoltage_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t DCBusVoltage_0p1;$/;"	member	line:134	struct:__anon50
+OutputVoltage_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t OutputVoltage_0p1;$/;"	member	line:135	struct:__anon50
+VdVoltage_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t VdVoltage_0p1;$/;"	member	line:136	struct:__anon50
+VqVoltage_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t VqVoltage_0p1;$/;"	member	line:137	struct:__anon50
+InvVoltageMsg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} InvVoltageMsg_t;$/;"	typedef	line:138	typeref:struct:__anon50
+ModuleATemp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t ModuleATemp_0p1;$/;"	member	line:142	struct:__anon51
+ModuleBTemp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t ModuleBTemp_0p1;$/;"	member	line:143	struct:__anon51
+ModuleCTemp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t ModuleCTemp_0p1;$/;"	member	line:144	struct:__anon51
+GateDriverBoardTemp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t GateDriverBoardTemp_0p1;$/;"	member	line:145	struct:__anon51
+TempSet1Msg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} TempSet1Msg_t;$/;"	typedef	line:146	typeref:struct:__anon51
+ControlBoardTemp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t ControlBoardTemp_0p1;$/;"	member	line:150	struct:__anon52
+RTD1Temp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t RTD1Temp_0p1;$/;"	member	line:151	struct:__anon52
+RTD2Temp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t RTD2Temp_0p1;$/;"	member	line:152	struct:__anon52
+RTD3Temp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t RTD3Temp_0p1;$/;"	member	line:153	struct:__anon52
+TempSet2Msg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} TempSet2Msg_t;$/;"	typedef	line:154	typeref:struct:__anon52
+RTD4Temp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t RTD4Temp_0p1;$/;"	member	line:158	struct:__anon53
+RTD5Temp_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t RTD5Temp_0p1;$/;"	member	line:159	struct:__anon53
+MotorTem_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t MotorTem_0p1;$/;"	member	line:160	struct:__anon53
+TorqueShudder_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^    int16_t TorqueShudder_0p1;$/;"	member	line:161	struct:__anon53
+TempSet3Msg_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} TempSet3Msg_t;$/;"	typedef	line:162	typeref:struct:__anon53
+stateCmd_None	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	stateCmd_None = 0,$/;"	enumerator	line:166	enum:__anon54
+stateCmd_Enable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	stateCmd_Enable = 1,$/;"	enumerator	line:167	enum:__anon54
+stateCmd_Disable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	stateCmd_Disable = 2,$/;"	enumerator	line:168	enum:__anon54
+UnitState_e	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} UnitState_e;$/;"	typedef	line:169	typeref:enum:__anon54
+EnableCommand	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	int16_t EnableCommand;$/;"	member	line:173	struct:__anon55
+RequestTorque	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	int16_t RequestTorque;$/;"	member	line:174	struct:__anon55
+RequestSpeed	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	int16_t RequestSpeed;$/;"	member	line:175	struct:__anon55
+ConsumtionCurrentLimit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	int16_t ConsumtionCurrentLimit;$/;"	member	line:177	struct:__anon55
+GenerationCurrentLimit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	int16_t GenerationCurrentLimit;$/;"	member	line:178	struct:__anon55
+PreparedMsgNumber	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	uint8_t PreparedMsgNumber;$/;"	member	line:180	struct:__anon55
+PreparedMsgTimestamp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	int32_t PreparedMsgTimestamp[2];$/;"	member	line:181	struct:__anon55
+Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	mcuStatus_e Status;$/;"	member	line:183	struct:__anon55
+OnlineSign	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	uint8_t OnlineSign;$/;"	member	line:184	struct:__anon55
+LastError	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	uint16_t LastError;$/;"	member	line:185	struct:__anon55
+rmsMsgRx_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	InvCmdMsg_t rmsMsgRx_1;$/;"	member	line:188	struct:__anon55
+rmsMsgRx_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	BMSCurrentLimitMsg_t rmsMsgRx_2;$/;"	member	line:189	struct:__anon55
+rmsMsgTx_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	InvInternalStatesMsg_t rmsMsgTx_1;$/;"	member	line:191	struct:__anon55
+rmsMsgTx_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	InvFaultCodesMsg_t rmsMsgTx_2;$/;"	member	line:192	struct:__anon55
+rmsMsgTx_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	MotorPositionMsg_t rmsMsgTx_3;$/;"	member	line:193	struct:__anon55
+rmsMsgTx_4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	TorqueAndTimerMsg_t rmsMsgTx_4;$/;"	member	line:194	struct:__anon55
+rmsMsgTx_5	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	InvCurrentMsg_t rmsMsgTx_5;$/;"	member	line:195	struct:__anon55
+rmsMsgTx_6	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	InvVoltageMsg_t rmsMsgTx_6;$/;"	member	line:196	struct:__anon55
+rmsMsgTx_7	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	TempSet1Msg_t rmsMsgTx_7;$/;"	member	line:197	struct:__anon55
+rmsMsgTx_8	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	TempSet2Msg_t rmsMsgTx_8;$/;"	member	line:198	struct:__anon55
+rmsMsgTx_9	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^	TempSet3Msg_t rmsMsgTx_9;$/;"	member	line:199	struct:__anon55
+McuRinehart_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\MotionControllers\Inverter_Rinehart.h	/^} McuRinehart_t;$/;"	typedef	line:201	typeref:struct:__anon55
+DV_FRZF	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^#define DV_FRZF(/;"	macro	line:15	file:
+DIAG_ITEM	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^#define DIAG_ITEM(/;"	macro	line:16	file:
+fltVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^FILTER_STRUCT fltVoltage;$/;"	variable	line:19
+_ecuPowerSupply	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^static uint16_t _ecuPowerSupply = 0;$/;"	variable	line:22	file:
+frzfEcuConfigMemory	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfEcuConfigMemory;$/;"	variable	line:29
+dVal_frzfEcuConfigMemory	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfEcuConfigMemory[] = $/;"	variable	line:31
+dtcProp_EcuConfigMemory	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_EcuConfigMemory = { dtc_General_EcuConfig, DTC_BIT_WARNING_ENABLE + DTC_BIT_OPERATION_DISABLE, 0, 50, -50, 1, DIAG_ITEM(dVal_frzfEcuConfigMemory) };$/;"	variable	line:36
+dtcEcuConfigMemory	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcEcuConfigMemory = {&dtcProp_EcuConfigMemory};$/;"	variable	line:38
+frzfUnexpectedPowerOff	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfUnexpectedPowerOff;$/;"	variable	line:45
+dVal_frzfUnexpectedPowerOff	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfUnexpectedPowerOff[] = $/;"	variable	line:47
+dtcProp_UnexpectedPowerOff	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_UnexpectedPowerOff = { dtc_General_UnexpectedPowerOff, DTC_BIT_NONE, 0, 50, -50, 1, DIAG_ITEM(dVal_frzfUnexpectedPowerOff) };$/;"	variable	line:52
+dtcUnexpectedPowerOff	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcUnexpectedPowerOff = {&dtcProp_UnexpectedPowerOff};$/;"	variable	line:54
+frzfInverterOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfInverterOffline;$/;"	variable	line:61
+dVal_frzfInverterOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfInverterOffline[] = $/;"	variable	line:63
+dtcProp_InverterOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_InverterOffline = { dtc_CAN_Inverter, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 100, DIAG_ITEM(dVal_frzfInverterOffline) };$/;"	variable	line:68
+dtcInverterOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcInverterOffline = {&dtcProp_InverterOffline};$/;"	variable	line:70
+frzfSkfOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfSkfOffline;$/;"	variable	line:76
+dVal_frzfSkfOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfSkfOffline[] = $/;"	variable	line:78
+dtcProp_SkfOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_SkfOffline = { dtc_CAN_Skf, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 100, DIAG_ITEM(dVal_frzfSkfOffline) };$/;"	variable	line:83
+dtcSkfOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcSkfOffline = {&dtcProp_SkfOffline};$/;"	variable	line:85
+frzfBatteryOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfBatteryOffline;$/;"	variable	line:91
+dVal_frzfBatteryOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfBatteryOffline[] = $/;"	variable	line:93
+dtcProp_BatteryOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_BatteryOffline = { dtc_CAN_Battery, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 100, DIAG_ITEM(dVal_frzfBatteryOffline) };$/;"	variable	line:98
+dtcBatteryOffline	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcBatteryOffline = {&dtcProp_BatteryOffline};$/;"	variable	line:100
+frzfBatteryFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfBatteryFault;$/;"	variable	line:107
+dVal_frzfBatteryFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfBatteryFault[] = $/;"	variable	line:109
+dtcProp_BatteryFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_BatteryFault = { dtc_BatteryFault, DTC_BIT_WARNING_ENABLE, 0, 1, -1, 200, DIAG_ITEM(dVal_frzfBatteryFault) };$/;"	variable	line:114
+dtcBatteryFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcBatteryFault = {&dtcProp_BatteryFault};$/;"	variable	line:116
+frzfInverterFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfInverterFault;$/;"	variable	line:122
+dVal_frzfInverterFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfInverterFault[] = $/;"	variable	line:124
+dtcProp_InverterFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_InverterFault = { dtc_InverterFault, DTC_BIT_WARNING_ENABLE, 0, 1, -1, 250, DIAG_ITEM(dVal_frzfInverterFault) };$/;"	variable	line:129
+dtcInverterFault	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcInverterFault = {&dtcProp_InverterFault};$/;"	variable	line:131
+frzfSteeringPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfSteeringPosition;$/;"	variable	line:138
+dVal_frzfSteeringPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfSteeringPosition[] = $/;"	variable	line:140
+dtcProp_SteeringPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_SteeringPosition = { dtc_SteeringPosition, DTC_BIT_WARNING_ENABLE, 0, 10, -10, 100, DIAG_ITEM(dVal_frzfSteeringPosition) };$/;"	variable	line:145
+dtcSteeringPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcSteeringPosition = {&dtcProp_SteeringPosition};$/;"	variable	line:147
+frzfTrimPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfTrimPosition;$/;"	variable	line:153
+dVal_frzfTrimPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfTrimPosition[] = $/;"	variable	line:155
+dtcProp_TrimPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_TrimPosition = { dtc_TrimPosition, DTC_BIT_WARNING_ENABLE, 0, 10, -10, 100, DIAG_ITEM(dVal_frzfTrimPosition) };$/;"	variable	line:160
+dtcTrimPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcTrimPosition = {&dtcProp_TrimPosition};$/;"	variable	line:162
+frzfAcceleratorPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfAcceleratorPosition;$/;"	variable	line:168
+dVal_frzfAccelerator	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfAccelerator[] = $/;"	variable	line:170
+dtcProp_Accelerator	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_Accelerator = { dtc_Accelerator, DTC_BIT_WARNING_ENABLE + DTC_BIT_OPERATION_DISABLE, 0, 10, -10, 50, DIAG_ITEM(dVal_frzfAccelerator) };$/;"	variable	line:175
+dtcAcceleratorPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcAcceleratorPosition = {&dtcProp_Accelerator};$/;"	variable	line:177
+frzfSteeringFeedBack	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfSteeringFeedBack;$/;"	variable	line:183
+dVal_frzfSteeringFeedBack	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfSteeringFeedBack[] = $/;"	variable	line:185
+dtcProp_SteeringFeedBack	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_SteeringFeedBack = { dtc_SteeringFeedback, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 100, DIAG_ITEM(dVal_frzfSteeringFeedBack) };$/;"	variable	line:190
+dtcSteeringFeedBack	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcSteeringFeedBack = {&dtcProp_SteeringFeedBack};$/;"	variable	line:192
+frzfTrimFeedBack	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfTrimFeedBack;$/;"	variable	line:198
+dVal_frzfTrimFeedBack	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfTrimFeedBack[] = $/;"	variable	line:200
+dtcProp_TrimFeedBack	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_TrimFeedBack = { dtc_TrimFeedback, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 100, DIAG_ITEM(dVal_frzfTrimFeedBack) };$/;"	variable	line:205
+dtcTrimFeedBack	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcTrimFeedBack = {&dtcProp_TrimFeedBack};$/;"	variable	line:207
+frzfPwmCircuit_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfPwmCircuit_1;$/;"	variable	line:217
+dVal_frzfPwmCircuit_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfPwmCircuit_1[] = $/;"	variable	line:219
+dtcProp_PwmCircuit_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_PwmCircuit_1 = { dtc_PwmCircuit_1, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 10, DIAG_ITEM(dVal_frzfPwmCircuit_1) };$/;"	variable	line:224
+dtcPwmCircuit_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcPwmCircuit_1 = {&dtcProp_PwmCircuit_1};$/;"	variable	line:226
+frzfPwmCircuit_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfPwmCircuit_2;$/;"	variable	line:233
+dVal_frzfPwmCircuit_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfPwmCircuit_2[] = $/;"	variable	line:235
+dtcProp_PwmCircuit_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_PwmCircuit_2 = { dtc_PwmCircuit_2, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 10, DIAG_ITEM(dVal_frzfPwmCircuit_2) };$/;"	variable	line:240
+dtcPwmCircuit_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcPwmCircuit_2 = {&dtcProp_PwmCircuit_2};$/;"	variable	line:242
+frzfPwmCircuit_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfPwmCircuit_3;$/;"	variable	line:249
+dVal_frzfPwmCircuit_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfPwmCircuit_3[] = $/;"	variable	line:251
+dtcProp_PwmCircuit_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_PwmCircuit_3 = { dtc_PwmCircuit_3, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 10, DIAG_ITEM(dVal_frzfPwmCircuit_3) };$/;"	variable	line:256
+dtcPwmCircuit_3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcPwmCircuit_3 = {&dtcProp_PwmCircuit_3};$/;"	variable	line:258
+frzfMeasuringCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfMeasuringCircuit;$/;"	variable	line:265
+dVal_frzfMeasuringCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfMeasuringCircuit[] =$/;"	variable	line:267
+dtcProp_MeasuringCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_MeasuringCircuit = { dtc_MeasuringCircuit, DTC_BIT_WARNING_ENABLE, 0, 5, -5, 10, DIAG_ITEM(dVal_frzfMeasuringCircuit) };$/;"	variable	line:272
+dtcMeasuringCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcMeasuringCircuit = {&dtcProp_MeasuringCircuit};$/;"	variable	line:274
+frzfPowerSupplyCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcFRZF_General frzfPowerSupplyCircuit;$/;"	variable	line:280
+dVal_frzfPowerSupplyCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^const DiagnosticValueFRZF dVal_frzfPowerSupplyCircuit[] =$/;"	variable	line:282
+dtcProp_PowerSupplyCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcProperty_t dtcProp_PowerSupplyCircuit = { dtc_PowerSupplyCircuit, DTC_BIT_WARNING_ENABLE, 0, 10, -1, 5, DIAG_ITEM(dVal_frzfPowerSupplyCircuit) };$/;"	variable	line:287
+dtcPowerSupplyCircuit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t dtcPowerSupplyCircuit = {&dtcProp_MeasuringCircuit};$/;"	variable	line:289
+dtcList	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^dtcItem_t* dtcList[] =$/;"	variable	line:294
+dtcListSize	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^int dtcListSize = ARRAY_LEN(dtcList);$/;"	variable	line:303
+ecuInit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^void ecuInit(ObjectDictionary_t *dictionary)$/;"	function	line:307	signature:(ObjectDictionary_t *dictionary)
+ecuProc	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^void ecuProc()$/;"	function	line:341
+EcuGetVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.c	/^uint16_t EcuGetVoltage()$/;"	function	line:350
+_M_ECU_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.h	/^#define _M_ECU_H_$/;"	macro	line:2
+VER	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.h	/^#define VER(/;"	macro	line:9
+CLASS_MODEL_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.h	/^#define CLASS_MODEL_ID	/;"	macro	line:12
+HARDWARE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.h	/^#define HARDWARE	/;"	macro	line:13
+FW_VERSION	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.h	/^#define	FW_VERSION	/;"	macro	line:14
+HW_VERSION	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\mVcu_Ecu.h	/^#define	HW_VERSION	/;"	macro	line:15
+_OBJECTS_ID_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^#define _OBJECTS_ID_H_$/;"	macro	line:2
+didEcuInfo	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didEcuInfo	= 0,$/;"	enumerator	line:9	enum:__anon56
+didConfigStructIndex	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didConfigStructIndex,$/;"	enumerator	line:10	enum:__anon56
+didDateTime	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didDateTime,$/;"	enumerator	line:11	enum:__anon56
+didEcuVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didEcuVoltage,$/;"	enumerator	line:12	enum:__anon56
+didPowerManagmentState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didPowerManagmentState,$/;"	enumerator	line:13	enum:__anon56
+didVoltageSensor1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didVoltageSensor1 = 10,$/;"	enumerator	line:15	enum:__anon56
+didVoltageSensor2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didVoltageSensor2,$/;"	enumerator	line:16	enum:__anon56
+didVoltageSensor3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didVoltageSensor3,$/;"	enumerator	line:17	enum:__anon56
+didVoltageSensor4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didVoltageSensor4,$/;"	enumerator	line:18	enum:__anon56
+didVoltageSensor5	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didVoltageSensor5,$/;"	enumerator	line:19	enum:__anon56
+didVoltageSensor6	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didVoltageSensor6,$/;"	enumerator	line:20	enum:__anon56
+didVoltageSensor7	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didVoltageSensor7,$/;"	enumerator	line:21	enum:__anon56
+didVoltageSensor8	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didVoltageSensor8,$/;"	enumerator	line:22	enum:__anon56
+didCurrentSensor1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didCurrentSensor1,$/;"	enumerator	line:24	enum:__anon56
+didCurrentSensor2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didCurrentSensor2,$/;"	enumerator	line:25	enum:__anon56
+didCurrentSensor3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didCurrentSensor3,$/;"	enumerator	line:26	enum:__anon56
+didCurrentSensor4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didCurrentSensor4,	$/;"	enumerator	line:27	enum:__anon56
+didMachineState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didMachineState,$/;"	enumerator	line:29	enum:__anon56
+didMachineSubState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didMachineSubState,$/;"	enumerator	line:30	enum:__anon56
+didInOutState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didInOutState,$/;"	enumerator	line:32	enum:__anon56
+didPwmOutState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didPwmOutState,$/;"	enumerator	line:33	enum:__anon56
+didSteeringTargetAngle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didSteeringTargetAngle,$/;"	enumerator	line:35	enum:__anon56
+didSteeringFB	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didSteeringFB,$/;"	enumerator	line:36	enum:__anon56
+didSteeringCurent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didSteeringCurent,$/;"	enumerator	line:37	enum:__anon56
+didTrimFB	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didTrimFB,	$/;"	enumerator	line:38	enum:__anon56
+didAccCh1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didAccCh1,$/;"	enumerator	line:39	enum:__anon56
+didAccCh2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didAccCh2,$/;"	enumerator	line:40	enum:__anon56
+didMotorTemp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didMotorTemp,$/;"	enumerator	line:41	enum:__anon56
+didInvTemp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didInvTemp,$/;"	enumerator	line:42	enum:__anon56
+didActualRpm	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didActualRpm,$/;"	enumerator	line:43	enum:__anon56
+didInverterCurrent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didInverterCurrent,$/;"	enumerator	line:44	enum:__anon56
+didBatteryCurrent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didBatteryCurrent,$/;"	enumerator	line:45	enum:__anon56
+didTrimMovCmd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didTrimMovCmd,$/;"	enumerator	line:47	enum:__anon56
+didActualGear	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didActualGear,$/;"	enumerator	line:48	enum:__anon56
+didTargetSpeed	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didTargetSpeed,$/;"	enumerator	line:49	enum:__anon56
+didAccPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didAccPosition,$/;"	enumerator	line:50	enum:__anon56
+didInverterVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didInverterVoltage,$/;"	enumerator	line:51	enum:__anon56
+didBatteryCmd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didBatteryCmd,$/;"	enumerator	line:53	enum:__anon56
+didInverterEnable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didInverterEnable,$/;"	enumerator	line:55	enum:__anon56
+didInverterState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didInverterState,$/;"	enumerator	line:56	enum:__anon56
+didWaterSwitches	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didWaterSwitches,$/;"	enumerator	line:57	enum:__anon56
+didSteeringFBAngle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didSteeringFBAngle,$/;"	enumerator	line:59	enum:__anon56
+didIsoIsolation	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didIsoIsolation,$/;"	enumerator	line:61	enum:__anon56
+didFaults_Actual	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didFaults_Actual = 100,$/;"	enumerator	line:64	enum:__anon56
+didFaults_History	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didFaults_History,$/;"	enumerator	line:65	enum:__anon56
+didFaults_FreezeFrame	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^	didFaults_FreezeFrame,$/;"	enumerator	line:67	enum:__anon56
+ObjectsIndex_e	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ObjectsIndex.h	/^} ObjectsIndex_e;$/;"	typedef	line:69	typeref:enum:__anon56
+EXTERNAL_SEND_MSG_AMOUNT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\PCanProtocol.c	/^#define EXTERNAL_SEND_MSG_AMOUNT	/;"	macro	line:13	file:
+extSendTime	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\PCanProtocol.c	/^static uint32_t extSendTime[EXTERNAL_SEND_MSG_AMOUNT];$/;"	variable	line:15	file:
+extPeriod	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\PCanProtocol.c	/^static uint16_t extPeriod[EXTERNAL_SEND_MSG_AMOUNT] = {$/;"	variable	line:17	file:
+PCanRx	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\PCanProtocol.c	/^uint8_t PCanRx(CanMsg *msg)$/;"	function	line:25	signature:(CanMsg *msg)
+PCanMesGenerate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\PCanProtocol.c	/^void PCanMesGenerate(void)$/;"	function	line:152	signature:(void)
+_P_CAN_PROTOCOL_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\PCanProtocol.h	/^#define _P_CAN_PROTOCOL_H_$/;"	macro	line:2
+PCanRxMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Protocol.c	/^CanMsg PCanRxMsg;$/;"	variable	line:8
+PCanTxMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Protocol.c	/^CanMsg PCanTxMsg;$/;"	variable	line:9
+DCanRxMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Protocol.c	/^CanMsg DCanRxMsg;$/;"	variable	line:11
+DCanTxMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Protocol.c	/^CanMsg DCanTxMsg;$/;"	variable	line:12
+DCanTxMsg2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Protocol.c	/^CanMsg DCanTxMsg2;$/;"	variable	line:13
+Protocol	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Protocol.c	/^void Protocol(void)$/;"	function	line:16	signature:(void)
+_PROTOCOL_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Protocol.h	/^#define _PROTOCOL_H_$/;"	macro	line:2
+D_CAN_CH	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Protocol.h	/^#define D_CAN_CH /;"	macro	line:7
+P_CAN_CH	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Protocol.h	/^#define P_CAN_CH /;"	macro	line:8
+_SERVICE_SYSTEM_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ServiceSystem.h	/^#define _SERVICE_SYSTEM_H_$/;"	macro	line:2
+ECU_MODEL_MAIN_ECU	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ServiceSystem.h	/^#define ECU_MODEL_MAIN_ECU /;"	macro	line:6
+ECU_MODEL_BMS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\ServiceSystem.h	/^#define ECU_MODEL_BMS /;"	macro	line:7
+LOCAL_SEND_MSG_AMOUNT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^#define LOCAL_SEND_MSG_AMOUNT	/;"	macro	line:9	file:
+GET_NODE_NUMBER_FROM_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^#define GET_NODE_NUMBER_FROM_ID(/;"	macro	line:12	file:
+GET_MES_NUMBER_FROM_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^#define GET_MES_NUMBER_FROM_ID(/;"	macro	line:14	file:
+STATUS_WORD_MASK	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^#define STATUS_WORD_MASK /;"	macro	line:16	file:
+SEVCON_SEND_PERIOD	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^#define SEVCON_SEND_PERIOD /;"	macro	line:18	file:
+SHUTDOWN_REQUEST	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^typedef enum {SHUTDOWN_REQUEST = 0x06, SWITCH_ON_REQUEST = 0x07, ENABLE_OPERATION = 0x0F} SEVCON_CONTROLWORDS_ENUM;$/;"	enumerator	line:22	enum:__anon57	file:
+SWITCH_ON_REQUEST	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^typedef enum {SHUTDOWN_REQUEST = 0x06, SWITCH_ON_REQUEST = 0x07, ENABLE_OPERATION = 0x0F} SEVCON_CONTROLWORDS_ENUM;$/;"	enumerator	line:22	enum:__anon57	file:
+ENABLE_OPERATION	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^typedef enum {SHUTDOWN_REQUEST = 0x06, SWITCH_ON_REQUEST = 0x07, ENABLE_OPERATION = 0x0F} SEVCON_CONTROLWORDS_ENUM;$/;"	enumerator	line:22	enum:__anon57	file:
+SEVCON_CONTROLWORDS_ENUM	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^typedef enum {SHUTDOWN_REQUEST = 0x06, SWITCH_ON_REQUEST = 0x07, ENABLE_OPERATION = 0x0F} SEVCON_CONTROLWORDS_ENUM;$/;"	typedef	line:22	typeref:enum:__anon57	file:
+SevconSendStamp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^uint32_t SevconSendStamp[LOCAL_SEND_MSG_AMOUNT];$/;"	variable	line:26
+SevconSendPeriod	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^uint32_t SevconSendPeriod[LOCAL_SEND_MSG_AMOUNT] =  {$/;"	variable	line:27
+RequestState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^static OperationStates RequestState;$/;"	variable	line:34	file:
+ActualState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^static CanOpenStates ActualState;$/;"	variable	line:35	file:
+ActualStatus	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^static SEVCON_STATUSWORDS_ENUM ActualStatus;$/;"	variable	line:36	file:
+RequestControlWord	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^static uint16_t RequestControlWord;$/;"	variable	line:37	file:
+SevconCanOpenID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^const uint16_t SevconCanOpenID = 0x06;$/;"	variable	line:41
+SevconNodeState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^const uint8_t SevconNodeState[2] = {0x80, 0x01};$/;"	variable	line:42
+InvProtocolRx	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^uint8_t InvProtocolRx(CanMsg * msg)$/;"	function	line:49	signature:(CanMsg * msg)
+InvProtocolMesGenerate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^void InvProtocolMesGenerate(void)$/;"	function	line:128	signature:(void)
+SevconSetState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.c	/^void SevconSetState(OperationStates State)$/;"	function	line:194	signature:(OperationStates State)
+__SEVCON__	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^#define __SEVCON__$/;"	macro	line:2
+SEVCON_TIMEOUT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^#define SEVCON_TIMEOUT /;"	macro	line:7
+SEVCON_MOTOR_AMOUNT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^#define SEVCON_MOTOR_AMOUNT /;"	macro	line:9
+SEV_NMT_CAN_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^#define SEV_NMT_CAN_ID	/;"	macro	line:12
+SEV_PDO_TX_CAN_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^#define SEV_PDO_TX_CAN_ID(/;"	macro	line:13
+SEV_PDO_RX_CAN_ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^#define SEV_PDO_RX_CAN_ID(/;"	macro	line:14
+SevTurnOff	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {SevTurnOff, SevTurnOn} OperationStates;$/;"	enumerator	line:22	enum:__anon58
+SevTurnOn	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {SevTurnOff, SevTurnOn} OperationStates;$/;"	enumerator	line:22	enum:__anon58
+OperationStates	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {SevTurnOff, SevTurnOn} OperationStates;$/;"	typedef	line:22	typeref:enum:__anon58
+NoSevconInformation	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {NoSevconInformation, PreOperationMode, OperationMode} CanOpenStates;$/;"	enumerator	line:24	enum:__anon59
+PreOperationMode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {NoSevconInformation, PreOperationMode, OperationMode} CanOpenStates;$/;"	enumerator	line:24	enum:__anon59
+OperationMode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {NoSevconInformation, PreOperationMode, OperationMode} CanOpenStates;$/;"	enumerator	line:24	enum:__anon59
+CanOpenStates	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {NoSevconInformation, PreOperationMode, OperationMode} CanOpenStates;$/;"	typedef	line:24	typeref:enum:__anon59
+NOT_READY_TO_SWITCH_ON	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {NOT_READY_TO_SWITCH_ON = 0x00, FAULT = 0x08, READY_TO_SWITCH_ON_SW = 0x21, OPERATION_ENABLED_SW = 0x27, SWITCH_ON_DISABLE = 0x40, SWITCH_ON = 0x23} SEVCON_STATUSWORDS_ENUM;$/;"	enumerator	line:26	enum:__anon60
+FAULT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {NOT_READY_TO_SWITCH_ON = 0x00, FAULT = 0x08, READY_TO_SWITCH_ON_SW = 0x21, OPERATION_ENABLED_SW = 0x27, SWITCH_ON_DISABLE = 0x40, SWITCH_ON = 0x23} SEVCON_STATUSWORDS_ENUM;$/;"	enumerator	line:26	enum:__anon60
+READY_TO_SWITCH_ON_SW	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {NOT_READY_TO_SWITCH_ON = 0x00, FAULT = 0x08, READY_TO_SWITCH_ON_SW = 0x21, OPERATION_ENABLED_SW = 0x27, SWITCH_ON_DISABLE = 0x40, SWITCH_ON = 0x23} SEVCON_STATUSWORDS_ENUM;$/;"	enumerator	line:26	enum:__anon60
+OPERATION_ENABLED_SW	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {NOT_READY_TO_SWITCH_ON = 0x00, FAULT = 0x08, READY_TO_SWITCH_ON_SW = 0x21, OPERATION_ENABLED_SW = 0x27, SWITCH_ON_DISABLE = 0x40, SWITCH_ON = 0x23} SEVCON_STATUSWORDS_ENUM;$/;"	enumerator	line:26	enum:__anon60
+SWITCH_ON_DISABLE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {NOT_READY_TO_SWITCH_ON = 0x00, FAULT = 0x08, READY_TO_SWITCH_ON_SW = 0x21, OPERATION_ENABLED_SW = 0x27, SWITCH_ON_DISABLE = 0x40, SWITCH_ON = 0x23} SEVCON_STATUSWORDS_ENUM;$/;"	enumerator	line:26	enum:__anon60
+SWITCH_ON	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {NOT_READY_TO_SWITCH_ON = 0x00, FAULT = 0x08, READY_TO_SWITCH_ON_SW = 0x21, OPERATION_ENABLED_SW = 0x27, SWITCH_ON_DISABLE = 0x40, SWITCH_ON = 0x23} SEVCON_STATUSWORDS_ENUM;$/;"	enumerator	line:26	enum:__anon60
+SEVCON_STATUSWORDS_ENUM	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^typedef enum {NOT_READY_TO_SWITCH_ON = 0x00, FAULT = 0x08, READY_TO_SWITCH_ON_SW = 0x21, OPERATION_ENABLED_SW = 0x27, SWITCH_ON_DISABLE = 0x40, SWITCH_ON = 0x23} SEVCON_STATUSWORDS_ENUM;$/;"	typedef	line:26	typeref:enum:__anon60
+StatusWord	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t StatusWord;	$/;"	member	line:32	struct:__anon61
+ActualRpm	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t ActualRpm;$/;"	member	line:33	struct:__anon61
+ActualTorque	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t ActualTorque;					\/\/ Акутальный момент в %$/;"	member	line:34	struct:__anon61
+AverageStatorCurrent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t AverageStatorCurrent;			\/\/ factor = 0.0625$/;"	member	line:35	struct:__anon61
+AveragePhaseVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t AveragePhaseVoltage;			\/\/ factor = 0.0625$/;"	member	line:36	struct:__anon61
+BatteryCurrent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t BatteryCurrent;$/;"	member	line:37	struct:__anon61
+CapacitorVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	uint16_t CapacitorVoltage;   			\/\/ factor = 0.0625	Напряжение на севконе		$/;"	member	line:38	struct:__anon61
+MotorTemperature	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t MotorTemperature;				$/;"	member	line:39	struct:__anon61
+SevconTemperature	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t SevconTemperature;$/;"	member	line:40	struct:__anon61
+TargetId	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t TargetId;$/;"	member	line:41	struct:__anon61
+TargetIq	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t TargetIq;$/;"	member	line:42	struct:__anon61
+Id	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t Id;$/;"	member	line:43	struct:__anon61
+Iq	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t Iq;		$/;"	member	line:44	struct:__anon61
+OverallDspTemp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t OverallDspTemp;$/;"	member	line:45	struct:__anon61
+ModulationIndex	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t ModulationIndex;$/;"	member	line:46	struct:__anon61
+MaxPowerLimitTorque	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t MaxPowerLimitTorque;$/;"	member	line:47	struct:__anon61
+PeakTorque	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t PeakTorque;$/;"	member	line:48	struct:__anon61
+ControlWord	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t ControlWord;		$/;"	member	line:51	struct:__anon61
+LimitSpeed	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t LimitSpeed;			\/\/ Максимальная скорость мотора$/;"	member	line:52	struct:__anon61
+TargetTorque	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t TargetTorque;		\/\/ Требуемый крутящий момент$/;"	member	line:53	struct:__anon61
+FaultCode	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	uint16_t FaultCode;$/;"	member	line:54	struct:__anon61
+SEVCON_DATA	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^} SEVCON_DATA;$/;"	typedef	line:55	typeref:struct:__anon61
+CanOpenNodeState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	uint8_t CanOpenNodeState;$/;"	member	line:61	struct:__anon62
+CanOpenNodeId	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	uint8_t CanOpenNodeId;$/;"	member	line:62	struct:__anon62
+CanOpenNMT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^} CanOpenNMT;$/;"	typedef	line:63	typeref:struct:__anon62
+ControlWord	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t ControlWord;$/;"	member	line:67	struct:__anon63
+TargetSpeed	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int32_t TargetSpeed;$/;"	member	line:68	struct:__anon63
+MaximumTorque	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t MaximumTorque;$/;"	member	line:69	struct:__anon63
+SevconRPDO_0	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^} SevconRPDO_0;$/;"	typedef	line:70	typeref:struct:__anon63
+DCL	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t DCL;$/;"	member	line:74	struct:__anon64
+CCL	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^	int16_t CCL;$/;"	member	line:75	struct:__anon64
+SevconRPDO_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SevconProtocol.h	/^} SevconRPDO_1;$/;"	typedef	line:76	typeref:struct:__anon64
+_SIM100_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^#define _SIM100_H_$/;"	macro	line:2
+sim100_OpCodes	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^enum sim100_OpCodes$/;"	enum	line:7
+opCode_ReadIsolation	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	opCode_ReadIsolation = 0xE0,$/;"	enumerator	line:9	enum:sim100_OpCodes
+opCode_ReadResistance	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	opCode_ReadResistance,$/;"	enumerator	line:10	enum:sim100_OpCodes
+opCode_ReadCapacitance	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	opCode_ReadCapacitance,$/;"	enumerator	line:11	enum:sim100_OpCodes
+opCode_ReadVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	opCode_ReadVoltage,$/;"	enumerator	line:12	enum:sim100_OpCodes
+opCode_ReadBatteryVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	opCode_ReadBatteryVoltage,$/;"	enumerator	line:13	enum:sim100_OpCodes
+opCode_ReadError	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	opCode_ReadError,$/;"	enumerator	line:14	enum:sim100_OpCodes
+opCode_WriteMaxVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	opCode_WriteMaxVoltage = 0xF0,$/;"	enumerator	line:15	enum:sim100_OpCodes
+Value	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t Value;$/;"	member	line:20	union:__anon65
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		dummy1				: 2,	\/\/ -$/;"	member	line:24	struct:__anon65::__anon66
+LowVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		LowVoltage			: 1,	\/\/ Напряжение батареи ниже 15 вольт$/;"	member	line:25	struct:__anon65::__anon66
+HighVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		HighVoltage			: 1,	\/\/ Напряжение батареи выше установленного$/;"	member	line:26	struct:__anon65::__anon66
+dummy2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		dummy2				: 1,	\/\/ -$/;"	member	line:27	struct:__anon65::__anon66
+HighUncertainity	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		HighUncertainity	: 1,	\/\/ Высокая неопределенность измерений$/;"	member	line:28	struct:__anon65::__anon66
+NoNew	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		NoNew				: 1,	\/\/ Нет новых измерений с последнего запроса результатов$/;"	member	line:29	struct:__anon65::__anon66
+HwError	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		HwError				: 1;	\/\/ Аппаратная неисправность (см. sim100_Errors)$/;"	member	line:30	struct:__anon65::__anon66
+sim100_Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^} sim100_Status;$/;"	typedef	line:32	typeref:union:__anon65
+Value	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t Value;$/;"	member	line:36	union:__anon67
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		dummy1				: 2,	\/\/ -$/;"	member	line:40	struct:__anon67::__anon68
+Vpwr	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		Vpwr				: 1,	\/\/ Напряжение питания за пределами допустимого диапазона$/;"	member	line:41	struct:__anon67::__anon68
+Vexi	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		Vexi				: 1,	\/\/ Напряжение возбуждения за пределами допустимого диапазона$/;"	member	line:42	struct:__anon67::__anon68
+VxR	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		VxR					: 1,	\/\/ Неправильная полярность подключения высоковольтных контактов$/;"	member	line:43	struct:__anon67::__anon68
+CH	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		CH					: 1,	\/\/ Обрыв в цепях заземления$/;"	member	line:44	struct:__anon67::__anon68
+Vx1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		Vx1					: 1,	\/\/ Обрыв в цепи +$/;"	member	line:45	struct:__anon67::__anon68
+Vx2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^		Vx2					: 1;	\/\/ Обрыв в цепи -$/;"	member	line:46	struct:__anon67::__anon68
+sim100_Errors	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^} sim100_Errors;$/;"	typedef	line:48	typeref:union:__anon67
+Sim100OfflineTime	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint32_t Sim100OfflineTime;$/;"	member	line:53	struct:__anon69
+Status	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	sim100_Status Status;$/;"	member	line:56	struct:__anon69
+Errors	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	sim100_Errors Errors;$/;"	member	line:57	struct:__anon69
+Isolation	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint16_t Isolation;				\/\/ Изоляция Ом\/В$/;"	member	line:59	struct:__anon69
+IsolationUncertainity	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t IsolationUncertainity;	\/\/ Неопределенность измерения изоляции в %$/;"	member	line:60	struct:__anon69
+StoredEnergy	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint16_t StoredEnergy;			\/\/ Сохраненная энергия в емкости между батареей и шасси в мДж$/;"	member	line:61	struct:__anon69
+CapUncertainity	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t CapUncertainity;		\/\/ Неопределенность измерения емкости в %$/;"	member	line:62	struct:__anon69
+Rp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint16_t Rp;					\/\/ Сопротивление изоляции между плюсом и шасси в кОм$/;"	member	line:64	struct:__anon69
+RpUncertainity	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t RpUncertainity;			\/\/ Неопределенность измерения сопротивления Rp в %$/;"	member	line:65	struct:__anon69
+Rn	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint16_t Rn;					\/\/ Сопротивление изоляции между минусом и шасси в кОм$/;"	member	line:66	struct:__anon69
+RnUncertainity	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t RnUncertainity;			\/\/ Неопределенность измерения сопротивления Rn в %$/;"	member	line:67	struct:__anon69
+Cp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint16_t Cp;					\/\/ Емкость изоляции между плюсом и шасси в нФ$/;"	member	line:69	struct:__anon69
+CpUncertainity	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t CpUncertainity;			\/\/ Неопределенность измерения емкости Cp в %$/;"	member	line:70	struct:__anon69
+Cn	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint16_t Cn;					\/\/ Емкость изоляции между минусом и шасси в нФ$/;"	member	line:71	struct:__anon69
+CnUncertainity	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t CnUncertainity;			\/\/ Неопределенность измерения емкости Cn в %$/;"	member	line:72	struct:__anon69
+Vp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint16_t Vp;					\/\/ Напряжение между плюсом и шасси в вольтах$/;"	member	line:74	struct:__anon69
+VpUncertainity	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t VpUncertainity;			\/\/ Неопределенность измерения напряжения Vp в %$/;"	member	line:75	struct:__anon69
+Vn	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint16_t Vn;					\/\/ Напряжение между минусом и шасси в вольтах$/;"	member	line:76	struct:__anon69
+VnUncertainity	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t VnUncertainity;			\/\/ Неопределенность измерения напряжения Vn в %	$/;"	member	line:77	struct:__anon69
+Vb	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint16_t Vb;					\/\/ Напряжение батареи в вольтах$/;"	member	line:79	struct:__anon69
+VbUncertainity	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t VbUncertainity;			\/\/ Неопределенность измерения напряжения Vb в %$/;"	member	line:80	struct:__anon69
+Vmax	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint16_t Vmax;					\/\/ Максимальное напряжение батареи за все время работы в вольтах$/;"	member	line:81	struct:__anon69
+VmaxUncertainity	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^	uint8_t VmaxUncertainity;		\/\/ Неопределенность измерения напряжения Vmax в %	$/;"	member	line:82	struct:__anon69
+sim100Data_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Sim100.h	/^} sim100Data_t;$/;"	typedef	line:83	typeref:struct:__anon69
+_SKF_PROTOCOL_H	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^#define _SKF_PROTOCOL_H$/;"	macro	line:2
+C_CAN_ID_OFFSET	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint32_t C_CAN_ID_OFFSET;$/;"	member	line:8	struct:__anon70
+C_CAN_ID_NUM	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_CAN_ID_NUM;$/;"	member	line:9	struct:__anon70
+C_CAN_SPEED	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_CAN_SPEED;$/;"	member	line:10	struct:__anon70
+MSG_SET_CAN_BASE_ADDRESS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^}MSG_SET_CAN_BASE_ADDRESS;$/;"	typedef	line:11	typeref:struct:__anon70
+C_CAN_CONF_ID_OFFSET	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint32_t C_CAN_CONF_ID_OFFSET;$/;"	member	line:15	struct:__anon71
+C_CAN_CONF_ID_NUM	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_CAN_CONF_ID_NUM;$/;"	member	line:16	struct:__anon71
+C_CAN_CONF_SPEED	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_CAN_CONF_SPEED;$/;"	member	line:17	struct:__anon71
+MSG_CONFIGURE_CAN_BASE_ADDRESS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^}MSG_CONFIGURE_CAN_BASE_ADDRESS;$/;"	typedef	line:18	typeref:struct:__anon71
+C_ANGLE_RATE_LOW	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_ANGLE_RATE_LOW;$/;"	member	line:22	struct:__anon72
+MSG_SET_UPDATE_SPEED	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^}MSG_SET_UPDATE_SPEED;$/;"	typedef	line:23	typeref:struct:__anon72
+C_ZERO_POS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint16_t C_ZERO_POS;$/;"	member	line:27	struct:__anon73
+C_REV_NUMBER	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    int8_t C_REV_NUMBER;$/;"	member	line:28	struct:__anon73
+MSG_SET_ORIGIN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^}MSG_SET_ORIGIN;$/;"	typedef	line:29	typeref:struct:__anon73
+C_ABS_ANGLE_HIGH	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_ABS_ANGLE_HIGH;$/;"	member	line:33	struct:__anon74
+C_ABS_ANGLE_LOW	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_ABS_ANGLE_LOW;$/;"	member	line:34	struct:__anon74
+C_NUM_REV	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    int8_t C_NUM_REV;$/;"	member	line:35	struct:__anon74
+MSG_SET_STEERING_ENDSTOP	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^}MSG_SET_STEERING_ENDSTOP;$/;"	typedef	line:36	typeref:struct:__anon74
+C_PERC_MAX_BRAKE_FRICTION	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_PERC_MAX_BRAKE_FRICTION;$/;"	member	line:40	struct:__anon75
+MSG_SET_REGULATED_BRAKE_FRICTION	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^}MSG_SET_REGULATED_BRAKE_FRICTION;$/;"	typedef	line:41	typeref:struct:__anon75
+C_PERC_MAX_BRAKE_CURRENT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_PERC_MAX_BRAKE_CURRENT;$/;"	member	line:45	struct:__anon76
+MSG_SET_ZERO_REGULATED_BRAKE_FRICTION	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^}MSG_SET_ZERO_REGULATED_BRAKE_FRICTION;$/;"	typedef	line:46	typeref:struct:__anon76
+C_SPEED_DEP	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_SPEED_DEP;$/;"	member	line:51	struct:__anon77
+C_GAIN_FACTOR	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_GAIN_FACTOR;$/;"	member	line:52	struct:__anon77
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t dummy1;$/;"	member	line:53	struct:__anon77
+dummy2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint16_t dummy2;$/;"	member	line:54	struct:__anon77
+MSG_SET_SPEED_DEPENDENT_FRICTION_BEHAVIOR	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^}MSG_SET_SPEED_DEPENDENT_FRICTION_BEHAVIOR;$/;"	typedef	line:56	typeref:struct:__anon77
+C_MAX_FRICTION	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_MAX_FRICTION;$/;"	member	line:60	struct:__anon78
+C_ANGLE_POS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_ANGLE_POS;$/;"	member	line:61	struct:__anon78
+MSG_SET_ESIU_SETTINGS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^}MSG_SET_ESIU_SETTINGS;$/;"	typedef	line:62	typeref:struct:__anon78
+C_ANGLE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint16_t C_ANGLE;$/;"	member	line:70	struct:__anon79
+C_BRAKE_STS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    C_BRAKE_STS                     : 2,$/;"	member	line:73	struct:__anon79
+C_SET_ORIGIN_STS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    C_SET_ORIGIN_STS                : 2,$/;"	member	line:74	struct:__anon79
+C_SET_ENDSTOP_STS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    C_SET_ENDSTOP_STS               : 2,$/;"	member	line:75	struct:__anon79
+C_SET_SPEED_DEP_FRICTION_STS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    C_SET_SPEED_DEP_FRICTION_STS    : 2;$/;"	member	line:76	struct:__anon79
+C_CURRENT_BRAKE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_CURRENT_BRAKE;$/;"	member	line:78	struct:__anon79
+C_HEART_COUNTER	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_HEART_COUNTER;$/;"	member	line:79	struct:__anon79
+C_STEERING_SPEED_LOW	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_STEERING_SPEED_LOW;$/;"	member	line:80	struct:__anon79
+C_STEERING_SPEED_HIG	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_STEERING_SPEED_HIG;$/;"	member	line:81	struct:__anon79
+C_NUM_STEERING_REV	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    int8_t C_NUM_STEERING_REV;$/;"	member	line:82	struct:__anon79
+MSG_ABS_ANGLE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^}MSG_ABS_ANGLE;$/;"	typedef	line:83	typeref:struct:__anon79
+C_ERROR_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    C_ERROR_STATE   : 2,$/;"	member	line:88	struct:__anon80
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    dummy1          : 6;$/;"	member	line:89	struct:__anon80
+C_ERROR_CODE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_ERROR_CODE;$/;"	member	line:91	struct:__anon80
+C_ERROR_SEVERITY	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_ERROR_SEVERITY;$/;"	member	line:92	struct:__anon80
+C_OCCURRENCE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_OCCURRENCE;$/;"	member	line:93	struct:__anon80
+C_POWER_SUPPLY_HIGH	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_POWER_SUPPLY_HIGH;$/;"	member	line:94	struct:__anon80
+C_POWER_SUPPLY_LOW	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_POWER_SUPPLY_LOW;$/;"	member	line:95	struct:__anon80
+C_PCB_TEMP_HIGH	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_PCB_TEMP_HIGH;$/;"	member	line:96	struct:__anon80
+C_PCB_TEMP_LOW	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^    uint8_t C_PCB_TEMP_LOW;$/;"	member	line:97	struct:__anon80
+MSG_ERROR_CODE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SkfTypes.h	/^}MSG_ERROR_CODE;$/;"	typedef	line:98	typeref:struct:__anon80
+_ctrlPos	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.c	/^FILTER_STRUCT _ctrlPos;$/;"	variable	line:13
+SteeringInit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.c	/^uint8_t SteeringInit(SteeringData_t *_steeringData, uint8_t *FeedbackVoltage_0p1V, uint8_t MinPosLimit_V, uint8_t MaxPosLimit_V, uint16_t *fstDriverCurrent, uint16_t *sndDriverCurrent, uint16_t CurrentLimit_0p1A)$/;"	function	line:18	signature:(SteeringData_t *_steeringData, uint8_t *FeedbackVoltage_0p1V, uint8_t MinPosLimit_V, uint8_t MaxPosLimit_V, uint16_t *fstDriverCurrent, uint16_t *sndDriverCurrent, uint16_t CurrentLimit_0p1A)
+SteeringProc	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.c	/^uint8_t SteeringProc(SteeringData_t *_steeringData, int16_t TargetAngle)$/;"	function	line:48	signature:(SteeringData_t *_steeringData, int16_t TargetAngle)
+SteeringControl	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.c	/^int16_t SteeringControl(SteeringData_t *_steeringData, int16_t TargetAngle)$/;"	function	line:67	signature:(SteeringData_t *_steeringData, int16_t TargetAngle)
+SteeringGetDriveCurrent	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.c	/^uint16_t SteeringGetDriveCurrent(const SteeringData_t *_steeringData)$/;"	function	line:118	signature:(const SteeringData_t *_steeringData)
+SteeringGetFeedBackAngle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.c	/^int16_t SteeringGetFeedBackAngle(const SteeringData_t *_steeringData)$/;"	function	line:123	signature:(const SteeringData_t *_steeringData)
+GetSteeringBrakeValue	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.c	/^uint8_t GetSteeringBrakeValue(int16_t ActualSpeed, int16_t* BrakeSpeedTable)$/;"	function	line:128	signature:(int16_t ActualSpeed, int16_t* BrakeSpeedTable)
+SteeringGetState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.c	/^int16_t SteeringGetState(const SteeringData_t *_steeringData)$/;"	function	line:136	signature:(const SteeringData_t *_steeringData)
+PID_Controller	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.c	/^int16_t PID_Controller(SteeringData_t *_steeringData, uint16_t feedback_value, uint16_t set_value)$/;"	function	line:141	signature:(SteeringData_t *_steeringData, uint16_t feedback_value, uint16_t set_value)
+HelmGetTargetAngle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.c	/^uint16_t HelmGetTargetAngle(Helm_Data_Rx_t *HelmData)$/;"	function	line:159	signature:(Helm_Data_Rx_t *HelmData)
+_STEERING_FUNC_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^#define _STEERING_FUNC_H_$/;"	macro	line:2
+TargetAngle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	int16_t TargetAngle;   $/;"	member	line:7	struct:__anon81
+ActualAngle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^    int16_t ActualAngle;$/;"	member	line:8	struct:__anon81
+SteeringSpeed_rads	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^    int16_t SteeringSpeed_rads;$/;"	member	line:9	struct:__anon81
+NumSteeringRev	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^    uint8_t NumSteeringRev;$/;"	member	line:10	struct:__anon81
+EndStopLeft_Ack	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^        EndStopLeft_Ack     :   1,$/;"	member	line:13	struct:__anon81
+EndStopRight_Ack	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^        EndStopRight_Ack    :   1,$/;"	member	line:14	struct:__anon81
+SetZeroRegBrake_Ack	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^        SetZeroRegBrake_Ack	:   1,$/;"	member	line:15	struct:__anon81
+HelmIsReady	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^		HelmIsReady			:	1,$/;"	member	line:16	struct:__anon81
+dummy	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^		dummy				:	4;$/;"	member	line:17	struct:__anon81
+Helm_Data_Rx_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^} Helm_Data_Rx_t;$/;"	typedef	line:19	typeref:struct:__anon81
+Value	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint8_t Value;$/;"	member	line:23	struct:__anon82
+F_Feedback	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^		F_Feedback	:	1,$/;"	member	line:25	struct:__anon82
+F_Position	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^		F_Position	:	1,$/;"	member	line:26	struct:__anon82
+F_Current1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^		F_Current1	:	1,$/;"	member	line:27	struct:__anon82
+F_Current2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^		F_Current2	:	1,$/;"	member	line:28	struct:__anon82
+F_dummy	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^		F_dummy		:	3;$/;"	member	line:29	struct:__anon82
+SteeringFaults_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^}SteeringFaults_t;$/;"	typedef	line:30	typeref:struct:__anon82
+STEERING_F_NONE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	STEERING_F_NONE = 0,$/;"	enumerator	line:34	enum:__anon83
+STEERING_F_FEEDBACK	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	STEERING_F_FEEDBACK,$/;"	enumerator	line:35	enum:__anon83
+STEERING_F_POSITION	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	STEERING_F_POSITION,$/;"	enumerator	line:36	enum:__anon83
+STEERING_F_CURRENT1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	STEERING_F_CURRENT1,$/;"	enumerator	line:37	enum:__anon83
+STEERING_F_CURRENT2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	STEERING_F_CURRENT2,$/;"	enumerator	line:38	enum:__anon83
+STEERING_FAULTS_e	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^}STEERING_FAULTS_e;$/;"	typedef	line:39	typeref:enum:__anon83
+SteeringMinVal_0p1V	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint8_t SteeringMinVal_0p1V;$/;"	member	line:43	struct:__anon84
+SteeringMaxVal_0p1V	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint8_t SteeringMaxVal_0p1V;$/;"	member	line:44	struct:__anon84
+FeedBackAngle	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	int16_t FeedBackAngle;$/;"	member	line:46	struct:__anon84
+FeedbackVoltageRanges	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	int16_t FeedbackVoltageRanges[4];$/;"	member	line:47	struct:__anon84
+FeedbackVoltage_0p1V	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint8_t *FeedbackVoltage_0p1V;$/;"	member	line:49	struct:__anon84
+fstDriverCurrent_0p1A	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint16_t *fstDriverCurrent_0p1A;$/;"	member	line:50	struct:__anon84
+sndDriverCurrent_0p1A	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint16_t *sndDriverCurrent_0p1A;$/;"	member	line:51	struct:__anon84
+DriveCurrent_0p1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint16_t DriveCurrent_0p1;$/;"	member	line:53	struct:__anon84
+CurrentLimit_0p1A	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint16_t CurrentLimit_0p1A;$/;"	member	line:54	struct:__anon84
+kp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint8_t kp;$/;"	member	line:56	struct:__anon84
+ki	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint8_t ki;$/;"	member	line:57	struct:__anon84
+kd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint8_t kd;$/;"	member	line:58	struct:__anon84
+SteeringFuncIsReady	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	uint8_t SteeringFuncIsReady;$/;"	member	line:60	struct:__anon84
+Faults	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^	SteeringFaults_t Faults;$/;"	member	line:62	struct:__anon84
+SteeringData_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\SteeringFunc.h	/^} SteeringData_t;$/;"	typedef	line:64	typeref:struct:__anon84
+interpol	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Tools.c	/^uint16_t interpol(int16_t *array, int16_t points_num, int16_t x)$/;"	function	line:6	signature:(int16_t *array, int16_t points_num, int16_t x)
+_TOOL_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\Tools.h	/^#define _TOOL_H_$/;"	macro	line:2
+TrimInit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.c	/^uint8_t TrimInit(TrimData_t *TrimData, uint8_t* pFeedback_0p1V, uint16_t MaxFeedback_0p1V, uint16_t MinFeedback_0p1V)$/;"	function	line:3	signature:(TrimData_t *TrimData, uint8_t* pFeedback_0p1V, uint16_t MaxFeedback_0p1V, uint16_t MinFeedback_0p1V)
+TrimProc	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.c	/^uint8_t TrimProc(TrimData_t *TrimData, uint8_t cmdUp, uint8_t cmdDown)$/;"	function	line:12	signature:(TrimData_t *TrimData, uint8_t cmdUp, uint8_t cmdDown)
+TrimGetState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.c	/^uint8_t TrimGetState(const TrimData_t *TrimData)$/;"	function	line:53	signature:(const TrimData_t *TrimData)
+_TRIM_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^#define _TRIM_H_$/;"	macro	line:2
+Value	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^	uint8_t Value;$/;"	member	line:8	struct:__anon85
+F_Position	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^		F_Position	:	1,$/;"	member	line:11	struct:__anon85
+F_Feedback	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^		F_Feedback	:	1,$/;"	member	line:12	struct:__anon85
+dummy1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^		dummy1		:	6;$/;"	member	line:13	struct:__anon85
+TrimFaults_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^} TrimFaults_t;$/;"	typedef	line:14	typeref:struct:__anon85
+TRIM_F_NONE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^	TRIM_F_NONE,$/;"	enumerator	line:18	enum:__anon86
+TRIM_F_POSITION	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^	TRIM_F_POSITION,$/;"	enumerator	line:19	enum:__anon86
+TRIM_F_FEEDBACK	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^	TRIM_F_FEEDBACK,$/;"	enumerator	line:20	enum:__anon86
+TrimFaults_e	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^}TrimFaults_e;$/;"	typedef	line:21	typeref:enum:__anon86
+FeedBack_mV	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^	uint8_t *FeedBack_mV;$/;"	member	line:25	struct:__anon87
+MovCmd	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^	uint8_t MovCmd;	$/;"	member	line:26	struct:__anon87
+Position	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^	uint8_t Position;$/;"	member	line:27	struct:__anon87
+MaxVoltage_0p1V	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^	uint16_t MaxVoltage_0p1V;$/;"	member	line:28	struct:__anon87
+MinVoltage_0p1V	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^	uint16_t MinVoltage_0p1V;$/;"	member	line:29	struct:__anon87
+Faults	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^	TrimFaults_t Faults;$/;"	member	line:30	struct:__anon87
+TrimData_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\TrimFunc.h	/^} TrimData_t;$/;"	typedef	line:32	typeref:struct:__anon87
+fltAcc	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^FILTER_STRUCT fltAcc;$/;"	variable	line:24
+AppInit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^void AppInit(ObjectDictionary_t *dictionary)$/;"	function	line:32	signature:(ObjectDictionary_t *dictionary)
+FirstChannel	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^	int16_t FirstChannel[4];$/;"	member	line:40	struct:__anon88	file:
+SecondChannel	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^	int16_t SecondChannel[4];$/;"	member	line:41	struct:__anon88	file:
+AccPedalData_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^} AccPedalData_t;$/;"	typedef	line:42	typeref:struct:__anon88	file:
+pedalData	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^AccPedalData_t pedalData;$/;"	variable	line:44
+PllInit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^void PllInit()$/;"	function	line:46
+HardwareInit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^void HardwareInit(void)$/;"	function	line:80	signature:(void)
+PortInit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^void PortInit(void)$/;"	function	line:101	signature:(void)
+InverterPower	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^void InverterPower(uint8_t Cmd)$/;"	function	line:135	signature:(uint8_t Cmd)
+SteeringPumpPower	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^void SteeringPumpPower(uint8_t Cmd)$/;"	function	line:140	signature:(uint8_t Cmd)
+AccPedalInit	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^void AccPedalInit(uint8_t MaxV, uint8_t NeuV)$/;"	function	line:147	signature:(uint8_t MaxV, uint8_t NeuV)
+GetAccelerationPosition	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^uint8_t GetAccelerationPosition(uint8_t sensor_voltage_0p1, uint8_t sensor2_voltage_0p1)$/;"	function	line:162	signature:(uint8_t sensor_voltage_0p1, uint8_t sensor2_voltage_0p1)
+GetDriveDirection	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^int8_t GetDriveDirection(uint8_t sensor_voltage_0p1, uint8_t sensor2_voltage_0p1)$/;"	function	line:171	signature:(uint8_t sensor_voltage_0p1, uint8_t sensor2_voltage_0p1)
+GetTargetTorque	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^int16_t GetTargetTorque(uint8_t AccPosition, int8_t GearSelected)$/;"	function	line:177	signature:(uint8_t AccPosition, int8_t GearSelected)
+InverterControl	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^uint8_t InverterControl(uint8_t LockupEnable, uint8_t BatContactorClose, uint8_t IsTimeout, uint8_t Cmd)$/;"	function	line:184	signature:(uint8_t LockupEnable, uint8_t BatContactorClose, uint8_t IsTimeout, uint8_t Cmd)
+BatteryControl	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^uint8_t BatteryControl(uint8_t Timeout)$/;"	function	line:192	signature:(uint8_t Timeout)
+ChargersCircuitOn	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^uint8_t ChargersCircuitOn(uint8_t Cmd)$/;"	function	line:202	signature:(uint8_t Cmd)
+CheckChargingCond	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^uint8_t CheckChargingCond(uint8_t TerminalState, uint8_t BatteryState)$/;"	function	line:212	signature:(uint8_t TerminalState, uint8_t BatteryState)
+SystemThreat	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^uint8_t SystemThreat()$/;"	function	line:251
+TemperatureControl	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^uint8_t TemperatureControl()$/;"	function	line:277
+DrainSupply	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.c	/^uint8_t DrainSupply()$/;"	function	line:309
+_USER_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\User.h	/^#define _USER_H_$/;"	macro	line:2
+timeStamp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\WorkStates.c	/^uint32_t timeStamp;$/;"	variable	line:38
+FunArray	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\WorkStates.c	/^void (*FunArray[])(uint8_t *) =	{ InitializationState, OperatingState, ShutdownState, FaultState, ChargingState };$/;"	variable	line:41
+SetWorkState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\WorkStates.c	/^void SetWorkState(StateMachine_t *state_machine, WorkStates_e new_state)$/;"	function	line:44	signature:(StateMachine_t *state_machine, WorkStates_e new_state)
+InitializationState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\WorkStates.c	/^void InitializationState(uint8_t *SubState)$/;"	function	line:55	signature:(uint8_t *SubState)
+OperatingState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\WorkStates.c	/^void OperatingState(uint8_t *SubState)$/;"	function	line:121	signature:(uint8_t *SubState)
+ShutdownState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\WorkStates.c	/^void ShutdownState(uint8_t *SubState)$/;"	function	line:129	signature:(uint8_t *SubState)
+FaultState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\WorkStates.c	/^void FaultState(uint8_t *SubState)$/;"	function	line:155	signature:(uint8_t *SubState)
+ChargingState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\WorkStates.c	/^void ChargingState(uint8_t *SubState)$/;"	function	line:177	signature:(uint8_t *SubState)
+CommonState	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\WorkStates.c	/^void CommonState(void)$/;"	function	line:182	signature:(void)
+_WORKSTATES_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\MCU\Src\WorkStates.h	/^#define _WORKSTATES_H_$/;"	macro	line:2

@@ -1,0 +1,115 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+REF_ADC_VOLTAGE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\AdcFunc.c	/^#define REF_ADC_VOLTAGE /;"	macro	line:7	file:
+_channelsData	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\AdcFunc.c	/^static uint16_t _channelsData[8]; $/;"	variable	line:13	file:
+Adc_Init	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\AdcFunc.c	/^void Adc_Init()$/;"	function	line:15
+Pin_Configurate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\AdcFunc.c	/^void Pin_Configurate()$/;"	function	line:41
+SetAdcData	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\AdcFunc.c	/^void SetAdcData(uint8_t channel)$/;"	function	line:93	signature:(uint8_t channel)
+GetVoltageValue	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\AdcFunc.c	/^uint16_t GetVoltageValue(uint8_t channel)$/;"	function	line:98	signature:(uint8_t channel)
+_ADC_FUNC_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\AdcFunc.h	/^#define _ADC_FUNC_H_$/;"	macro	line:2
+TXMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^CAN_MSG_Type TXMsg, RXMsg; \/\/ messages for test Bypass mode$/;"	variable	line:7
+RXMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^CAN_MSG_Type TXMsg, RXMsg; \/\/ messages for test Bypass mode$/;"	variable	line:7
+rxBufCan1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^rxBufCAN_t rxBufCan1, rxBufCan2;$/;"	variable	line:9
+rxBufCan2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^rxBufCAN_t rxBufCan1, rxBufCan2;$/;"	variable	line:9
+txBufCan1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^txBufCAN_t txBufCan1, txBufCan2;$/;"	variable	line:10
+txBufCan2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^txBufCAN_t txBufCan1, txBufCan2;$/;"	variable	line:10
+Can_Init	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^void Can_Init(uint8_t CanChannel1, uint8_t CanChannel2)$/;"	function	line:14	signature:(uint8_t CanChannel1, uint8_t CanChannel2)
+Pin_Configurate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^void Pin_Configurate(LPC_CAN_TypeDef *CANx)$/;"	function	line:34	signature:(LPC_CAN_TypeDef *CANx)
+CanReceiveThread	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^uint8_t CanReceiveThread(uint8_t CanChannel, CanMsg *Msg)$/;"	function	line:67	signature:(uint8_t CanChannel, CanMsg *Msg)
+canRxQueue_GetWriteMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^CanMsg* canRxQueue_GetWriteMsg(int32_t buf_num)$/;"	function	line:116	signature:(int32_t buf_num)
+canRxQueue_ReadMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^int canRxQueue_ReadMsg(int32_t buf_num, CanMsg* msg)$/;"	function	line:158	signature:(int32_t buf_num, CanMsg* msg)
+ecanGetTxMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^uint8_t ecanGetTxMsg(CanMsg* msg, int32_t buf_num)$/;"	function	line:193	signature:(CanMsg* msg, int32_t buf_num)
+ecanGetEmptyTxMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^CanMsg* ecanGetEmptyTxMsg(int32_t buf_num)$/;"	function	line:229	signature:(int32_t buf_num)
+GetBufferAvailable	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^uint32_t GetBufferAvailable(uint32_t channel)$/;"	function	line:270	signature:(uint32_t channel)
+SendCanMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.c	/^uint8_t SendCanMsg(uint8_t channel, CanMsg *msg)$/;"	function	line:298	signature:(uint8_t channel, CanMsg *msg)
+_CAN_FUNC_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^#define _CAN_FUNC_H_$/;"	macro	line:2
+RX_BUF_CAN_LEN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^#define RX_BUF_CAN_LEN	/;"	macro	line:5
+TX_BUF_CAN_LEN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^#define TX_BUF_CAN_LEN /;"	macro	line:8
+ID	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^    uint32_t ID;$/;"	member	line:11	struct:__anon1
+data	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^    uint8_t data[8];$/;"	member	line:12	struct:__anon1
+Ext	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^    uint8_t Ext;$/;"	member	line:13	struct:__anon1
+DLC	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^    uint8_t DLC;$/;"	member	line:14	struct:__anon1
+CanMsg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^} CanMsg;$/;"	typedef	line:15	typeref:struct:__anon1
+List	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^    CanMsg List[RX_BUF_CAN_LEN];$/;"	member	line:25	struct:__anon2
+Head	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^    int Head;$/;"	member	line:26	struct:__anon2
+Tail	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^    int Tail;$/;"	member	line:27	struct:__anon2
+rxBufCAN_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^} rxBufCAN_t;$/;"	typedef	line:28	typeref:struct:__anon2
+List	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^    CanMsg List[TX_BUF_CAN_LEN];$/;"	member	line:32	struct:__anon3
+Head	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^    int Head;$/;"	member	line:33	struct:__anon3
+Tail	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^    int Tail;$/;"	member	line:34	struct:__anon3
+txBufCAN_t	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\CanFunc.h	/^} txBufCAN_t;$/;"	typedef	line:35	typeref:struct:__anon3
+transferMCfg	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\I2cFunc.c	/^static I2C_M_SETUP_Type transferMCfg;$/;"	variable	line:6	file:
+I2c_Init	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\I2cFunc.c	/^void I2c_Init(void)$/;"	function	line:10	signature:(void)
+Pin_Configurate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\I2cFunc.c	/^void Pin_Configurate()$/;"	function	line:22
+I2CReadWrite	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\I2cFunc.c	/^uint8_t I2CReadWrite(uint8_t *tx_buf, uint8_t tx_lenght, uint8_t *rx_buf, uint8_t rx_lenght, uint16_t slave_address)$/;"	function	line:39	signature:(uint8_t *tx_buf, uint8_t tx_lenght, uint8_t *rx_buf, uint8_t rx_lenght, uint16_t slave_address)
+_I2C_FUNC_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\I2cFunc.h	/^#define _I2C_FUNC_H_$/;"	macro	line:2
+I2C_WRITE_BIT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\I2cFunc.h	/^#define I2C_WRITE_BIT /;"	macro	line:4
+I2C_READ_BIT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\I2cFunc.h	/^#define I2C_READ_BIT /;"	macro	line:5
+channelsetup	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MCPwmFunc.c	/^MCPWM_CHANNEL_CFG_Type channelsetup[3];$/;"	variable	line:6
+MCPwm_Init	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MCPwmFunc.c	/^void MCPwm_Init(void)$/;"	function	line:8	signature:(void)
+Pin_Configurate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MCPwmFunc.c	/^void Pin_Configurate()$/;"	function	line:49
+MCPwm_Update	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MCPwmFunc.c	/^void MCPwm_Update(uint32_t ChannelA, uint32_t ChannelB, uint32_t ChannelC)$/;"	function	line:86	signature:(uint32_t ChannelA, uint32_t ChannelB, uint32_t ChannelC)
+_MCPWM_FUNC_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MCPwmFunc.h	/^#define _MCPWM_FUNC_H_$/;"	macro	line:2
+MemEcuCfgRead	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MemoryFunc.c	/^void MemEcuCfgRead(uint8_t *data_pointer)$/;"	function	line:5	signature:(uint8_t *data_pointer)
+MemEcuCfgWrite	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MemoryFunc.c	/^uint8_t MemEcuCfgWrite(uint8_t *data_pointer)$/;"	function	line:15	signature:(uint8_t *data_pointer)
+MemEcuDtcWrite	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MemoryFunc.c	/^uint8_t MemEcuDtcWrite(uint8_t *data_pointer, uint16_t length)$/;"	function	line:21	signature:(uint8_t *data_pointer, uint16_t length)
+MemEcuDtcRead	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MemoryFunc.c	/^void MemEcuDtcRead(uint8_t *data_pointer, uint16_t DataLength)$/;"	function	line:32	signature:(uint8_t *data_pointer, uint16_t DataLength)
+MemEcuDtcClear	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MemoryFunc.c	/^uint8_t MemEcuDtcClear(void)$/;"	function	line:43	signature:(void)
+_MEMORY_FUNC_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MemoryFunc.h	/^#define _MEMORY_FUNC_H_$/;"	macro	line:2
+CONFIG_SIZE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MemoryFunc.h	/^#define CONFIG_SIZE /;"	macro	line:8
+CONFIG_START_ADDRESS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MemoryFunc.h	/^#define CONFIG_START_ADDRESS	/;"	macro	line:12
+CONFIG_END_ADDRESS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MemoryFunc.h	/^#define CONFIG_END_ADDRESS	/;"	macro	line:13
+SDATA_START_ADDRESS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\MemoryFunc.h	/^#define SDATA_START_ADDRESS	/;"	macro	line:16
+Pwm1_Period_us	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\PwmFunc.c	/^static uint32_t Pwm1_Period_us = 0;$/;"	variable	line:4	file:
+Pwm_Init	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\PwmFunc.c	/^void Pwm_Init(uint16_t Freq_Hz)$/;"	function	line:6	signature:(uint16_t Freq_Hz)
+Pwm_Ch_Init	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\PwmFunc.c	/^void Pwm_Ch_Init(uint8_t ChNum)$/;"	function	line:50	signature:(uint8_t ChNum)
+PwmUpdate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\PwmFunc.c	/^void PwmUpdate(uint8_t ChNum, uint8_t DutyCycle)$/;"	function	line:66	signature:(uint8_t ChNum, uint8_t DutyCycle)
+PwmFreqUpdate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\PwmFunc.c	/^void PwmFreqUpdate(uint16_t Freq_Hz)$/;"	function	line:75	signature:(uint16_t Freq_Hz)
+_PWM_FUNC_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\PwmFunc.h	/^#define _PWM_FUNC_H_$/;"	macro	line:2
+PWM_Channel1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\PwmFunc.h	/^	PWM_Channel1 = 0,$/;"	enumerator	line:8	enum:__anon4
+PWM_Channel2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\PwmFunc.h	/^	PWM_Channel2,$/;"	enumerator	line:9	enum:__anon4
+PWM_Channel3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\PwmFunc.h	/^	PWM_Channel3,$/;"	enumerator	line:10	enum:__anon4
+PWM_Channel4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\PwmFunc.h	/^	PWM_Channel4,$/;"	enumerator	line:11	enum:__anon4
+PwmChannels_e	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\PwmFunc.h	/^}PwmChannels_e;$/;"	typedef	line:12	typeref:enum:__anon4
+Spi_Init	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\SpiFunc.c	/^void Spi_Init(DataBit_e Databit)$/;"	function	line:12	signature:(DataBit_e Databit)
+Pin_Configurate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\SpiFunc.c	/^void Pin_Configurate()$/;"	function	line:41
+SpiReadWrite	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\SpiFunc.c	/^uint8_t SpiReadWrite(uint8_t *tx_buf, uint8_t lenght, uint8_t *rx_buf)$/;"	function	line:95	signature:(uint8_t *tx_buf, uint8_t lenght, uint8_t *rx_buf)
+_SPI_FUNC_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\SpiFunc.h	/^#define _SPI_FUNC_H_$/;"	macro	line:2
+DATABIT_8	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\SpiFunc.h	/^	DATABIT_8 = 0,$/;"	enumerator	line:6	enum:__anon5
+DATABIT_16	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\SpiFunc.h	/^	DATABIT_16,$/;"	enumerator	line:7	enum:__anon5
+DataBit_e	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\SpiFunc.h	/^} DataBit_e;$/;"	typedef	line:8	typeref:enum:__anon5
+SysTickCnt	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\TimerFunc.c	/^volatile unsigned long SysTickCnt;$/;"	variable	line:7
+cnt_1000ms	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\TimerFunc.c	/^static unsigned long cnt_1000ms;$/;"	variable	line:8	file:
+SysTick_Handler	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\TimerFunc.c	/^void SysTick_Handler (void) {$/;"	function	line:16	signature:(void)
+Delay	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\TimerFunc.c	/^void Delay (uint32_t tick) {$/;"	function	line:32	signature:(uint32_t tick)
+Tmr_Init	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\TimerFunc.c	/^void Tmr_Init(uint32_t Freq_Hz)$/;"	function	line:40	signature:(uint32_t Freq_Hz)
+GetTimeStamp	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\TimerFunc.c	/^uint32_t GetTimeStamp()$/;"	function	line:45
+GetTimeFrom	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\TimerFunc.c	/^uint32_t GetTimeFrom(uint32_t TimeStampLoc)$/;"	function	line:49	signature:(uint32_t TimeStampLoc)
+_TIMER_DRV_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\TimerFunc.h	/^#define _TIMER_DRV_H_$/;"	macro	line:2
+__BUF_MASK	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^#define __BUF_MASK /;"	macro	line:8	file:
+__BUF_IS_FULL	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^#define __BUF_IS_FULL(/;"	macro	line:10	file:
+__BUF_WILL_FULL	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^#define __BUF_WILL_FULL(/;"	macro	line:12	file:
+__BUF_IS_EMPTY	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^#define __BUF_IS_EMPTY(/;"	macro	line:14	file:
+__BUF_RESET	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^#define __BUF_RESET(/;"	macro	line:16	file:
+__BUF_INCR	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^#define __BUF_INCR(/;"	macro	line:17	file:
+CurrentUART	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^LPC_UART_TypeDef *CurrentUART;$/;"	variable	line:19
+receive_cnt	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^static uint16_t receive_cnt = 0;$/;"	variable	line:25	file:
+tx_head	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^    __IO uint32_t tx_head;                \/*!< UART Tx ring buffer head index *\/$/;"	member	line:29	struct:__anon6	file:
+tx_tail	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^    __IO uint32_t tx_tail;                \/*!< UART Tx ring buffer tail index *\/$/;"	member	line:30	struct:__anon6	file:
+rx_head	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^    __IO uint32_t rx_head;                \/*!< UART Rx ring buffer head index *\/$/;"	member	line:31	struct:__anon6	file:
+rx_tail	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^    __IO uint32_t rx_tail;                \/*!< UART Rx ring buffer tail index *\/$/;"	member	line:32	struct:__anon6	file:
+tx	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^    __IO uint8_t  tx[UART_RING_BUFSIZE];  \/*!< UART Tx data ring buffer *\/$/;"	member	line:33	struct:__anon6	file:
+rx	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^    __IO uint8_t  rx[UART_RING_BUFSIZE];  \/*!< UART Rx data ring buffer *\/$/;"	member	line:34	struct:__anon6	file:
+UART_RING_BUFFER_T	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^} UART_RING_BUFFER_T;$/;"	typedef	line:35	typeref:struct:__anon6	file:
+rb	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^UART_RING_BUFFER_T rb;$/;"	variable	line:38
+UART0_IRQHandler	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^void UART0_IRQHandler(void)$/;"	function	line:46	signature:(void)
+Uart_Init	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^void Uart_Init(uint8_t Channel, uint32_t baudrate)$/;"	function	line:61	signature:(uint8_t Channel, uint32_t baudrate)
+Pin_Configurate	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^void Pin_Configurate(uint8_t uart_channel)$/;"	function	line:105	signature:(uint8_t uart_channel)
+UART_IntReceive	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^void UART_IntReceive(uint8_t Channel)$/;"	function	line:145	signature:(uint8_t Channel)
+Uart_SendData	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.c	/^void Uart_SendData(uint8_t buf, uint8_t *data, uint8_t size)$/;"	function	line:181	signature:(uint8_t buf, uint8_t *data, uint8_t size)
+_UartFunc_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.h	/^#define _UartFunc_H_$/;"	macro	line:2
+UART_RING_BUFSIZE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\HardwareDefs_lpc17xx\UartFunc.h	/^#define UART_RING_BUFSIZE /;"	macro	line:7

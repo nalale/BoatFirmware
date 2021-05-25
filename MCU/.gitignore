@@ -1,0 +1,11 @@
+/.settings/
+/Debug/
+/DebugConfig/
+/Listings/
+/Objects/
+/RTE/
+/MarineECU.uvguix.*
+/MarineECU.uvoptx
+/EventRecorderStub.scvd
+/JLinkLog.txt
+/JLinkSettings.ini

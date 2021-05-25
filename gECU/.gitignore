@@ -1,0 +1,12 @@
+/.settings/
+/Debug/
+/DebugConfig/
+/Libraries/
+/Listings/
+/Objects/
+/RTE/
+/gECU.uvguix.*
+/gECU.uvoptx
+/EventRecorderStub.scvd
+/JLinkLog.txt
+/JLinkSettings.ini

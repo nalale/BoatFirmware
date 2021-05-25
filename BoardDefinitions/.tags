@@ -1,0 +1,170 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+_ecuPowerSupply	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.c	/^static uint16_t _ecuPowerSupply = 0;$/;"	variable	line:7	file:
+fltVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.c	/^FILTER_STRUCT fltVoltage;$/;"	variable	line:9
+IO_Init	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.c	/^void IO_Init()$/;"	function	line:11
+gpio_ltc6804_cs_set	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.c	/^void gpio_ltc6804_cs_set(uint32_t cs_num, uint8_t state)$/;"	function	line:41	signature:(uint32_t cs_num, uint8_t state)
+ecuProc	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.c	/^void ecuProc()$/;"	function	line:49
+EcuGetVoltage	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.c	/^uint16_t EcuGetVoltage()$/;"	function	line:55
+_BMS_COMBI_HW_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define _BMS_COMBI_HW_H_$/;"	macro	line:2
+P0_6	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P0_6	/;"	macro	line:15
+P0_15	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P0_15	/;"	macro	line:16
+P0_16	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P0_16	/;"	macro	line:17
+P0_17	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P0_17	/;"	macro	line:18
+P0_18	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P0_18	/;"	macro	line:19
+P0_22	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P0_22	/;"	macro	line:20
+P0_26	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P0_26	/;"	macro	line:21
+P1_30	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P1_30	/;"	macro	line:23
+P1_31	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P1_31	/;"	macro	line:24
+P2_0	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P2_0	/;"	macro	line:26
+P2_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P2_1	/;"	macro	line:27
+P2_2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P2_2	/;"	macro	line:28
+P2_5	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P2_5	/;"	macro	line:29
+P2_7	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P2_7	/;"	macro	line:30
+P2_8	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P2_8	/;"	macro	line:31
+P2_9	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define P2_9	/;"	macro	line:32
+KEY	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define KEY	/;"	macro	line:34
+D_OUT1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_OUT1	/;"	macro	line:35
+D_OUT1_STATUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_OUT1_STATUS	/;"	macro	line:36
+D_OUT2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_OUT2 /;"	macro	line:37
+D_OUT2_STATUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_OUT2_STATUS	/;"	macro	line:38
+D_OUT3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_OUT3 /;"	macro	line:39
+D_OUT3_STATUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_OUT3_STATUS	/;"	macro	line:40
+D_OUT4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_OUT4 /;"	macro	line:41
+D_OUT4_STATUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_OUT4_STATUS	/;"	macro	line:42
+D_IN4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_IN4	/;"	macro	line:44
+D_IN3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_IN3	/;"	macro	line:45
+D_IN2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_IN2	/;"	macro	line:46
+D_IN1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define D_IN1	/;"	macro	line:47
+A_CHNL_KEY	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define A_CHNL_KEY	/;"	macro	line:49
+A_CH1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define A_CH1	/;"	macro	line:50
+A_CH2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define A_CH2	/;"	macro	line:51
+MCU_Key	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define MCU_Key(/;"	macro	line:53
+SET_D_OUT1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define SET_D_OUT1(/;"	macro	line:54
+GET_D_OUT1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_OUT1	/;"	macro	line:55
+GET_D_OUT1_STATUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_OUT1_STATUS	/;"	macro	line:56
+SET_D_OUT2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define SET_D_OUT2(/;"	macro	line:57
+GET_D_OUT2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_OUT2	/;"	macro	line:58
+GET_D_OUT2_STATUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_OUT2_STATUS	/;"	macro	line:59
+SET_D_OUT3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define SET_D_OUT3(/;"	macro	line:60
+GET_D_OUT3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_OUT3	/;"	macro	line:61
+GET_D_OUT3_STATUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_OUT3_STATUS	/;"	macro	line:62
+SET_D_OUT4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define SET_D_OUT4(/;"	macro	line:63
+GET_D_OUT4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_OUT4	/;"	macro	line:64
+GET_D_OUT4_STATUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_OUT4_STATUS	/;"	macro	line:65
+GET_D_IN4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_IN4	/;"	macro	line:68
+GET_D_IN3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_IN3	/;"	macro	line:69
+GET_D_IN2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_IN2	/;"	macro	line:70
+GET_D_IN1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_D_IN1	/;"	macro	line:71
+CS1_OUT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define CS1_OUT	/;"	macro	line:73
+CS2_OUT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define CS2_OUT	/;"	macro	line:74
+OUT_DIR	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define OUT_DIR /;"	macro	line:77
+IN_DIR	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define IN_DIR	/;"	macro	line:78
+GPIO_LOW	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GPIO_LOW	/;"	macro	line:80
+GPIO_HIGH	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GPIO_HIGH	/;"	macro	line:81
+BAT_OPEN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define BAT_OPEN /;"	macro	line:83
+BAT_CLOSE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define BAT_CLOSE /;"	macro	line:84
+BAT_PLUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define BAT_PLUS(/;"	macro	line:86
+GET_BAT_PLUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_BAT_PLUS	/;"	macro	line:87
+BAT_MINUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define BAT_MINUS(/;"	macro	line:88
+GET_BAT_MINUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_BAT_MINUS	/;"	macro	line:89
+PRECHARGE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define PRECHARGE(/;"	macro	line:90
+GET_PRECHARGE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_PRECHARGE	/;"	macro	line:91
+LED	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define LED(/;"	macro	line:92
+GET_LED	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define GET_LED /;"	macro	line:93
+FB_PLUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define FB_PLUS /;"	macro	line:95
+FB_MINUS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define FB_MINUS /;"	macro	line:96
+IL	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define IL /;"	macro	line:97
+RESERVE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\BmsCombi_Board.h	/^#define RESERVE /;"	macro	line:98
+SetDOutput	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.c	/^void SetDOutput(uint8_t num, uint8_t state)$/;"	function	line:7	signature:(uint8_t num, uint8_t state)
+GetDiscretIO	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.c	/^uint32_t GetDiscretIO() {$/;"	function	line:42
+_EVCU_HW_H_	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define _EVCU_HW_H_$/;"	macro	line:2
+A_OUT2_CSENS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define A_OUT2_CSENS /;"	macro	line:9
+A_OUT1_CSENS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define A_OUT1_CSENS /;"	macro	line:10
+A_CHNL_KEY	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define A_CHNL_KEY	/;"	macro	line:11
+A_OUT3_CSENS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define A_OUT3_CSENS	/;"	macro	line:12
+V_AN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define V_AN	/;"	macro	line:14
+A_IN_NUM	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define A_IN_NUM	/;"	macro	line:15
+P0_6	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P0_6	/;"	macro	line:18
+SPI_CS	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SPI_CS	/;"	macro	line:20
+SET_CS_OUT	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_CS_OUT(/;"	macro	line:22
+P1_29	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_29	/;"	macro	line:25
+P1_28	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_28	/;"	macro	line:26
+P1_26	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_26	/;"	macro	line:27
+P1_25	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_25	/;"	macro	line:28
+P1_24	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_24	/;"	macro	line:29
+P1_23	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_23	/;"	macro	line:30
+P1_18	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_18	/;"	macro	line:31
+P1_19	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_19	/;"	macro	line:32
+P4_28	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P4_28	/;"	macro	line:33
+P4_29	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P4_29	/;"	macro	line:34
+D_OUT5	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_OUT5	/;"	macro	line:36
+D_OUT6	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_OUT6	/;"	macro	line:37
+D_OUT7	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_OUT7	/;"	macro	line:38
+D_OUT8	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_OUT8	/;"	macro	line:39
+D_OUT9	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_OUT9	/;"	macro	line:40
+D_OUT10	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_OUT10	/;"	macro	line:41
+PU_D_IN1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define PU_D_IN1	/;"	macro	line:43
+PU_D_IN2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define PU_D_IN2	/;"	macro	line:44
+PU_D_IN3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define PU_D_IN3	/;"	macro	line:45
+PU_D_IN4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define PU_D_IN4	/;"	macro	line:46
+SET_C_OUT5	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_C_OUT5(/;"	macro	line:49
+C_OUT5_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define C_OUT5_STATE /;"	macro	line:50
+SET_C_OUT6	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_C_OUT6(/;"	macro	line:51
+C_OUT6_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define C_OUT6_STATE /;"	macro	line:52
+SET_C_OUT7	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_C_OUT7(/;"	macro	line:53
+C_OUT7_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define C_OUT7_STATE /;"	macro	line:54
+SET_C_OUT8	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_C_OUT8(/;"	macro	line:55
+C_OUT8_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define C_OUT8_STATE /;"	macro	line:56
+SET_C_OUT9	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_C_OUT9(/;"	macro	line:57
+C_OUT9_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define C_OUT9_STATE /;"	macro	line:58
+SET_C_OUT10	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_C_OUT10(/;"	macro	line:59
+C_OUT10_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define C_OUT10_STATE /;"	macro	line:60
+SET_PU_D_IN1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_PU_D_IN1(/;"	macro	line:62
+PU_D_IN1_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define PU_D_IN1_STATE /;"	macro	line:63
+SET_PU_D_IN2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_PU_D_IN2(/;"	macro	line:64
+PU_D_IN2_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define PU_D_IN2_STATE /;"	macro	line:65
+SET_PU_D_IN3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_PU_D_IN3(/;"	macro	line:66
+PU_D_IN3_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define PU_D_IN3_STATE /;"	macro	line:67
+SET_PU_D_IN4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_PU_D_IN4(/;"	macro	line:68
+PU_D_IN4_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define PU_D_IN4_STATE /;"	macro	line:69
+P2_4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P2_4	/;"	macro	line:72
+P2_5	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P2_5	/;"	macro	line:73
+P2_6	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P2_6	/;"	macro	line:74
+P2_9	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P2_9	/;"	macro	line:75
+OUT1_EN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define OUT1_EN /;"	macro	line:77
+OUT2_EN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define OUT2_EN /;"	macro	line:78
+OUT3_EN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define OUT3_EN /;"	macro	line:79
+OUT4_EN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define OUT4_EN /;"	macro	line:80
+SET_A_OUT1_EN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_A_OUT1_EN(/;"	macro	line:82
+A_OUT1_EN_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define A_OUT1_EN_STATE /;"	macro	line:83
+SET_A_OUT2_EN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_A_OUT2_EN(/;"	macro	line:84
+A_OUT2_EN_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define A_OUT2_EN_STATE /;"	macro	line:85
+SET_A_OUT3_EN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_A_OUT3_EN(/;"	macro	line:86
+A_OUT3_EN_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define A_OUT3_EN_STATE /;"	macro	line:87
+SET_A_OUT4_EN	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define SET_A_OUT4_EN(/;"	macro	line:88
+A_OUT4_EN_STATE	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define A_OUT4_EN_STATE /;"	macro	line:89
+P0_29	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P0_29	/;"	macro	line:93
+P0_30	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P0_30	/;"	macro	line:94
+P1_14	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_14	/;"	macro	line:95
+P1_15	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_15	/;"	macro	line:96
+P1_9	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_9	/;"	macro	line:97
+P1_10	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_10	/;"	macro	line:98
+P1_4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_4	/;"	macro	line:99
+P1_8	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_8	/;"	macro	line:100
+P1_0	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_0	/;"	macro	line:101
+P1_1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define P1_1	/;"	macro	line:102
+D_IN1	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_IN1 /;"	macro	line:104
+D_IN2	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_IN2 /;"	macro	line:105
+D_IN3	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_IN3 /;"	macro	line:106
+D_IN4	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_IN4 /;"	macro	line:107
+D_IN5	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_IN5 /;"	macro	line:108
+D_IN6	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_IN6 /;"	macro	line:109
+D_IN7	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_IN7 /;"	macro	line:110
+D_IN8	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_IN8 /;"	macro	line:111
+D_IN9	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_IN9 /;"	macro	line:112
+D_IN10	C:\Work\Code\Other\MolniaFoil\BoatFirmware\BoardDefinitions\MarineEcu_Board.h	/^#define D_IN10 /;"	macro	line:113
